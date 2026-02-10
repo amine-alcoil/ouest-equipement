@@ -1,0 +1,91 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --color-primary: #0B3954;
+    --color-secondary: #56b447;
+    --color-secondary_2: #34682b;
+    --color-dark: #2C3A47;
+    --color-light: #CAD3C8;
+    --color-clean: #FFFFFF;
+    --color-3: #BFD7EA;
+    
+}
+
+ /* Background: modern shapes (conic arcs + radial glows + subtle lines) */
+        .partners-section {
+            background-color: #ffffff; /* brand orange */
+            
+        }
+
+        /* Layout */
+        .partners-container {
+            
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            color: #fff;
+        }
+        .partners-header {
+            
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 45px;
+        }
+        .partners-title {
+            
+            font-size: 40px;
+            font-weight: 700;
+            letter-spacing: .3px;
+        }
+        
+
+        /* Grid: 4 columns (rows grow حسب العدد) */
+        .partners-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 28px;
+        }
+        @media (max-width: 1024px) {
+            .partners-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .partners-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 480px) {
+            .partners-grid { grid-template-columns: repeat(1, 1fr); }
+        }
+
+        /* Logo tile: transparent (لا شيء خلف الشعارات) + slide animation on hover */
+        .logo-tile {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 18px;
+            background: transparent;      /* no card background */
+            border: none;                 /* no border to keep it clean */
+            min-height: 110px;
+        }
+        .logo-img {
+            max-width: 160px;
+            max-height: 80px;
+            object-fit: contain;
+            filter: none;                 /* keep original colors of logos */
+            transition: transform 300ms ease, box-shadow 300ms ease;
+            will-change: transform;
+        }
+        .logo-tile:hover .logo-img,
+        .logo-tile:focus .logo-img {
+           
+            transform: translateY(-10px);  /* slide effect on hover */
+            
+            
+        }
+
+        /* Optional: subtle separator line above the section for spacing from Services */
+        
