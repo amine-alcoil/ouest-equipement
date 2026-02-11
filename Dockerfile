@@ -1,10 +1,4 @@
-# Stage 1: Build assets with Node.js
-FROM node:20 as node-builder
-WORKDIR /app
-COPY package*.json ./
-COPY . .
-
-# Stage 2: PHP Application
+# Stage 1: Build application
 FROM php:8.2-fpm
 
 # Set working directory
@@ -20,20 +14,25 @@ RUN apt-get update && apt-get install -y \
     libfreetype6-dev \
     libwebp-dev \
     libxpm-dev \
+    curl \
     && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
     && docker-php-ext-install gd pdo_mysql zip bcmath
+
+# Install Node.js (needed for Vite build)
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs
 
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 # Copy project files
 COPY . .
-# Copy built assets from Stage 1
-COPY --from=node-builder /app/public/build ./public/build
 
 # Install PHP dependencies
-# --no-scripts is CRITICAL here to prevent Composer from trying to run 'npm install' or 'npm run build'
 RUN composer install --optimize-autoloader --no-scripts --no-interaction --ignore-platform-reqs
+
+# Install Node dependencies and build assets
+RUN npm install && npm run build
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
@@ -42,5 +41,4 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 EXPOSE 80
 
 # Command to run migrations and start the server
-# We use 'php artisan serve' for simplicity on Railway
 CMD php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=${PORT:-80}
