@@ -18,27 +18,33 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
     && docker-php-ext-install gd pdo_mysql zip bcmath
 
-# Install Node.js (needed for Vite build)
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && apt-get install -y nodejs
 
 # Install Composer
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Install Node.js (needed for Vite build)
+RUN curl -sL https://deb.nodesource.com/setup_20.x | bash && \ apt-get update && pt-get install -y nodejs
+
+WORKDIR /var/www/html
 
 # Copy project files
 COPY . .
 
+# Expose port (Railway provides $PORT)
+EXPOSE 8000
+
 # Install PHP dependencies
 # We use --no-dev for production and ensure scripts are disabled to avoid npm conflicts here
-RUN composer install --no-dev --optimize-autoloader --no-scripts --no-interaction --ignore-platform-reqs
+RUN composer install
 
 # Install Node dependencies and build assets
-RUN npm install && npm run build
+RUN npm install 
+RUN npm run build
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Expose port (Railway provides $PORT)
-EXPOSE 8000
+
 
 # Improved start command with caching for performance
 CMD php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=8000
