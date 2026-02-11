@@ -41,4 +41,4 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 EXPOSE 80
 
 # Command to run migrations and start the server
-CMD php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=${PORT:-80}
+CMD php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT
