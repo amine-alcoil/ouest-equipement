@@ -32,10 +32,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if (config('app.env') === 'production') {
-            \Illuminate\Support\Facades\URL::forceScheme('https');
-        }
-
         if (!app()->runningInConsole()) {
             try {
                 if (\Illuminate\Support\Facades\Schema::hasTable('company_infos')) {
