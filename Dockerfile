@@ -19,8 +19,10 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install gd pdo_mysql zip bcmath
 
 # Install Node.js (needed for Vite build)
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
-    apt-get install -y nodejs
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && apt-get install -y nodejs
+
+# Installs dependencies and builds the production assets
+RUN npm install && npm run build
 
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
@@ -32,8 +34,6 @@ COPY . .
 # We use --no-dev for production and ensure scripts are disabled to avoid npm conflicts here
 RUN composer install --no-dev --optimize-autoloader --no-scripts --no-interaction --ignore-platform-reqs
 
-# Install Node dependencies and build assets
-RUN npm install && npm run build
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
