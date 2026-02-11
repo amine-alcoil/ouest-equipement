@@ -1,5 +1,5 @@
 # Stage 1: Build application
-FROM php:8.2-fpm
+FROM php:8.2-cli
 
 # Set working directory
 WORKDIR /var/www/html
