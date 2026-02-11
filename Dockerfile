@@ -29,7 +29,8 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 COPY . .
 
 # Install PHP dependencies
-RUN composer install --optimize-autoloader --no-scripts --no-interaction --ignore-platform-reqs
+# We use --no-dev for production and ensure scripts are disabled to avoid npm conflicts here
+RUN composer install --no-dev --optimize-autoloader --no-scripts --no-interaction --ignore-platform-reqs
 
 # Install Node dependencies and build assets
 RUN npm install && npm run build
@@ -40,5 +41,5 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 # Expose port (Railway provides $PORT)
 EXPOSE 80
 
-# Command to run migrations and start the server
-CMD php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT
+# Improved start command with caching for performance
+CMD php artisan config:cache && php artisan route:cache && php artisan view:cache && php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT
