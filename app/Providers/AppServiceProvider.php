@@ -32,7 +32,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        View::share('companyInfo', CompanyInfo::first());
+        if (!app()->runningInConsole()) {
+            try {
+                if (\Illuminate\Support\Facades\Schema::hasTable('company_infos')) {
+                    View::share('companyInfo', CompanyInfo::first());
+                }
+            } catch (\Exception $e) {
+                // Ignore errors during migration or if table doesn't exist yet
+            }
+        }
         
         Devis::observe(DevisObserver::class);
         Client::observe(ClientObserver::class);
