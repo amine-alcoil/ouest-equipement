@@ -23,7 +23,9 @@ RUN apt-get update && apt-get install -y \
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Install Node.js (needed for Vite build)
-RUN curl -sL https://deb.nodesource.com/setup_20.x | bash && \ apt-get update && apt-get install -y nodejs
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs
+
 
 WORKDIR /var/www/html
 
@@ -38,8 +40,11 @@ EXPOSE 8000
 RUN composer install
 
 # Install Node dependencies and build assets
+
 RUN npm install 
 RUN npm run build
+
+COPY --from=builder /var/www/html/public/build /var/www/html/public/build
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
