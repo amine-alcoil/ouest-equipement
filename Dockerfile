@@ -30,9 +30,11 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 # Copy project files
 COPY . .
+# Copy built assets from Stage 1
 COPY --from=node-builder /app/public/build ./public/build
 
 # Install PHP dependencies
+# --no-scripts is CRITICAL here to prevent Composer from trying to run 'npm install' or 'npm run build'
 RUN composer install --optimize-autoloader --no-scripts --no-interaction --ignore-platform-reqs
 
 # Set permissions
@@ -42,4 +44,5 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 EXPOSE 80
 
 # Command to run migrations and start the server
+# We use 'php artisan serve' for simplicity on Railway
 CMD php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=${PORT:-80}
