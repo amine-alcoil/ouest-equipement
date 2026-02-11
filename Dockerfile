@@ -29,7 +29,6 @@ COPY . .
 
 # Copy built frontend assets from the node_builder stage
 COPY --from=node_builder /app/public /var/www/html/public
-COPY --from=node_builder /app/node_modules /var/www/html/node_modules
 
 RUN composer install --no-dev --optimize-autoloader
 
