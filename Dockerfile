@@ -32,9 +32,6 @@ WORKDIR /var/www/html
 # Copy project files
 COPY . .
 
-# Expose port (Railway provides $PORT)
-EXPOSE 8000
-
 # Install PHP dependencies
 # We use --no-dev for production and ensure scripts are disabled to avoid npm conflicts here
 RUN composer install
@@ -43,7 +40,8 @@ RUN composer install
 RUN npm install 
 RUN npm run build
 
-
+# Expose port (Railway provides $PORT)
+EXPOSE 8000
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
