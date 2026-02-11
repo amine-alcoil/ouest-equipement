@@ -27,8 +27,6 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Copy project files
 COPY . .
 
-# Copy built frontend assets from the node_builder stage
-COPY --from=node_builder /app/public /var/www/html/public
 
 RUN composer install --no-dev --optimize-autoloader
 
