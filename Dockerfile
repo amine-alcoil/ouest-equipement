@@ -2,9 +2,7 @@
 FROM node:20 as node-builder
 WORKDIR /app
 COPY package*.json ./
-RUN npm install
 COPY . .
-RUN npm run build
 
 # Stage 2: PHP Application
 FROM php:8.2-fpm
