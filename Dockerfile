@@ -40,11 +40,12 @@ EXPOSE 8000
 RUN composer install
 
 # Install Node dependencies and build assets
+COPY --from=builder /var/www/html/public/build /var/www/html/public/build
 
 RUN npm install 
 RUN npm run build
 
-COPY --from=builder /var/www/html/public/build /var/www/html/public/build
+
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
