@@ -40,8 +40,6 @@ EXPOSE 8000
 RUN composer install
 
 # Install Node dependencies and build assets
-COPY --from=builder /var/www/html/public/build /var/www/html/public/build
-
 RUN npm install 
 RUN npm run build
 
