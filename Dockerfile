@@ -23,7 +23,7 @@ RUN apt-get update && apt-get install -y \
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Install Node.js (needed for Vite build)
-RUN curl -sL https://deb.nodesource.com/setup_20.x | bash && \ apt-get update && pt-get install -y nodejs
+RUN curl -sL https://deb.nodesource.com/setup_20.x | bash && \ apt-get update && apt-get install -y nodejs
 
 WORKDIR /var/www/html
 
