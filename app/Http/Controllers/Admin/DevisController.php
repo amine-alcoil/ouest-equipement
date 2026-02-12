@@ -426,41 +426,57 @@ class DevisController extends Controller
         $company = CompanyInfo::first();
         $candidate = ($company && $company->logo_path) ? $company->logo_path : 'images/Logo_ALCOIL_with_txt_b_org@3x.png';
         $logoSrc = null;
+
         try {
-            if (preg_match('#^https?://#', $candidate)) {
-                $img = @file_get_contents($candidate);
+            // Priority 1: Check if it's a local file in public or storage
+            $localPath = null;
+            if (file_exists(public_path($candidate))) {
+                $localPath = public_path($candidate);
+            } elseif (file_exists(storage_path('app/public/' . $candidate))) {
+                $localPath = storage_path('app/public/' . $candidate);
+            }
+
+            if ($localPath) {
+                $mime = @mime_content_type($localPath) ?: 'image/png';
+                $logoSrc = 'data:' . $mime . ';base64,' . base64_encode(file_get_contents($localPath));
+            } elseif (preg_match('#^https?://#', $candidate)) {
+                // Priority 2: External URL (Try to fetch with timeout)
+                $ctx = stream_context_create(['http' => ['timeout' => 5]]);
+                $img = @file_get_contents($candidate, false, $ctx);
                 if ($img !== false) {
                     $ext = pathinfo(parse_url($candidate, PHP_URL_PATH), PATHINFO_EXTENSION) ?: 'png';
-                    $mime = $ext === 'svg' ? 'image/svg+xml' : ('image/'.$ext);
-                    $logoSrc = 'data:'.$mime.';base64,'.base64_encode($img);
-                } else {
-                    $logoSrc = $candidate; // fallback to URL
-                }
-            } else {
-                $path = file_exists(public_path($candidate)) ? public_path($candidate)
-                       : (file_exists(storage_path('app/public/'.$candidate)) ? storage_path('app/public/'.$candidate) : public_path('images/Logo_ALCOIL_with_txt_b_org@3x.png'));
-                if (file_exists($path)) {
-                    $mime = @mime_content_type($path) ?: 'image/png';
-                    $logoSrc = 'data:'.$mime.';base64,'.base64_encode(file_get_contents($path));
-                } else {
-                    $logoSrc = asset($candidate);
+                    $mime = $ext === 'svg' ? 'image/svg+xml' : ('image/' . $ext);
+                    $logoSrc = 'data:' . $mime . ';base64,' . base64_encode($img);
                 }
             }
         } catch (\Throwable $e) {
-            $logoSrc = asset($candidate);
+            Log::warning("PDF Export: Logo processing failed for {$candidate}. " . $e->getMessage());
         }
+
+        // Final fallback to default local logo if nothing worked
+        if (!$logoSrc) {
+            $defaultLogo = public_path('images/Logo_ALCOIL_with_txt_b_org@3x.png');
+            if (file_exists($defaultLogo)) {
+                $mime = @mime_content_type($defaultLogo) ?: 'image/png';
+                $logoSrc = 'data:' . $mime . ';base64,' . base64_encode(file_get_contents($defaultLogo));
+            }
+        }
+
         $data = ['devis' => $devis, 'logo' => $logoSrc, 'company' => $company];
         $view = view()->exists('admin.devis-pdf') ? 'admin.devis-pdf' : 'admin.pdf_devis';
+
         $pdf = Pdf::loadView($view, $data)
             ->setPaper('a4')
             ->setOptions([
-                'isRemoteEnabled' => true,
+                'isRemoteEnabled' => false, // Disable remote for better performance
                 'isHtml5ParserEnabled' => true,
-                'dpi' => 96,
+                'dpi' => 120,
                 'defaultFont' => 'sans-serif',
                 'enable_font_subsetting' => true,
+                'isFontSubsettingEnabled' => true,
                 'tempDir' => storage_path('app/temp')
             ]);
-        return $pdf->download('Devis_'.$id.'.pdf');
+
+        return $pdf->download('Devis_' . $id . '.pdf');
     }
 }
