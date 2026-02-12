@@ -12,6 +12,8 @@ export default defineConfig({
     ],
     server: {
         host: '0.0.0.0', // Bind to all network interfaces
+        port: 9000,
+        strictPort: true,
         hmr: {
             host: 'localhost', // The host the client connects to
         },
