@@ -14,15 +14,20 @@ class DatabaseSeeder extends Seeder
      * Seed the application's database.
      */
     public function run(): void
-    {
+{
+    $email = config('services.admin.email');
+    $password = config('services.admin.password');
+
+    if ($email && $password) {
         User::firstOrCreate(
-            ['email' => env('ADMIN_EMAIL', 'admin@admin.com')],
+            ['email' => $email],
             [
                 'name' => 'Admin',
-                'password' => bcrypt(env('ADMIN_PASSWORD', 'password')),
+                'password' => bcrypt($password),
                 'role' => 'admin',
                 'status' => 'actif',
             ]
         );
     }
+}
 }
