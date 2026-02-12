@@ -76,7 +76,7 @@
                         <label class="block text-sm text-white/70 mb-1">Logo</label>
                         @if($companyInfo && $companyInfo->logo_path)
                         <div class="mb-2">
-                            <img src="{{ Storage::url($companyInfo->logo_path) }}" alt="Logo" class="h-16 w-auto rounded border border-white/10 bg-white">
+                            <img src="{{ Storage::url($companyInfo->logo_path) }}" alt="Logo" class="h-16 w-auto rounded border border-white/10 bg-white" onerror="this.src='/images/Logo_ALCOIL_without_txt_white@3x.png'">
                         </div>
                         @endif
                         <input 
