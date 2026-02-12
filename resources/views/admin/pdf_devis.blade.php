@@ -22,7 +22,7 @@
 <body>
   <div class="header">
     <div class="brand">
-      <img src="{{asset('images/Logo_ALCOIL_with_txt_b_org@3x.png') }}" alt="Logo" style="height:40px;">
+      <img src="{{ $logo }}" alt="Logo" style="height:40px;">
       <div>
         <div class="title">Fiche Devis</div>
         <div class="meta">Devis #{{ $devis->ref_id }} — Date: {{ optional($devis->created_at)->format('d/m/Y') }}</div>
