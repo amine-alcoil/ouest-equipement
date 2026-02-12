@@ -104,8 +104,12 @@
                 
                 <div class="mt-4 flex gap-3" id="formActions">
                     @if($companyInfo) 
-                    <button type="submit" id="saveBtn" class="hidden px-4 py-2 rounded-lg bg-secondary hover:bg-secondary_2 text-white transition">
-                        Enregistrer
+                    <button type="submit" id="saveBtn" class="hidden px-4 py-2 rounded-lg bg-secondary hover:bg-secondary_2 text-white transition flex items-center gap-2">
+                        <span id="saveBtnText">Enregistrer</span>
+                        <svg id="saveBtnSpinner" class="hidden animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
                     </button>
                     <button type="button" id="cancelBtn" onclick="toggleEditMode()" class="hidden px-4 py-2 rounded-lg bg-white/10 border border-white/10 text-white hover:bg-white/15 transition">
                         Annuler
@@ -145,7 +149,13 @@
                     </div>
                 </div>
                 <div class="mt-4 flex gap-3" id="userFormActions">
-                    <button type="submit" id="saveUserBtn" class="hidden px-4 py-2 rounded-lg bg-secondary hover:bg-secondary_2 text-white transition">Enregistrer</button>
+                    <button type="submit" id="saveUserBtn" class="hidden px-4 py-2 rounded-lg bg-secondary hover:bg-secondary_2 text-white transition flex items-center gap-2">
+                        <span id="saveUserBtnText">Enregistrer</span>
+                        <svg id="saveUserBtnSpinner" class="hidden animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    </button>
                     <button type="button" id="cancelUserBtn" onclick="toggleEditUser()" class="hidden px-4 py-2 rounded-lg bg-white/10 border border-white/10 text-white hover:bg-white/15 transition">Annuler</button>
                 </div>
             </form>
@@ -356,6 +366,12 @@ function toggleEditUser(){
     if(companyForm){
         companyForm.addEventListener('submit', async function(e){
             e.preventDefault();
+            
+            const btn = document.getElementById('saveBtn');
+            const spinner = document.getElementById('saveBtnSpinner');
+            if (btn) btn.disabled = true;
+            if (spinner) spinner.classList.remove('hidden');
+
             var fd = new FormData(companyForm);
             try{
                 var res = await fetch(companyForm.action, {
@@ -372,6 +388,9 @@ function toggleEditUser(){
                 }
             }catch(err){
                 showAlert('error','Erreur réseau');
+            } finally {
+                if (btn) btn.disabled = false;
+                if (spinner) spinner.classList.add('hidden');
             }
         });
     }
@@ -380,6 +399,12 @@ function toggleEditUser(){
     if(userForm){
         userForm.addEventListener('submit', async function(e){
             e.preventDefault();
+            
+            const btn = document.getElementById('saveUserBtn');
+            const spinner = document.getElementById('saveUserBtnSpinner');
+            if (btn) btn.disabled = true;
+            if (spinner) spinner.classList.remove('hidden');
+
             var fdUser = new FormData(userForm);
             try{
                 var resUser = await fetch(userForm.action, {
@@ -396,6 +421,9 @@ function toggleEditUser(){
                 }
             }catch(errUser){
                 showAlert('error','Erreur réseau');
+            } finally {
+                if (btn) btn.disabled = false;
+                if (spinner) spinner.classList.add('hidden');
             }
         });
     }
