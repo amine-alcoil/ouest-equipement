@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
             ['email' => env('amine.nacer@ouest-equipement.com')],
             [
                 'name' => 'Admin',
-                'password' => bcrypt(env('12345678')),
+                'password' => bcrypt('12345678'),
                 'role' => 'admin',
                 'status' => 'actif',
             ]
