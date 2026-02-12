@@ -13,24 +13,16 @@ class DatabaseSeeder extends Seeder
     /**
      * Seed the application's database.
      */
-       public function run(): void
+    public function run(): void
     {
-        $email = config('services.admin.email');
-        $password = config('services.admin.password');
-
-        if ($email && $password) {
-            User::firstOrCreate(
-                ['email' => $email],
-                [
-                    'name' => 'Admin',
-                    'password' => bcrypt($password),
-                    'role' => 'admin',
-                    'status' => 'actif',
-                ]
-            );
-        } else {
-            // Log a warning if seeding failed due to missing env variables
-            \Illuminate\Support\Facades\Log::warning('Seeding skipped: ADMIN_EMAIL or ADMIN_PASSWORD not set in environment.');
-        }
+        User::firstOrCreate(
+            ['email' => env('amine.nacer@ouest-equipement.com')],
+            [
+                'name' => 'Admin',
+                'password' => bcrypt(env('12345678')),
+                'role' => 'admin',
+                'status' => 'actif',
+            ]
+        );
     }
 }
