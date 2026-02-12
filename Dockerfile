@@ -32,7 +32,6 @@ RUN composer install --no-dev --optimize-autoloader
 
 # Install Node dependencies and build assets
 RUN npm install && npm run build
-
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
@@ -41,5 +40,4 @@ EXPOSE 8000
 EXPOSE 9000
 
 # Improved start command with caching for performance
-CMD php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=8000 && npm run dev -- --host=0.0.0.0 --port=9000
- 
+CMD php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=8000 

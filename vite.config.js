@@ -11,14 +11,16 @@ export default defineConfig({
         tailwindcss(),
     ],
     server: {
-        host: '0.0.0.0', // Bind to all network interfaces
+        host: '0.0.0.0',
         port: 9000,
         strictPort: true,
         hmr: {
-            host: 'localhost', // The host the client connects to
+            host: 'ouest-equipement.up.railway.app',
+            protocol: 'wss',
+            clientPort: 443,
         },
         watch: {
-            usePolling: true // Useful for some Docker setups (e.g., WSL2)
+            usePolling: true
         }
     },
 });
