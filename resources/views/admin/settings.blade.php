@@ -382,7 +382,9 @@ function toggleEditUser(){
                 });
                 if(res.ok){
                     showAlert('success','Données entreprise mises à jour');
-                    toggleEditMode();
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
                 }else{
                     showAlert('error','Échec de la mise à jour des données entreprise');
                 }
@@ -415,7 +417,9 @@ function toggleEditUser(){
                 });
                 if(resUser.ok){
                     showAlert('success','Données utilisateur mises à jour');
-                    toggleEditUser();
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
                 }else{
                     showAlert('error','Échec de la mise à jour des données utilisateur');
                 }
