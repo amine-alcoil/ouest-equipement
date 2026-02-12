@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Activity;
+use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -32,6 +33,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        if (config('app.env') === 'production') {
+            URL::forceScheme('https');
+        }
+
         if (!app()->runningInConsole()) {
             try {
                 if (\Illuminate\Support\Facades\Schema::hasTable('company_infos')) {
