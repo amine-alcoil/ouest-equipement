@@ -52,11 +52,16 @@ class AppServiceProvider extends ServiceProvider
         Product::observe(ProductObserver::class);
 
         Event::listen(function (Login $event) {
-            if ($event->user) {
-                Activity::create([
-                    'user_id' => $event->user->id,
-                    'description' => 'Connexion au système',
-                ]);
+            try {
+                if ($event->user) {
+                    Activity::create([
+                        'user_id' => $event->user->id,
+                        'description' => 'Connexion au système',
+                    ]);
+                }
+            } catch (\Exception $e) {
+                // Prevent login failure if activity logging fails
+                \Illuminate\Support\Facades\Log::error('Activity logging failed: ' . $e->getMessage());
             }
         });
     }
