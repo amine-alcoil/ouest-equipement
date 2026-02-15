@@ -259,7 +259,7 @@
                 dots[idx].classList.remove('bg-gray-300');
             }
             dots.forEach(function(d, i){ d.addEventListener('click', function(){ show(i); }); });
-            setInterval(function(){ show((idx + 1) % slides.length); }, 6000);
+            setInterval(function(){ show((idx + 1) % slides.length); }, 9000);
         }
     });
 </script>
