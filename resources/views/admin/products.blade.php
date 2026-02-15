@@ -539,18 +539,6 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    const loadingSpinner = (cls='text-white') => `<svg class="animate-spin h-5 w-5 ${cls}" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
-    const showBtnLoading = (btn) => {
-        const original = btn.innerHTML;
-        btn.disabled = true;
-        const isIcon = btn.children.length === 1 && btn.children[0].tagName === 'svg' && !btn.textContent.trim();
-        btn.innerHTML = isIcon ? loadingSpinner('text-current') : `<span class="flex items-center gap-2">${loadingSpinner()} Veuillez patienter...</span>`;
-        return original;
-    };
-    const hideBtnLoading = (btn, original) => {
-        if(btn) { btn.innerHTML = original; btn.disabled = false; }
-    };
-
     const indexUrl = "{{ route('admin.products') }}";
     const tbody = document.getElementById('productsTableBody');
 
@@ -663,31 +651,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 e.preventDefault();
                 const confirmed = await showConfirm('Êtes-vous sûr de vouloir supprimer ce produit ?');
                 if (!confirmed) { return; }
-
-                const btn = form.querySelector('button[type="submit"]');
-                const originalContent = btn ? showBtnLoading(btn) : '';
-
-                try {
-                    const res = await fetch(form.action, {
-                        method: 'POST',
-                        headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
-                        body: new FormData(form),
-                    });
-                    const data = await res.json();
-                    if (res.ok && data.ok) {
-                        const tr = form.closest('tr');
-                        tr && tr.remove();
-                        if (!tbody.querySelector('tr')) {
-                            refreshTable([]);
-                        }
-                        showAlert('success', 'Produit supprimé.');
-                    } else {
-                        showAlert('error', (data && data.message) || 'Erreur lors de la suppression.');
+                const res = await fetch(form.action, {
+                    method: 'POST',
+                    headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+                    body: new FormData(form),
+                });
+                const data = await res.json();
+                if (res.ok && data.ok) {
+                    const tr = form.closest('tr');
+                    tr && tr.remove();
+                    if (!tbody.querySelector('tr')) {
+                        refreshTable([]);
                     }
-                } catch(err) {
-                    showAlert('error', 'Erreur lors de la suppression.');
-                } finally {
-                    if(btn && document.body.contains(btn)) hideBtnLoading(btn, originalContent);
+                    showAlert('success', 'Produit supprimé.');
+                } else {
+                    showAlert('error', (data && data.message) || 'Erreur lors de la suppression.');
                 }
             });
         });
@@ -695,20 +673,15 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('[data-edit-id]').forEach(link => {
             link.addEventListener('click', async (e) => {
                 e.preventDefault();
-                const originalContent = link.innerHTML;
-                link.innerHTML = loadingSpinner('text-emerald-400');
-                link.style.pointerEvents = 'none';
-
-                try {
-                    const id = link.getAttribute('data-edit-id');
-                    const editUrl = link.getAttribute('href');
-                    const res = await fetch(editUrl, { headers: { 'Accept': 'application/json' } });
-                    const data = await res.json();
-                    console.log('Edit Data:', data); // Debugging
-                    if (!res.ok || !data.ok) {
-                        showAlert('error', 'Impossible de charger le produit.');
-                        return;
-                    }
+                const id = link.getAttribute('data-edit-id');
+                const editUrl = link.getAttribute('href');
+                const res = await fetch(editUrl, { headers: { 'Accept': 'application/json' } });
+                const data = await res.json();
+                console.log('Edit Data:', data); // Debugging
+                if (!res.ok || !data.ok) {
+                    showAlert('error', 'Impossible de charger le produit.');
+                    return;
+                }
                 const panel = document.getElementById('editProductPanel');
                 const form = document.getElementById('editProductForm');
                 form.action = "{{ route('admin.products.update', ['product' => '__ID__']) }}".replace('__ID__', id);
@@ -787,10 +760,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 renderEditImages(data.product.images || []);
                 panel.classList.remove('hidden');
-                } finally {
-                    link.innerHTML = originalContent;
-                    link.style.pointerEvents = 'auto';
-                }
             });
         });
     };
@@ -895,7 +864,10 @@ document.addEventListener('DOMContentLoaded', () => {
         createForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = createForm.querySelector('button[type=submit]');
-            const originalContent = btn ? showBtnLoading(btn) : '';
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<span class="flex items-center gap-2"><svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Veuillez patienter...</span>';
+            }
             try {
                 const processedData = await getProcessedFormData(createForm);
                 const res = await fetch(createForm.action, {
@@ -917,7 +889,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } catch (err) {
                 showAlert('error', 'Une erreur est survenue lors de l\'envoi.');
             } finally {
-                if (btn) hideBtnLoading(btn, originalContent);
+                if (btn) { btn.disabled = false; btn.textContent = 'Enregistrer'; }
             }
         });
     }
@@ -928,7 +900,10 @@ document.addEventListener('DOMContentLoaded', () => {
         editForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = editForm.querySelector('button[type=submit]');
-            const originalContent = btn ? showBtnLoading(btn) : '';
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<span class="flex items-center gap-2"><svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Veuillez patienter...</span>';
+            }
             try {
                 const processedData = await getProcessedFormData(editForm);
                 const res = await fetch(editForm.action, {
@@ -956,7 +931,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } catch (err) {
                 showAlert('error', 'Une erreur est survenue lors de l\'envoi.');
             } finally {
-                if (btn) hideBtnLoading(btn, originalContent);
+                if (btn) { btn.disabled = false; btn.textContent = 'Enregistrer'; }
             }
         });
     }
@@ -986,34 +961,24 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('editImagesList')?.addEventListener('click', async (e)=>{
         const btn = e.target.closest('[data-del-image]');
         if(!btn) return;
-        
-        const originalContent = showBtnLoading(btn);
-
         const url = btn.getAttribute('data-del-image');
         const form = document.getElementById('editProductForm');
         const id = form?.querySelector('[name=id]')?.value;
-        if(!id) { hideBtnLoading(btn, originalContent); return; }
-        
-        try {
-            const route = "{{ route('admin.products.delete-image', ['product' => '__ID__']) }}".replace('__ID__', id);
-            const fd = new FormData();
-            fd.append('_token','{{ csrf_token() }}');
-            fd.append('_method','DELETE');
-            fd.append('url', url);
-            const res = await fetch(route, { method:'POST', headers:{ 'Accept':'application/json','X-Requested-With':'XMLHttpRequest' }, body: fd });
-            const data = await res.json();
-            if(res.ok && data.ok){
-                renderEditImages(data.images || []);
-                const tr = document.querySelector(`tr[data-id="${id}"]`);
-                if(tr){ tr.setAttribute('data-images', (data.images || []).join('|')); }
-                showAlert('success','Image supprimée.');
-            } else {
-                showAlert('error', (data && data.message) || 'Erreur suppression image');
-                hideBtnLoading(btn, originalContent);
-            }
-        } catch(e) {
-            showAlert('error', 'Erreur lors de la suppression.');
-            hideBtnLoading(btn, originalContent);
+        if(!id) return;
+        const route = "{{ route('admin.products.delete-image', ['product' => '__ID__']) }}".replace('__ID__', id);
+        const fd = new FormData();
+        fd.append('_token','{{ csrf_token() }}');
+        fd.append('_method','DELETE');
+        fd.append('url', url);
+        const res = await fetch(route, { method:'POST', headers:{ 'Accept':'application/json','X-Requested-With':'XMLHttpRequest' }, body: fd });
+        const data = await res.json();
+        if(res.ok && data.ok){
+            renderEditImages(data.images || []);
+            const tr = document.querySelector(`tr[data-id="${id}"]`);
+            if(tr){ tr.setAttribute('data-images', (data.images || []).join('|')); }
+            showAlert('success','Image supprimée.');
+        } else {
+            showAlert('error', (data && data.message) || 'Erreur suppression image');
         }
     });
 
