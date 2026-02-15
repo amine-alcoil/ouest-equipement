@@ -211,8 +211,13 @@
 
                     <div class="md:col-span-3">
                         <label class="block text-sm text-white/80 mb-1">Tags</label>
-                        <select id="newTags" name="tags[]" multiple class="w-full px-2 py-1.5 rounded-lg bg-[#0f1e34] border border-white/10 text-white h-20"></select>
-                        <div id="newTagsPreview" class="mt-2 flex flex-wrap gap-2"></div>
+                        <div class="relative group">
+                            <select id="newTags" name="tags[]" multiple class="hidden"></select>
+                            <div id="newTagsInputArea" class="w-full min-h-[46px] px-3 py-2 rounded-lg bg-[#0f1e34] border border-white/10 focus-within:ring-2 focus-within:ring-white/20 flex flex-wrap items-center gap-2 cursor-text transition-all">
+                                <input type="text" id="newTagsSearch" placeholder="Ajouter des tags..." class="bg-transparent border-none outline-none text-white text-sm flex-1 min-w-[120px] placeholder-white/30 h-7">
+                            </div>
+                            <div id="newTagsDropdown" class="hidden absolute top-full left-0 right-0 mt-1 bg-[#1a2c4e] border border-white/10 rounded-lg shadow-xl z-50 max-h-60 overflow-y-auto custom-scrollbar backdrop-blur-xl"></div>
+                        </div>
                     </div>
 
                     <div class="md:col-span-3">
@@ -456,8 +461,13 @@
                 </div>
                 <div class="md:col-span-3">
                     <label class="block text-sm text-white/80 mb-1">Tags</label>
-                    <select id="editTags" name="tags[]" multiple class="w-full px-2 py-1.5 rounded-lg bg-[#0f1e34] border border-white/10 text-white h-20"></select>
-                    <div id="editTagsPreview" class="mt-2 flex flex-wrap gap-2"></div>
+                    <div class="relative group">
+                        <select id="editTags" name="tags[]" multiple class="hidden"></select>
+                        <div id="editTagsInputArea" class="w-full min-h-[46px] px-3 py-2 rounded-lg bg-[#0f1e34] border border-white/10 focus-within:ring-2 focus-within:ring-white/20 flex flex-wrap items-center gap-2 cursor-text transition-all">
+                            <input type="text" id="editTagsSearch" placeholder="Ajouter des tags..." class="bg-transparent border-none outline-none text-white text-sm flex-1 min-w-[120px] placeholder-white/30 h-7">
+                        </div>
+                        <div id="editTagsDropdown" class="hidden absolute top-full left-0 right-0 mt-1 bg-[#1a2c4e] border border-white/10 rounded-lg shadow-xl z-50 max-h-60 overflow-y-auto custom-scrollbar backdrop-blur-xl"></div>
+                    </div>
                 </div>
                 <div class="md:col-span-2">
                     <label class="block text-sm font-medium text-white/80 mb-2">Images du produit</label>
