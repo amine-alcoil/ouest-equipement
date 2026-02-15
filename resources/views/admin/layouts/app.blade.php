@@ -163,6 +163,13 @@
             /* background-color: rgba(255, 255, 255, 0.1); replaced by above styles */
             /* border-color: rgba(255, 255, 255, 0.25); replaced by above styles */
         }
+
+        /* Logo switching */
+        .logo-full { display: block; }
+        .logo-icon { display: none; }
+        
+        body.is-collapsed .logo-full { display: none; }
+        body.is-collapsed .logo-icon { display: block; }
     </style>
 
         /* Optional: adjust for small screens if needed */
@@ -177,12 +184,6 @@
             /* background-color: rgba(255, 255, 255, 0.1); replaced by above styles */
             /* border-color: rgba(255, 255, 255, 0.25); replaced by above styles */
         }
-        /* Logo switching logic */
-        #logoFull { display: block; }
-        #logoSmall { display: none; }
-        
-        body.is-collapsed #logoFull { display: none; }
-        body.is-collapsed #logoSmall { display: block; }
     </style>
 </head>
 <body class="min-h-screen bg-[#0f1e34] text-white">
@@ -192,12 +193,10 @@
 <div class="min-h-screen flex">
     <!-- Drawer -->
     <aside id="adminDrawer" class="z-40 top-0 left-0 h-full w-72 bg-[#122241] border-r border-white/10 overflow-hidden">
-        <div class="h-16 flex items-center justify-center px-4 border-b border-white/10 transition-all duration-300">
-            <div class="inline-flex items-center justify-center w-full">
-                <!-- Full Logo -->
-                <img id="logoFull" src="/images/Logo_ALCOIL_without_txt_white@3x.png" alt="Company" class="h-8 md:h-10 transition-opacity duration-300">
-                <!-- Small Logo (Favicon) -->
-                <img id="logoSmall" src="/images/Favicon_alcoil.svg" alt="Icon" class="h-8 w-8 transition-opacity duration-300">
+        <div class="h-16 flex items-center justify-center px-4 border-b border-white/10">
+            <div class="inline-flex items-center gap-2">
+                <img src="/images/Logo_ALCOIL_without_txt_white@3x.png" alt="Company" class="h-8 md:h-10 logo-full">
+                <img src="/images/Favicon_alcoil.svg" alt="Company" class="h-8 w-8 logo-icon">
             </div>
         </div>
 
