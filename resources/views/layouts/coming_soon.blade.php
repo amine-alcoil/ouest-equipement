@@ -1,7 +1,13 @@
 <div id="comingSoonModal" class="fixed inset-0 z-[100] hidden">
     <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
     <div class="relative h-full w-full flex items-center justify-center p-4">
-        <div class="w-full max-w-md bg-white rounded-2xl border border-gray-200 shadow-xl">
+        <div class="relative w-full max-w-md bg-white rounded-2xl border border-gray-200 shadow-xl">
+            <button type="button" data-close-modal class="absolute top-4 right-4 p-2 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-all">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
             <div class="p-6">
                 <div class="mx-auto w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center">
                     <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
