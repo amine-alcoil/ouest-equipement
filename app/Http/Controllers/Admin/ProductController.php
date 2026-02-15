@@ -50,9 +50,9 @@ class ProductController extends Controller
         $sw = imagesx($src); 
         $sh = imagesy($src);
         
-        // Target maximum dimensions for speed and smoothness
-        $mw = 1000; 
-        $mh = 1000; 
+        // Drastically reduce dimensions for maximum compatibility and speed
+        $mw = 800; 
+        $mh = 800; 
         $r = min($mw / max(1,$sw), $mh / max(1,$sh), 1);
         
         $nw = (int)floor($sw * $r); 
@@ -73,13 +73,13 @@ class ProductController extends Controller
         $webpAbs = storage_path('app/public/' . $webpRel);
         $jpgAbs  = storage_path('app/public/' . $jpgRel);
 
-        // Compress with WebP (Priority) or JPG fallback
+        // High compression for small file size
         if (function_exists('imagewebp')) { 
-            @imagewebp($dst, $webpAbs, 60); 
+            @imagewebp($dst, $webpAbs, 50); 
         }
         
         imageinterlace($dst, true);
-        @imagejpeg($dst, $jpgAbs, 65);
+        @imagejpeg($dst, $jpgAbs, 55);
         @imagedestroy($dst);
 
         $finalRel = file_exists($webpAbs) ? $webpRel : $jpgRel;
