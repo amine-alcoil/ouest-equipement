@@ -128,7 +128,7 @@
 
                 <!-- Contact image block -->
                 <figure class="mt-8 rounded-xl overflow-hidden border border-slate-200 shadow-sm">
-                    <img src="{{ asset('images/1.jpg') }}" alt="Nous contacter"
+                    <img src="{{ asset('images/1.png') }}" alt="Nous contacter"
                          class="w-full h-56 md:h-72 object-cover select-none">
                 </figure>
 
