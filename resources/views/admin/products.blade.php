@@ -206,8 +206,19 @@
                 </div>
                 <div>
                     <label class="block text-sm text-white/80 mb-1">Images (multiple)</label>
-                    <input name="images[]" type="file" multiple accept="image/*" class="w-full px-3 py-2 rounded-lg bg-[#0f1e34] border border-white/10">
-                    <div id="newImagesPreview" class="mt-2 flex flex-wrap gap-2"></div>
+                    <div class="flex items-center gap-2">
+                        <label class="flex-1 cursor-pointer group">
+                            <div class="w-full px-3 py-2 rounded-lg bg-[#0f1e34] border border-white/10 group-hover:border-white/20 transition flex items-center justify-between">
+                                <span id="newImagesCount" class="text-white/60 text-sm">Sélectionner des images</span>
+                                <svg class="w-5 h-5 text-white/40 group-hover:text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            </div>
+                            <input name="images[]" type="file" multiple accept="image/*" class="hidden" onchange="handleImageSelection(this, 'newImagesPreview', 'newImagesCount')">
+                        </label>
+                        <button type="button" onclick="this.previousElementSibling.querySelector('input').click()" class="p-2 rounded-lg bg-indigo-600/20 border border-indigo-500/30 text-indigo-300 hover:bg-indigo-600/30 transition" title="Ajouter plus">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        </button>
+                    </div>
+                    <div id="newImagesPreview" class="mt-3 flex flex-wrap gap-3"></div>
                 </div>
                 <div>
                     <label class="block text-sm text-white/80 mb-1">Fiche technique (PDF)</label>
@@ -427,9 +438,20 @@
                 </div>
                 <div>
                     <label class="block text-sm text-white/80 mb-1">Images (multiple)</label>
-                    <input name="images[]" type="file" multiple accept="image/*" class="w-full px-3 py-2 rounded-lg bg-[#0f1e34] border border-white/10">
-                    <div id="editImagesList" class="mt-2 flex flex-wrap gap-2"></div>
-                    <div id="editNewImagesPreview" class="mt-2 flex flex-wrap gap-2"></div>
+                    <div class="flex items-center gap-2">
+                        <label class="flex-1 cursor-pointer group">
+                            <div class="w-full px-3 py-2 rounded-lg bg-[#0f1e34] border border-white/10 group-hover:border-white/20 transition flex items-center justify-between">
+                                <span id="editImagesCount" class="text-white/60 text-sm">Ajouter des images</span>
+                                <svg class="w-5 h-5 text-white/40 group-hover:text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            </div>
+                            <input name="images[]" type="file" multiple accept="image/*" class="hidden" onchange="handleImageSelection(this, 'editNewImagesPreview', 'editImagesCount')">
+                        </label>
+                        <button type="button" onclick="this.previousElementSibling.querySelector('input').click()" class="p-2 rounded-lg bg-indigo-600/20 border border-indigo-500/30 text-indigo-300 hover:bg-indigo-600/30 transition" title="Ajouter plus">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        </button>
+                    </div>
+                    <div id="editImagesList" class="mt-3 flex flex-wrap gap-3"></div>
+                    <div id="editNewImagesPreview" class="mt-3 flex flex-wrap gap-3"></div>
                 </div>
                 
                 <div>
@@ -720,33 +742,57 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Dynamic Image Management
+    let selectedFiles = {
+        new: [],
+        edit: []
+    };
+
+    window.handleImageSelection = (input, previewId, countId) => {
+        const type = previewId.includes('new') ? 'new' : 'edit';
+        const files = Array.from(input.files);
+        selectedFiles[type] = [...selectedFiles[type], ...files];
+        renderSelectedPreviews(type, previewId, countId);
+        input.value = ""; // Reset input so same file can be selected again
+    };
+
+    function renderSelectedPreviews(type, previewId, countId) {
+        const box = document.getElementById(previewId);
+        const countLabel = document.getElementById(countId);
+        if (!box) return;
+
+        const files = selectedFiles[type];
+        countLabel.textContent = files.length > 0 ? `${files.length} image(s) sélectionnée(s)` : "Sélectionner des images";
+
+        box.innerHTML = files.map((file, index) => `
+            <div class="relative group w-20 h-20">
+                <img src="${URL.createObjectURL(file)}" class="w-full h-full object-cover rounded-lg border border-white/10 shadow-lg">
+                <button type="button" onclick="removeSelectedFile('${type}', ${index}, '${previewId}', '${countId}')" 
+                    class="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-xl hover:bg-red-700 transition">
+                    ×
+                </button>
+            </div>
+        `).join('');
+    }
+
+    window.removeSelectedFile = (type, index, previewId, countId) => {
+        selectedFiles[type].splice(index, 1);
+        renderSelectedPreviews(type, previewId, countId);
+    };
+
     async function getProcessedFormData(form) {
         const formData = new FormData(form);
-        const imageFiles = formData.getAll('images[]');
+        const type = form.hasAttribute('data-new-product-form') ? 'new' : 'edit';
         
-        // Remove original large images
+        // Remove original files from input
         formData.delete('images[]');
         
-        let hasImages = false;
-        // Add compressed images (High Quality)
-        for (const file of imageFiles) {
-            if (file instanceof File && file.size > 0) {
+        // Add currently selected and compressed files
+        const filesToProcess = selectedFiles[type];
+        if (filesToProcess.length > 0) {
+            for (const file of filesToProcess) {
                 const compressed = await compressImage(file, 1600, 1600, 0.85);
                 formData.append('images[]', compressed);
-                hasImages = true;
-            }
-        }
-        
-        // Update the visual preview with the compressed files
-        if (hasImages) {
-            const compressedFiles = formData.getAll('images[]');
-            if (form.hasAttribute('data-new-product-form')) {
-                updateNewImagesPreview(compressedFiles);
-            } else {
-                const box = document.getElementById('editNewImagesPreview');
-                if (box) {
-                    box.innerHTML = compressedFiles.map(f => `<div class="relative group"><img src="${URL.createObjectURL(f)}" class="w-16 h-16 object-cover rounded border border-white/10 hover:ring-2 hover:ring-indigo-400"></div>`).join('');
-                }
             }
         }
         
