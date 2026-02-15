@@ -219,6 +219,18 @@ class ProductController extends Controller
         }
         
         if ($request->hasFile('pdf')) {
+            // Delete old PDF if exists
+            if ($productModel->pdf) {
+                try {
+                    $oldPath = str_replace('/storage/', '', $productModel->pdf);
+                    if (\Illuminate\Support\Facades\Storage::disk('public')->exists($oldPath)) {
+                        \Illuminate\Support\Facades\Storage::disk('public')->delete($oldPath);
+                    }
+                } catch (\Throwable $e) {
+                    // Log error but continue
+                    \Illuminate\Support\Facades\Log::error('Failed to delete old PDF: ' . $e->getMessage());
+                }
+            }
             $productModel->pdf = Storage::url($request->file('pdf')->store('products', 'public'));
         }
 

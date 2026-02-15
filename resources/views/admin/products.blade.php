@@ -664,6 +664,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const editUrl = link.getAttribute('href');
                 const res = await fetch(editUrl, { headers: { 'Accept': 'application/json' } });
                 const data = await res.json();
+                console.log('Edit Data:', data); // Debugging
                 if (!res.ok || !data.ok) {
                     showAlert('error', 'Impossible de charger le produit.');
                     return;
@@ -705,9 +706,36 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Clear previous new image selection
                 editSelectedFiles = [];
                 updateEditNewImagesPreview();
-                // Clear PDF preview if exists
+                
+                // Show current PDF if exists
                 const editPdfPrev = document.getElementById('editPdfPreview');
-                if(editPdfPrev) editPdfPrev.textContent = 'Choisir le fichier PDF';
+                if (editPdfPrev) {
+                    console.log('PDF Value:', data.product.pdf); // Debug
+                    if (data.product.pdf && typeof data.product.pdf === 'string' && data.product.pdf.trim() !== '') {
+                        const parts = data.product.pdf.split('/');
+                        const pdfName = parts[parts.length - 1];
+                        editPdfPrev.innerHTML = `<span class="text-green-400 font-semibold">PDF Actuel:</span> <a href="${data.product.pdf}" target="_blank" class="hover:underline">${pdfName}</a>`;
+                        
+                        // Add a remove button for PDF
+                        const removeBtn = document.createElement('button');
+                        removeBtn.type = 'button';
+                        removeBtn.className = 'ml-2 text-red-400 hover:text-red-300 text-xs';
+                        removeBtn.innerHTML = '(Supprimer)';
+                        removeBtn.onclick = async (e) => {
+                            e.preventDefault();
+                            if(!confirm('Supprimer ce PDF ?')) return;
+                            // Call delete endpoint if needed, or just clear input and UI
+                            // For now, we just clear UI as the backend update handles replacement
+                            // But to delete without replacing, we might need a specific action or handle it in update
+                            editPdfPrev.textContent = 'Choisir le fichier PDF';
+                            // Ideally, add a hidden input to signal deletion
+                        };
+                        editPdfPrev.appendChild(removeBtn);
+
+                    } else {
+                        editPdfPrev.textContent = 'Choisir le fichier PDF';
+                    }
+                }
 
                 renderEditImages(data.product.images || []);
                 panel.classList.remove('hidden');
