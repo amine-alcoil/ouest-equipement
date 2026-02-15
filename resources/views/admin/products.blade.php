@@ -674,18 +674,70 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     sc && sc.addEventListener('change', doSearch);
 
+    /**
+     * Client-side Image Compression for Faster Uploads
+     */
+    async function compressImage(file, maxWidth = 1000, maxHeight = 1000, quality = 0.6) {
+        return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = (event) => {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    let width = img.width;
+                    let height = img.height;
+                    if (width > height) {
+                        if (width > maxWidth) { height *= maxWidth / width; width = maxWidth; }
+                    } else {
+                        if (height > maxHeight) { width *= maxHeight / height; height = maxHeight; }
+                    }
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    canvas.toBlob((blob) => {
+                        const compressedFile = new File([blob], file.name.replace(/\.[^/.]+$/, "") + ".webp", {
+                            type: 'image/webp',
+                            lastModified: Date.now()
+                        });
+                        resolve(compressedFile);
+                    }, 'image/webp', quality);
+                };
+            };
+        });
+    }
+
+    async function getProcessedFormData(form) {
+        const formData = new FormData(form);
+        const imageFiles = formData.getAll('images[]');
+        formData.delete('images[]');
+        for (const file of imageFiles) {
+            if (file instanceof File && file.size > 0) {
+                const compressed = await compressImage(file);
+                formData.append('images[]', compressed);
+            }
+        }
+        return formData;
+    }
+
     const createForm = document.querySelector('[data-new-product-form]');
     const newPanel = document.getElementById('newProductPanel');
     if (createForm) {
         createForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = createForm.querySelector('button[type=submit]');
-            if (btn) btn.disabled = true;
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<span class="flex items-center gap-2"><svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Compression...</span>';
+            }
             try {
+                const processedData = await getProcessedFormData(createForm);
                 const res = await fetch(createForm.action, {
                     method: 'POST',
                     headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
-                    body: new FormData(createForm),
+                    body: processedData,
                 });
                 const data = await res.json();
                 if (res.ok && data.ok) {
@@ -696,8 +748,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     showAlert('error', (data && data.message) || 'Erreur de validation.');
                 }
+            } catch (err) {
+                showAlert('error', 'Une erreur est survenue lors de l\'envoi.');
             } finally {
-                if (btn) btn.disabled = false;
+                if (btn) { btn.disabled = false; btn.textContent = 'Enregistrer'; }
             }
         });
     }
@@ -707,24 +761,36 @@ document.addEventListener('DOMContentLoaded', () => {
     if (editForm) {
         editForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const res = await fetch(editForm.action, {
-                method: 'POST',
-                headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
-                body: new FormData(editForm),
-            });
-            const data = await res.json();
-            if (res.ok && data.ok) {
-                const tr = tbody.querySelector(`tr[data-id="${data.product.id}"]`);
-                if (tr) {
-                    const tmp = document.createElement('tbody');
-                    tmp.innerHTML = rowHtml(data.product);
-                    tr.replaceWith(tmp.firstElementChild);
-                    bindRowActions();
+            const btn = editForm.querySelector('button[type=submit]');
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<span class="flex items-center gap-2"><svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Compression...</span>';
+            }
+            try {
+                const processedData = await getProcessedFormData(editForm);
+                const res = await fetch(editForm.action, {
+                    method: 'POST',
+                    headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+                    body: processedData,
+                });
+                const data = await res.json();
+                if (res.ok && data.ok) {
+                    const tr = tbody.querySelector(`tr[data-id="${data.product.id}"]`);
+                    if (tr) {
+                        const tmp = document.createElement('tbody');
+                        tmp.innerHTML = rowHtml(data.product);
+                        tr.replaceWith(tmp.firstElementChild);
+                        bindRowActions();
+                    }
+                    document.getElementById('editProductPanel').classList.add('hidden');
+                    showAlert('success', 'Produit mis à jour.');
+                } else {
+                    showAlert('error', (data && data.message) || 'Erreur de mise à jour.');
                 }
-                document.getElementById('editProductPanel').classList.add('hidden');
-                showAlert('success', 'Produit mis à jour.');
-            } else {
-                showAlert('error', (data && data.message) || 'Erreur de mise à jour.');
+            } catch (err) {
+                showAlert('error', 'Une erreur est survenue lors de l\'envoi.');
+            } finally {
+                if (btn) { btn.disabled = false; btn.textContent = 'Enregistrer'; }
             }
         });
     }
