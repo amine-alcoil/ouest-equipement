@@ -204,25 +204,35 @@
                     <select id="newTags" name="tags[]" multiple class="w-full px-3 py-2 rounded-lg bg-[#0f1e34] border border-white/10 text-white h-28"></select>
                     <div id="newTagsPreview" class="mt-2 flex flex-wrap gap-2"></div>
                 </div>
-                <div>
-                    <label class="block text-sm text-white/80 mb-1">Images (multiple)</label>
-                    <div class="flex items-center gap-2">
-                        <input id="newImagesInput" name="images[]" type="file" multiple accept="image/*" class="hidden">
-                        <label for="newImagesInput" class="cursor-pointer px-3 py-2 rounded-lg bg-[#0f1e34] border border-white/10 hover:bg-white/5 transition flex items-center gap-2 text-sm text-white/70">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                            Choisir des images
-                        </label>
-                        <button type="button" id="addMoreBtn" class="hidden px-3 py-2 rounded-lg bg-indigo-600/20 border border-indigo-500/30 text-indigo-300 hover:bg-indigo-600/30 transition flex items-center gap-1 text-sm">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                            Ajouter
-                        </button>
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-white/80 mb-2">Images du produit</label>
+                    <div class="flex flex-wrap gap-4 p-4 rounded-xl bg-black/20 border border-white/5">
+                        <div id="newImagesPreview" class="flex flex-wrap gap-3"></div>
+
+                        <!-- Modern Add Button Card -->
+                        <div class="relative">
+                            <input id="newImagesInput" name="images[]" type="file" multiple accept="image/*" class="hidden">
+                            <label for="newImagesInput" class="flex flex-col items-center justify-center w-24 h-24 rounded-xl border-2 border-dashed border-white/10 hover:border-indigo-500/50 hover:bg-indigo-500/5 transition-all cursor-pointer group">
+                                <svg class="w-8 h-8 text-white/20 group-hover:text-indigo-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                <span class="text-[10px] text-white/30 group-hover:text-indigo-300 mt-1 uppercase font-bold tracking-wider">Ajouter</span>
+                            </label>
+                        </div>
                     </div>
-                    <div id="newImagesPreview" class="mt-3 flex flex-wrap gap-3"></div>
                 </div>
-                <div>
-                    <label class="block text-sm text-white/80 mb-1">Fiche technique (PDF)</label>
-                    <input name="pdf" type="file" accept="application/pdf" class="w-full px-3 py-2 rounded-lg bg-[#0f1e34] border border-white/10">
-                    <div id="newPdfPreview" class="mt-2 text-white/70 text-xs"></div>
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-white/80 mb-2">Fiche technique (PDF)</label>
+                    <div class="relative group">
+                        <input id="newPdfInput" name="pdf" type="file" accept="application/pdf" class="hidden">
+                        <label for="newPdfInput" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-black/20 border border-white/5 hover:border-indigo-500/50 hover:bg-indigo-500/5 transition-all cursor-pointer group w-full">
+                            <div class="w-10 h-10 rounded-lg bg-red-500/20 text-red-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                            </div>
+                            <div class="flex-1">
+                                <div id="newPdfPreview" class="text-sm text-white/60 group-hover:text-white transition-colors">Choisir le fichier PDF</div>
+                                <div class="text-[10px] text-white/20 uppercase font-bold tracking-wider">Max 12 MB</div>
+                            </div>
+                        </label>
+                    </div>
                 </div>
                 <div class="md:col-span-3 mt-2 flex items-center justify-end gap-2">
                     <button type="submit" class="px-4 py-2 rounded-lg bg-secondary hover:bg-secondary_2 text-white">Enregistrer</button>
@@ -455,10 +465,20 @@
                     </div>
                 </div>
                 
-                <div>
-                    <label class="block text-sm text-white/80 mb-1">Fiche technique (PDF)</label>
-                    <input name="pdf" type="file" accept="application/pdf" class="w-full px-3 py-2 rounded-lg bg-[#0f1e34] border border-white/10">
-                    <div id="editPdfPreview" class="mt-2 text-white/70 text-xs"></div>
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-white/80 mb-2">Fiche technique (PDF)</label>
+                    <div class="relative group">
+                        <input id="editPdfInput" name="pdf" type="file" accept="application/pdf" class="hidden">
+                        <label for="editPdfInput" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-black/20 border border-white/5 hover:border-indigo-500/50 hover:bg-indigo-500/5 transition-all cursor-pointer group w-full">
+                            <div class="w-10 h-10 rounded-lg bg-red-500/20 text-red-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                            </div>
+                            <div class="flex-1">
+                                <div id="editPdfPreview" class="text-sm text-white/60 group-hover:text-white transition-colors">Choisir le fichier PDF</div>
+                                <div class="text-[10px] text-white/20 uppercase font-bold tracking-wider">Max 12 MB</div>
+                            </div>
+                        </label>
+                    </div>
                 </div>
                 <div class="md:col-span-3 mt-2 flex items-center justify-end gap-2">
                     <button type="submit" class="px-3 py-1.5 rounded-lg bg-secondary hover:bg-secondary_2 text-white">Enregistrer</button>
@@ -897,20 +917,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateNewImagesPreview() {
         const box = document.getElementById('newImagesPreview');
-        const addMoreBtn = document.getElementById('addMoreBtn');
         if (!box) return;
+        
         if (selectedFiles.length === 0) {
             box.innerHTML = '';
-            addMoreBtn?.classList.add('hidden');
             return;
         }
-        addMoreBtn?.classList.remove('hidden');
+
         box.innerHTML = selectedFiles.map((file, index) => `
-            <div class="relative group w-20 h-20">
-                <img src="${URL.createObjectURL(file)}" class="w-full h-full object-cover rounded-lg border border-white/10 group-hover:ring-2 group-hover:ring-indigo-500 transition">
-                <button type="button" onclick="removeSelectedFile(${index})" class="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-lg hover:bg-red-700 transition">
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                </button>
+            <div class="relative w-24 h-24 group">
+                <img src="${URL.createObjectURL(file)}" class="w-full h-full object-cover rounded-xl border border-white/10 shadow-lg">
+                <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center">
+                    <button type="button" onclick="removeSelectedFile(${index})" class="bg-red-500 text-white p-1.5 rounded-lg hover:bg-red-600 transition-transform hover:scale-110">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
             </div>
         `).join('');
     }
