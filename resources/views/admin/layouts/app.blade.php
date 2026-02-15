@@ -58,16 +58,45 @@
 
         /* Drawer behavior: height, non-scroll, slide */
         #adminDrawer {
-            height: 100vh;            /* responsive height 100% of viewport */
-            overflow: hidden;         /* no scrollbars in drawer */
-            transition: transform 300ms ease-out;
-            will-change: transform;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 4.5rem;          /* Default collapsed width */
+            height: 100vh;
+            overflow: hidden;      /* no scrollbars in drawer */
+            z-index: 40;
+            transition: width 300ms ease, transform 300ms ease-out;
+            will-change: width, transform;
+            background-color: #122241; /* Ensure bg is set */
         }
+
+        #adminDrawer:hover {
+            width: 18rem;           /* Expanded width on hover */
+        }
+
+        /* Hide text when collapsed, show on hover */
+        .drawer-item span {
+            opacity: 0;
+            white-space: nowrap;
+            transition: opacity 200ms ease;
+            margin-left: 0.5rem;
+        }
+
+        #adminDrawer:hover .drawer-item span {
+            opacity: 1;
+            transition-delay: 100ms;
+        }
+
+        /* Ensure icons are centered/visible */
+        .drawer-item svg {
+            min-width: 1.25rem; /* Ensure icon size doesn't shrink */
+        }
+
         #adminDrawer.drawer--collapsed {
             transform: translateX(-100%); /* slide out on small screens */
         }
         @media (min-width: 768px) {
-            /* On desktop, drawer is static and always shown */
+            /* On desktop, drawer is static and always shown (but mini) */
             #adminDrawer.drawer--collapsed {
                 transform: none;
             }
@@ -76,33 +105,27 @@
         html, body { height: 100%; }
         body { overflow: hidden; }
 
-        #adminDrawer {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 18rem;          /* 72 = 18rem */
-            height: 100vh;
-            overflow: hidden;      /* no scrollbars in drawer */
-            z-index: 40;
-        }
-
+        /* Remove duplicate definition of #adminDrawer if present below, merging here */
+        
         #adminHeader {
             position: fixed;
             top: 0;
-            left: 18rem;           /* offset equal to drawer width */
+            left: 4.5rem;           /* offset equal to collapsed drawer width */
             right: 0;
             height: 4rem;          /* h-16 = 64px */
             z-index: 30;
+            transition: left 300ms ease;
         }
 
         #contentScroll {
             position: fixed;
             top: 4rem;             /* below header */
-            left: 18rem;           /* beside drawer */
+            left: 4.5rem;           /* beside drawer */
             right: 0;
             bottom: 0;
             overflow: auto;        /* only content area scrolls */
             padding: 1rem;
+            transition: left 300ms ease;
         }
 
         /* Optional: adjust for small screens if needed */
