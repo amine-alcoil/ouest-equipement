@@ -710,27 +710,46 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Show current PDF if exists
                 const editPdfPrev = document.getElementById('editPdfPreview');
                 if (editPdfPrev) {
-                    console.log('PDF Value:', data.product.pdf); // Debug
                     if (data.product.pdf && typeof data.product.pdf === 'string' && data.product.pdf.trim() !== '') {
                         const parts = data.product.pdf.split('/');
                         const pdfName = parts[parts.length - 1];
-                        editPdfPrev.innerHTML = `<span class="text-green-400 font-semibold">PDF Actuel:</span> <a href="${data.product.pdf}" target="_blank" class="hover:underline">${pdfName}</a>`;
                         
-                        // Add a remove button for PDF
-                        const removeBtn = document.createElement('button');
-                        removeBtn.type = 'button';
-                        removeBtn.className = 'ml-2 text-red-400 hover:text-red-300 text-xs';
-                        removeBtn.innerHTML = '(Supprimer)';
-                        removeBtn.onclick = async (e) => {
-                            e.preventDefault();
-                            if(!confirm('Supprimer ce PDF ?')) return;
-                            // Call delete endpoint if needed, or just clear input and UI
-                            // For now, we just clear UI as the backend update handles replacement
-                            // But to delete without replacing, we might need a specific action or handle it in update
-                            editPdfPrev.textContent = 'Choisir le fichier PDF';
-                            // Ideally, add a hidden input to signal deletion
-                        };
-                        editPdfPrev.appendChild(removeBtn);
+                        editPdfPrev.innerHTML = `
+                            <div class="flex items-center justify-between w-full bg-indigo-500/10 border border-indigo-500/20 rounded-lg p-2.5">
+                                <div class="flex items-center gap-3 overflow-hidden">
+                                    <div class="flex-shrink-0 w-8 h-8 rounded bg-red-500/20 flex items-center justify-center text-red-400">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                                    </div>
+                                    <div class="flex flex-col overflow-hidden">
+                                        <span class="text-xs text-indigo-300 font-medium">Fichier actuel</span>
+                                        <a href="${data.product.pdf}" target="_blank" class="text-sm text-white truncate hover:text-indigo-300 transition-colors" title="${pdfName}">${pdfName}</a>
+                                    </div>
+                                </div>
+                                <button type="button" class="flex-shrink-0 p-1.5 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-colors ml-2" title="Supprimer le fichier">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                </button>
+                            </div>
+                        `;
+                        
+                        // Attach event listener to the remove button
+                        const removeBtn = editPdfPrev.querySelector('button');
+                        if (removeBtn) {
+                            removeBtn.onclick = async (e) => {
+                                e.preventDefault();
+                                e.stopPropagation(); // Prevent opening file dialog
+                                if(!confirm('Voulez-vous vraiment supprimer ce fichier PDF ?')) return;
+                                
+                                // Reset UI to default state
+                                editPdfPrev.innerHTML = 'Choisir le fichier PDF';
+                                
+                                // Clear the file input if any was selected
+                                const fileInput = document.getElementById('editPdfInput');
+                                if (fileInput) fileInput.value = '';
+
+                                // TODO: If you want to delete immediately from server, call an API here.
+                                // Otherwise, this just clears it from UI and potentially needs a hidden input to tell server to delete on save.
+                            };
+                        }
 
                     } else {
                         editPdfPrev.textContent = 'Choisir le fichier PDF';
