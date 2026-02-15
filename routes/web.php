@@ -149,7 +149,7 @@ Route::post('/produits/{id}/rate', function (Request $request, $id) {
             ->cookie('alc_rated_products', json_encode($rated), $minutes);
     } catch (\Exception $e) {
         \Illuminate\Support\Facades\Log::error('Rating error: ' . $e->getMessage());
-        return response()->json(['ok'=>false, 'message'=>'Erreur serveur lors du vote.'], 500);
+        return response()->json(['ok'=>false, 'message'=>'Erreur serveur: ' . $e->getMessage()], 500);
     }
 })->name('produit.rate');
 
