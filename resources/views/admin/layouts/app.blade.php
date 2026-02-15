@@ -13,9 +13,40 @@
             opacity: 0;
             transform: translateX(-12px);
             animation: drawerIn 500ms ease forwards;
-            white-space: nowrap; /* Prevent text wrapping */
+            position: relative;
             overflow: hidden;
+            transition: all 0.3s ease;
         }
+
+        .drawer-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: #24da00ff; /* Green accent */
+            transform: scaleY(0);
+            transform-origin: bottom;
+            transition: transform 0.3s ease;
+        }
+
+        .drawer-item:hover::before,
+        .drawer-item.active::before {
+            transform: scaleY(1);
+            transform-origin: top;
+        }
+
+        .drawer-item:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            padding-left: 1.25rem; /* slightly shift content right on hover */
+        }
+
+        .drawer-item.active {
+            background-color: rgba(36, 218, 0, 0.1); /* Slight green tint for active */
+            border-right: 1px solid rgba(36, 218, 0, 0.2);
+        }
+
         .drawer-item:nth-child(1) { animation-delay: 60ms; }
         .drawer-item:nth-child(2) { animation-delay: 120ms; }
         .drawer-item:nth-child(3) { animation-delay: 180ms; }
@@ -25,67 +56,65 @@
             to { opacity: 1; transform: translateX(0); }
         }
 
-        /* Drawer Layout & Transitions */
+        /* Drawer behavior: height, non-scroll, slide */
         #adminDrawer {
             position: fixed;
             top: 0;
             left: 0;
+            width: 18rem;          /* Default expanded width */
             height: 100vh;
-            background-color: #122241;
+            overflow: hidden;      /* no scrollbars in drawer */
             z-index: 40;
-            overflow: hidden;
-            transition: width 300ms ease, transform 300ms ease;
+            transition: width 300ms ease, transform 300ms ease-out;
             will-change: width, transform;
-            width: 18rem; /* Mobile width */
-            transform: translateX(-100%); /* Mobile hidden by default */
+            background-color: #122241; /* Ensure bg is set */
         }
 
-        /* Text Visibility Transition */
+        /* Collapsed State via Class */
+        body.is-collapsed #adminDrawer {
+            width: 5rem;
+        }
+
+        /* Hide text when collapsed */
         .drawer-item span {
-            opacity: 0;
-            transition: opacity 200ms ease;
-            display: none; /* Hidden in mini mode */
-        }
-
-        /* Desktop Styles (>= 768px) */
-        @media (min-width: 768px) {
-            #adminDrawer {
-                transform: none; /* Always visible */
-                width: 4.5rem;   /* Mini mode default */
-            }
-            
-            /* Expanded State on Desktop */
-            body.drawer-expanded #adminDrawer {
-                width: 18rem;
-            }
-
-            body.drawer-expanded .drawer-item span {
-                display: inline;
-                opacity: 1;
-                transition-delay: 100ms;
-            }
-
-            /* Adjust Main Content & Header */
-            #adminHeader, #contentScroll {
-                left: 4.5rem;
-                transition: left 300ms ease;
-            }
-
-            body.drawer-expanded #adminHeader,
-            body.drawer-expanded #contentScroll {
-                left: 18rem;
-            }
-        }
-
-        /* Mobile Open State */
-        body.mobile-open #adminDrawer {
-            transform: translateX(0);
-        }
-        body.mobile-open .drawer-item span {
-            display: inline;
             opacity: 1;
+            white-space: nowrap;
+            transition: opacity 200ms ease;
+            margin-left: 0.75rem;
         }
 
+        body.is-collapsed .drawer-item span {
+            opacity: 0;
+            width: 0;
+            margin-left: 0;
+            overflow: hidden;
+        }
+
+        /* Center icons in collapsed mode */
+        body.is-collapsed .drawer-item {
+            justify-content: center;
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
+        }
+        body.is-collapsed .drawer-item:hover {
+            padding-left: 0.75rem; /* Reset hover shift in collapsed mode */
+        }
+
+        body.is-collapsed .drawer-item svg {
+            min-width: 1.5rem;
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+
+        #adminDrawer.drawer--collapsed {
+            transform: translateX(-100%); /* slide out on small screens */
+        }
+        @media (min-width: 768px) {
+            /* On desktop, drawer is static and always shown */
+            #adminDrawer.drawer--collapsed {
+                transform: none;
+            }
+        }
         /* Layout fix: fixed drawer + header; only content scrolls */
         html, body { height: 100%; }
         body { overflow: hidden; }
@@ -93,24 +122,60 @@
         #adminHeader {
             position: fixed;
             top: 0;
+            left: 18rem;           /* offset equal to drawer width */
             right: 0;
-            height: 4rem;
+            height: 4rem;          /* h-16 = 64px */
             z-index: 30;
+            transition: left 300ms ease;
+        }
+
+        body.is-collapsed #adminHeader {
+            left: 5rem;
         }
 
         #contentScroll {
             position: fixed;
-            top: 4rem;
+            top: 4rem;             /* below header */
+            left: 18rem;           /* beside drawer */
             right: 0;
             bottom: 0;
-            overflow: auto;
+            overflow: auto;        /* only content area scrolls */
             padding: 1rem;
+            transition: left 300ms ease;
+        }
+
+        body.is-collapsed #contentScroll {
+            left: 5rem;
+        }
+
+        /* Optional: adjust for small screens if needed */
+        @media (max-width: 767px) {
+            #adminDrawer { width: 16rem; }
+            #adminHeader { left: 16rem; }
+            #contentScroll { left: 16rem; }
+            body.is-collapsed #adminDrawer { width: 0; transform: translateX(-100%); }
+            body.is-collapsed #adminHeader { left: 0; }
+            body.is-collapsed #contentScroll { left: 0; }
         }
 
         /* Active drawer item highlight */
         .drawer-item.active {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.25);
+            /* background-color: rgba(255, 255, 255, 0.1); replaced by above styles */
+            /* border-color: rgba(255, 255, 255, 0.25); replaced by above styles */
+        }
+    </style>
+
+        /* Optional: adjust for small screens if needed */
+        @media (max-width: 767px) {
+            #adminDrawer { width: 16rem; }
+            #adminHeader { left: 16rem; }
+            #contentScroll { left: 16rem; }
+        }
+
+        /* Active drawer item highlight */
+        .drawer-item.active {
+            /* background-color: rgba(255, 255, 255, 0.1); replaced by above styles */
+            /* border-color: rgba(255, 255, 255, 0.25); replaced by above styles */
         }
     </style>
 </head>
@@ -192,13 +257,10 @@
         <header id="adminHeader" class="z-30 h-16 bg-[#122241]/90 backdrop-blur border-b border-white/10">
             <div class="h-full px-4 flex items-center">
                 <div class="inline-flex items-center gap-4">
-                    <!-- Toggle Button -->
-                    <button id="toggleDrawerBtn" class="p-2 rounded-lg hover:bg-white/10 text-white transition-colors">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
-                        </svg>
+                    <button id="sidebarToggle" class="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-white transition-colors border border-white/10">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
                     </button>
-                    <span class="font-semibold text-3xl hidden md:block">Dashboard</span>
+                    <span class="font-semibold text-3xl">Dashboard</span>
                 </div>
                 <div class="ml-auto flex items-center gap-3">
                     <img src="{{ (isset($companyInfo) && $companyInfo->logo_path) ? Storage::url($companyInfo->logo_path) : (session('admin_user')['avatar'] ?? '/images/Logo_ALCOIL_without_txt_white@3x.png') }}" alt="Avatar" class="h-10 w-10 rounded-full border border-white/10 object-cover bg-white">
@@ -226,20 +288,22 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const toggleBtn = document.getElementById('toggleDrawerBtn');
-        const body = document.body;
-        
+    // Sidebar Toggle Logic
+    const toggleBtn = document.getElementById('sidebarToggle');
+    const body = document.body;
+    
+    // Check local storage
+    const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+    if (isCollapsed) {
+        body.classList.add('is-collapsed');
+    }
+
+    if (toggleBtn) {
         toggleBtn.addEventListener('click', () => {
-            if (window.innerWidth >= 768) {
-                // Desktop: Toggle between Mini (default) and Expanded
-                body.classList.toggle('drawer-expanded');
-            } else {
-                // Mobile: Toggle between Hidden (default) and Open
-                body.classList.toggle('mobile-open');
-            }
+            body.classList.toggle('is-collapsed');
+            localStorage.setItem('sidebar-collapsed', body.classList.contains('is-collapsed'));
         });
-    });
+    }
 </script>
 </body>
 </html>
