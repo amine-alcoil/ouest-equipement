@@ -24,9 +24,10 @@
                     @endforeach
                 @endif
             </select>
-            <button id="newProductBtn" type="button" class="px-3 py-2 rounded-lg bg-[#1b334f] border border-white/10 hover:bg-[#234161]">
-                 Ajouter un produit
-             </button>
+            <button id="newProductBtn" type="button" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-medium flex items-center gap-2 shadow-lg shadow-indigo-500/20 transition-all active:scale-95">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                Ajouter un produit
+            </button>
          </form>
      </div> 
 
@@ -152,94 +153,107 @@
         });
     </script>
 
-    <!-- New Product Panel (toggle) -->
-    <div id="newProductPanel" class="hidden rounded-xl bg-[#122241] border border-white/10 p-4 max-h-[85vh] overflow-y-auto">
-        <div class="flex items-center justify-between">
-            <div>
-                <div class="text-lg font-semibold">Ajouter un Nouveau produit</div>
-                <div class="text-white/60 text-sm">Complétez le formulaire pour ajouter un produit.</div>
+    <!-- New Product Panel (Modal) -->
+    <div id="newProductPanel" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div class="rounded-xl bg-[#122241] border border-white/10 p-3 md:p-4 max-w-lg md:max-w-xl w-full mx-4 max-h-[80vh] overflow-y-auto overflow-x-hidden">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <div class="text-lg font-semibold">Ajouter un Nouveau produit</div>
+                    <div class="text-white/60 text-sm">Complétez le formulaire pour ajouter un produit.</div>
+                </div>
+                <button id="closeNewProduct" class="p-2 rounded-lg bg-white/10 border border-white/10 hover:bg-white/15 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
             </div>
-            <button id="closeNewProduct" class="px-3 py-1.5 rounded-lg bg-white/10 border border-white/10 hover:bg-white/15">
-                Fermer
-            </button>
-        </div>
 
-        <form method="POST" action="{{ route('admin.products.store') }}" data-new-product-form class="mt-4 space-y-4" enctype="multipart/form-data">
-            @csrf
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div class="md:col-span-2">
-                    <label class="block text-sm text-white/80 mb-1">Nom du produit</label>
-                    <input name="name" type="text" required class="w-full px-3 py-2 rounded-lg bg-[#0f1e34] border border-white/10 focus:outline-none focus:ring-2 focus:ring-white/20">
-                </div>
-                <div>
-                    <label class="block text-sm text-white/80 mb-1">Catégorie</label>
-                    <select id="newCategory" name="category" required class="w-full px-3 py-2 rounded-lg bg-[#0f1e34] border border-white/10 focus:outline-none focus:ring-2 focus:ring-white/20"></select>
-                </div>
-                <div>
-                    <label class="block text-sm text-white/80 mb-1">Sous-catégorie</label>
-                    <select id="newSubcategory" name="subcategory" class="w-full px-3 py-2 rounded-lg bg-[#0f1e34] border border-white/10 focus:outline-none focus:ring-2 focus:ring-white/20"></select>
-                </div>
-                <div class="md:col-span-3">
-                    <label class="block text-sm text-white/80 mb-1">Description</label>
-                    <textarea name="description" rows="3" class="w-full px-3 py-2 rounded-lg bg-[#0f1e34] border border-white/10 focus:outline-none focus:ring-2 focus:ring-white/20"></textarea>
-                </div>
-                <div>
-                    <label class="block text-sm text-white/80 mb-1">Prix (DZD)</label>
-                    <input name="price" type="number" min="0" step="0.01" required class="w-full px-3 py-2 rounded-lg bg-[#0f1e34] border border-white/10 focus:outline-none focus:ring-2 focus:ring-white/20">
-                </div>
-                <div>
-                    <label class="block text-sm text-white/80 mb-1">Stock</label>
-                    <input name="stock" type="number" min="0" required class="w-full px-3 py-2 rounded-lg bg-[#0f1e34] border border-white/10 focus:outline-none focus:ring-2 focus:ring-white/20">
-                </div>
-                <div>
-                    <label class="block text-sm text-white/80 mb-1">Statut</label>
-                    <select name="status" class="w-full px-3 py-2 rounded-lg bg-[#0f1e34] border border-white/10 focus:outline-none focus:ring-2 focus:ring-white/20">
-                        <option value="actif" selected>Actif</option>
-                        <option value="inactif">Inactif</option>
-                        <option value="rupture">Rupture</option>
-                    </select>
-                </div>
-                <div class="md:col-span-3">
-                    <label class="block text-sm text-white/80 mb-1">Tags</label>
-                    <select id="newTags" name="tags[]" multiple class="w-full px-3 py-2 rounded-lg bg-[#0f1e34] border border-white/10 text-white h-28"></select>
-                    <div id="newTagsPreview" class="mt-2 flex flex-wrap gap-2"></div>
-                </div>
-                <div class="md:col-span-2">
-                    <label class="block text-sm font-medium text-white/80 mb-2">Images du produit</label>
-                    <div class="flex flex-wrap gap-4 p-4 rounded-xl bg-black/20 border border-white/5">
-                        <div id="newImagesPreview" class="flex flex-wrap gap-3"></div>
+            <form method="POST" action="{{ route('admin.products.store') }}" data-new-product-form class="space-y-4" enctype="multipart/form-data">
+                @csrf
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="md:col-span-1">
+                        <label class="block text-sm text-white/80 mb-1">SKU</label>
+                        <input name="sku" type="text" class="w-full px-3 py-2 rounded-lg bg-[#0f1e34] border border-white/10 focus:outline-none focus:ring-2 focus:ring-white/20">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm text-white/80 mb-1">Nom du produit</label>
+                        <input name="name" type="text" required class="w-full px-3 py-2 rounded-lg bg-[#0f1e34] border border-white/10 focus:outline-none focus:ring-2 focus:ring-white/20">
+                    </div>
+                    
+                    <div class="md:col-span-3">
+                        <label class="block text-sm text-white/80 mb-1">Description</label>
+                        <textarea name="description" rows="3" class="w-full px-3 py-2 rounded-lg bg-[#0f1e34] border border-white/10 focus:outline-none focus:ring-2 focus:ring-white/20"></textarea>
+                    </div>
 
-                        <!-- Modern Add Button Card -->
-                        <div class="relative">
-                            <input id="newImagesInput" name="images[]" type="file" multiple accept="image/*" class="hidden">
-                            <label for="newImagesInput" class="flex flex-col items-center justify-center w-24 h-24 rounded-xl border-2 border-dashed border-white/10 hover:border-indigo-500/50 hover:bg-indigo-500/5 transition-all cursor-pointer group">
-                                <svg class="w-8 h-8 text-white/20 group-hover:text-indigo-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                                <span class="text-[10px] text-white/30 group-hover:text-indigo-300 mt-1 uppercase font-bold tracking-wider">Ajouter</span>
+                    <div>
+                        <label class="block text-sm text-white/80 mb-1">Catégorie</label>
+                        <select id="newCategory" name="category" required class="w-full px-3 py-2 rounded-lg bg-[#0f1e34] border border-white/10 focus:outline-none focus:ring-2 focus:ring-white/20"></select>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-white/80 mb-1">Sous-catégorie</label>
+                        <select id="newSubcategory" name="subcategory" class="w-full px-3 py-2 rounded-lg bg-[#0f1e34] border border-white/10 focus:outline-none focus:ring-2 focus:ring-white/20"></select>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-white/80 mb-1">Prix (DZD)</label>
+                        <input name="price" type="number" min="0" step="0.01" required class="w-full px-3 py-2 rounded-lg bg-[#0f1e34] border border-white/10 focus:outline-none focus:ring-2 focus:ring-white/20">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm text-white/80 mb-1">Stock</label>
+                        <input name="stock" type="number" min="0" required class="w-full px-3 py-2 rounded-lg bg-[#0f1e34] border border-white/10 focus:outline-none focus:ring-2 focus:ring-white/20">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm text-white/80 mb-1">Statut</label>
+                        <select name="status" class="w-full px-3 py-2 rounded-lg bg-[#0f1e34] border border-white/10 focus:outline-none focus:ring-2 focus:ring-white/20">
+                            <option value="actif" selected>Actif</option>
+                            <option value="inactif">Inactif</option>
+                            <option value="rupture">Rupture</option>
+                        </select>
+                    </div>
+
+                    <div class="md:col-span-3">
+                        <label class="block text-sm text-white/80 mb-1">Tags</label>
+                        <select id="newTags" name="tags[]" multiple class="w-full px-2 py-1.5 rounded-lg bg-[#0f1e34] border border-white/10 text-white h-20"></select>
+                        <div id="newTagsPreview" class="mt-2 flex flex-wrap gap-2"></div>
+                    </div>
+
+                    <div class="md:col-span-3">
+                        <label class="block text-sm font-medium text-white/80 mb-2">Images du produit</label>
+                        <div class="flex flex-wrap gap-4 p-4 rounded-xl bg-black/20 border border-white/5">
+                            <div id="newImagesPreview" class="flex flex-wrap gap-3"></div>
+
+                            <!-- Modern Add Button Card -->
+                            <div id="newImagesAddCard" class="relative">
+                                <input id="newImagesInput" name="images[]" type="file" multiple accept="image/*" class="hidden">
+                                <label for="newImagesInput" class="flex flex-col items-center justify-center w-24 h-24 rounded-xl border-2 border-dashed border-white/10 hover:border-indigo-500/50 hover:bg-indigo-500/5 transition-all cursor-pointer group">
+                                    <svg class="w-8 h-8 text-white/20 group-hover:text-indigo-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                    <span class="text-[10px] text-white/30 group-hover:text-indigo-300 mt-1 uppercase font-bold tracking-wider">Ajouter</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="md:col-span-3">
+                        <label class="block text-sm font-medium text-white/80 mb-2">Fiche technique (PDF)</label>
+                        <div class="relative group">
+                            <input id="newPdfInput" name="pdf" type="file" accept="application/pdf" class="hidden">
+                            <label for="newPdfInput" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-black/20 border border-white/5 hover:border-indigo-500/50 hover:bg-indigo-500/5 transition-all cursor-pointer group w-full">
+                                <div class="w-10 h-10 rounded-lg bg-red-500/20 text-red-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                                </div>
+                                <div class="flex-1">
+                                    <div id="newPdfPreview" class="text-sm text-white/60 group-hover:text-white transition-colors">Choisir le fichier PDF</div>
+                                    <div class="text-[10px] text-white/20 uppercase font-bold tracking-wider">Max 12 MB</div>
+                                </div>
                             </label>
                         </div>
                     </div>
-                </div>
-                <div class="md:col-span-2">
-                    <label class="block text-sm font-medium text-white/80 mb-2">Fiche technique (PDF)</label>
-                    <div class="relative group">
-                        <input id="newPdfInput" name="pdf" type="file" accept="application/pdf" class="hidden">
-                        <label for="newPdfInput" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-black/20 border border-white/5 hover:border-indigo-500/50 hover:bg-indigo-500/5 transition-all cursor-pointer group w-full">
-                            <div class="w-10 h-10 rounded-lg bg-red-500/20 text-red-400 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-                            </div>
-                            <div class="flex-1">
-                                <div id="newPdfPreview" class="text-sm text-white/60 group-hover:text-white transition-colors">Choisir le fichier PDF</div>
-                                <div class="text-[10px] text-white/20 uppercase font-bold tracking-wider">Max 12 MB</div>
-                            </div>
-                        </label>
+
+                    <div class="md:col-span-3 mt-2 flex items-center justify-end gap-2">
+                        <button type="submit" class="px-4 py-2 rounded-lg bg-secondary hover:bg-secondary_2 text-white transition-colors">Enregistrer</button>
+                        <button type="button" id="cancelNewProduct" class="px-4 py-2 rounded-lg bg-white/10 border border-white/10 hover:bg-white/15 transition-colors">Annuler</button>
                     </div>
                 </div>
-                <div class="md:col-span-3 mt-2 flex items-center justify-end gap-2">
-                    <button type="submit" class="px-4 py-2 rounded-lg bg-secondary hover:bg-secondary_2 text-white">Enregistrer</button>
-                    <button type="button" id="cancelNewProduct" class="px-4 py-2 rounded-lg bg-white/10 border border-white/10 hover:bg-white/15">Annuler</button>
-                </div>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 
     <!-- Quick stats -->
@@ -917,27 +931,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateNewImagesPreview() {
         const box = document.getElementById('newImagesPreview');
-        if (!box) return;
+        const addCard = document.getElementById('newImagesAddCard');
+        if (!box || !addCard) return;
         
         if (selectedFiles.length === 0) {
-            box.innerHTML = '';
+            box.innerHTML = `
+                <div class="flex flex-col items-center justify-center w-full py-8 border-2 border-dashed border-white/10 rounded-xl bg-white/5 hover:bg-white/10 transition-colors cursor-pointer" onclick="document.getElementById('newImagesInput').click()">
+                    <svg class="w-10 h-10 text-white/20 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    <span class="text-sm text-white/40">Cliquez pour ajouter des images</span>
+                </div>
+            `;
+            addCard.classList.add('hidden');
             return;
         }
 
+        addCard.classList.remove('hidden');
         box.innerHTML = selectedFiles.map((file, index) => `
             <div class="relative w-24 h-24 group">
-                <img src="${URL.createObjectURL(file)}" class="w-full h-full object-cover rounded-xl border border-white/10 shadow-lg">
+                <img src="${URL.createObjectURL(file)}" class="w-full h-full object-cover rounded-xl border border-white/10 shadow-lg group-hover:ring-2 group-hover:ring-indigo-500 transition-all">
                 <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center">
-                    <button type="button" onclick="removeSelectedFile(${index})" class="bg-red-500 text-white p-1.5 rounded-lg hover:bg-red-600 transition-transform hover:scale-110">
+                    <button type="button" onclick="removeSelectedFile(${index})" class="bg-red-500 text-white p-1.5 rounded-lg hover:bg-red-600 transition-transform hover:scale-110 shadow-lg">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                     </button>
                 </div>
+                <div class="absolute -bottom-1 -right-1 bg-indigo-500 text-[8px] font-bold px-1.5 py-0.5 rounded text-white uppercase shadow-sm">Nouveau</div>
             </div>
         `).join('');
     }
 
     function updateEditNewImagesPreview() {
         const box = document.getElementById('editNewImagesPreview');
+        const addCard = document.querySelector('label[for="editImagesInput"]')?.parentElement;
         if (!box) return;
         
         if (editSelectedFiles.length === 0) {
@@ -947,13 +971,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         box.innerHTML = editSelectedFiles.map((file, index) => `
             <div class="relative w-24 h-24 group">
-                <img src="${URL.createObjectURL(file)}" class="w-full h-full object-cover rounded-xl border border-white/10 shadow-lg">
+                <img src="${URL.createObjectURL(file)}" class="w-full h-full object-cover rounded-xl border border-white/10 shadow-lg group-hover:ring-2 group-hover:ring-indigo-500 transition-all">
                 <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center">
-                    <button type="button" onclick="removeEditSelectedFile(${index})" class="bg-red-500 text-white p-1.5 rounded-lg hover:bg-red-600 transition-transform hover:scale-110">
+                    <button type="button" onclick="removeEditSelectedFile(${index})" class="bg-red-500 text-white p-1.5 rounded-lg hover:bg-red-600 transition-transform hover:scale-110 shadow-lg">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                     </button>
                 </div>
-                <div class="absolute bottom-1 right-1 bg-indigo-500 text-[8px] font-bold px-1.5 py-0.5 rounded text-white uppercase">Nouveau</div>
+                <div class="absolute -bottom-1 -right-1 bg-indigo-500 text-[8px] font-bold px-1.5 py-0.5 rounded text-white uppercase shadow-sm">Nouveau</div>
             </div>
         `).join('');
     }
@@ -970,9 +994,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updatePdfPreview(input, boxId){
         const box = document.getElementById(boxId);
-        if(!box) return; const f = (input && input.files && input.files[0]);
-        box.innerHTML = f ? `<span class="inline-flex items-center px-2 py-1 rounded bg-indigo-600/20 text-indigo-200 text-xs">${f.name}</span>` : '';
+        if(!box) return; 
+        const f = (input && input.files && input.files[0]);
+        if (f) {
+            box.innerHTML = `
+                <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-indigo-500/20 border border-indigo-500/30 text-indigo-200">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    <span class="text-xs font-medium truncate max-w-[150px]">${f.name}</span>
+                    <button type="button" onclick="clearPdfInput('${input.id}', '${boxId}')" class="ml-auto hover:text-white">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
+            `;
+        } else {
+            box.innerHTML = 'Choisir le fichier PDF';
+        }
     }
+
+    window.clearPdfInput = (inputId, boxId) => {
+        const input = document.getElementById(inputId);
+        if (input) input.value = '';
+        updatePdfPreview(input, boxId);
+    };
 
     const newImagesInput = document.getElementById('newImagesInput');
     const addMoreBtn = document.getElementById('addMoreBtn');
