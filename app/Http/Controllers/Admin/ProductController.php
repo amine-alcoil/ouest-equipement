@@ -222,7 +222,14 @@ class ProductController extends Controller
             $productModel->pdf = Storage::url($request->file('pdf')->store('products', 'public'));
         }
 
-        $productModel->status = ((int)$productModel->stock === 0) ? 'rupture' : ($validated['status'] ?? $productModel->status);
+        // Allow manual status override, otherwise default to 'rupture' if stock is 0
+        $newStatus = $validated['status'] ?? $productModel->status;
+        if ((int)$productModel->stock === 0 && $newStatus !== 'inactif') {
+            $productModel->status = 'rupture';
+        } else {
+            $productModel->status = $newStatus;
+        }
+
         $productModel->save();
 
         if ($request->expectsJson() || $request->ajax()) {
