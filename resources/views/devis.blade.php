@@ -98,15 +98,15 @@
                 <div id="schemaSlider" class="relative rounded-lg overflow-hidden">
                     <div class="slide">
                         
-                        <img src="{{ asset('images/schema_1.png') }}" alt="Schéma Entrée" class="w-full h-auto object-contain">
+                        <img src="{{ asset('images/Schema_1.png') }}" alt="Schéma Entrée" class="w-full h-auto object-contain">
                     </div>
                     <div class="slide hidden">
                         
-                        <img src="{{ asset('images/schema_2.png') }}" alt="Schéma Sortie" class="w-full h-auto object-contain">
+                        <img src="{{ asset('images/Schema_2.png') }}" alt="Schéma Sortie" class="w-full h-auto object-contain">
                     </div>
                     <div class="slide hidden">
                         
-                        <img src="{{ asset('images/schema_3.png') }}" alt="Schéma 3" class="w-full h-auto object-contain">
+                        <img src="{{ asset('images/Schema_3.png') }}" alt="Schéma 3" class="w-full h-auto object-contain">
                     </div>
                     <div class="absolute inset-x-0 bottom-2 flex justify-center gap-2">
                         <button type="button" class="dot w-2 h-2 rounded-full bg-secondary"></button>
