@@ -702,6 +702,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     Array.from(et.options).forEach(opt => { opt.selected = tags.includes(opt.value); });
                     updateEditTagsPreview();
                 }
+                // Clear previous new image selection
+                editSelectedFiles = [];
+                updateEditNewImagesPreview();
+                // Clear PDF preview if exists
+                const editPdfPrev = document.getElementById('editPdfPreview');
+                if(editPdfPrev) editPdfPrev.textContent = 'Choisir le fichier PDF';
+
                 renderEditImages(data.product.images || []);
                 panel.classList.remove('hidden');
             });
@@ -864,6 +871,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         tr.replaceWith(tmp.firstElementChild);
                         bindRowActions();
                     }
+                    // Clear edit form state
+                    editSelectedFiles = [];
+                    updateEditNewImagesPreview();
                     document.getElementById('editProductPanel').classList.add('hidden');
                     showAlert('success', 'Produit mis à jour.');
                 } else {
@@ -878,6 +888,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (editCancelBtn) {
         editCancelBtn.addEventListener('click', () => {
+            editSelectedFiles = [];
+            updateEditNewImagesPreview();
             document.getElementById('editProductPanel').classList.add('hidden');
         });
     }
