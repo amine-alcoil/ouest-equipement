@@ -437,9 +437,19 @@
                 </div>
                 <div>
                     <label class="block text-sm text-white/80 mb-1">Images (multiple)</label>
-                    <input name="images[]" type="file" multiple accept="image/*" class="w-full px-3 py-2 rounded-lg bg-[#0f1e34] border border-white/10">
-                    <div id="editImagesList" class="mt-2 flex flex-wrap gap-2"></div>
-                    <div id="editNewImagesPreview" class="mt-2 flex flex-wrap gap-2"></div>
+                    <div class="flex items-center gap-2">
+                        <input id="editImagesInput" name="images[]" type="file" multiple accept="image/*" class="hidden">
+                        <label for="editImagesInput" class="cursor-pointer px-3 py-2 rounded-lg bg-[#0f1e34] border border-white/10 hover:bg-white/5 transition flex items-center gap-2 text-sm text-white/70">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            Choisir des images
+                        </label>
+                        <button type="button" id="editAddMoreBtn" class="hidden px-3 py-2 rounded-lg bg-indigo-600/20 border border-indigo-500/30 text-indigo-300 hover:bg-indigo-600/30 transition flex items-center gap-1 text-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                            Ajouter
+                        </button>
+                    </div>
+                    <div id="editImagesList" class="mt-3 flex flex-wrap gap-3"></div>
+                    <div id="editNewImagesPreview" class="mt-3 flex flex-wrap gap-3 border-t border-white/5 pt-3 hidden"></div>
                 </div>
                 
                 <div>
@@ -731,6 +741,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     let selectedFiles = []; // For New Product form image management
+    let editSelectedFiles = []; // For Edit Product form image management
 
     async function getProcessedFormData(form) {
         const formData = new FormData(form);
@@ -740,26 +751,14 @@ document.addEventListener('DOMContentLoaded', () => {
             filesToProcess = selectedFiles;
             formData.delete('images[]');
         } else {
-            filesToProcess = formData.getAll('images[]');
+            filesToProcess = editSelectedFiles;
             formData.delete('images[]');
         }
         
-        let hasImages = false;
         for (const file of filesToProcess) {
             if (file instanceof File && file.size > 0) {
                 const compressed = await compressImage(file, 1600, 1600, 0.85);
                 formData.append('images[]', compressed);
-                hasImages = true;
-            }
-        }
-        
-        if (hasImages) {
-            const compressedFiles = formData.getAll('images[]');
-            if (!form.hasAttribute('data-new-product-form')) {
-                const box = document.getElementById('editNewImagesPreview');
-                if (box) {
-                    box.innerHTML = compressedFiles.map(f => `<div class="relative group"><img src="${URL.createObjectURL(f)}" class="w-16 h-16 object-cover rounded border border-white/10 hover:ring-2 hover:ring-indigo-400"></div>`).join('');
-                }
             }
         }
         
@@ -910,9 +909,36 @@ document.addEventListener('DOMContentLoaded', () => {
         `).join('');
     }
 
+    function updateEditNewImagesPreview() {
+        const box = document.getElementById('editNewImagesPreview');
+        const addMoreBtn = document.getElementById('editAddMoreBtn');
+        if (!box) return;
+        if (editSelectedFiles.length === 0) {
+            box.innerHTML = '';
+            box.classList.add('hidden');
+            addMoreBtn?.classList.add('hidden');
+            return;
+        }
+        box.classList.remove('hidden');
+        addMoreBtn?.classList.remove('hidden');
+        box.innerHTML = editSelectedFiles.map((file, index) => `
+            <div class="relative group w-20 h-20">
+                <img src="${URL.createObjectURL(file)}" class="w-full h-full object-cover rounded-lg border border-white/10 group-hover:ring-2 group-hover:ring-indigo-500 transition">
+                <button type="button" onclick="removeEditSelectedFile(${index})" class="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-lg hover:bg-red-700 transition">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+        `).join('');
+    }
+
     window.removeSelectedFile = (index) => {
         selectedFiles.splice(index, 1);
         updateNewImagesPreview();
+    };
+
+    window.removeEditSelectedFile = (index) => {
+        editSelectedFiles.splice(index, 1);
+        updateEditNewImagesPreview();
     };
 
     function updatePdfPreview(input, boxId){
@@ -933,14 +959,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (addMoreBtn) { addMoreBtn.addEventListener('click', () => newImagesInput?.click()); }
 
+    const editImagesInput = document.getElementById('editImagesInput');
+    const editAddMoreBtn = document.getElementById('editAddMoreBtn');
+    if (editImagesInput) {
+        editImagesInput.addEventListener('change', (e) => {
+            const files = Array.from(e.target.files || []);
+            editSelectedFiles = [...editSelectedFiles, ...files];
+            updateEditNewImagesPreview();
+            e.target.value = '';
+        });
+    }
+    if (editAddMoreBtn) { editAddMoreBtn.addEventListener('click', () => editImagesInput?.click()); }
+
     const newPdfInput = document.querySelector('[data-new-product-form] input[name="pdf"]');
     newPdfInput && newPdfInput.addEventListener('change', e=>updatePdfPreview(e.target, 'newPdfPreview'));
-    const editImagesInput = document.querySelector('#editProductForm input[name="images[]"]');
-    editImagesInput && editImagesInput.addEventListener('change', e=>{
-        const box = document.getElementById('editNewImagesPreview');
-        if(!box) return; const arr = Array.from(e.target.files||[]);
-        box.innerHTML = arr.length ? arr.map(f=>`<div class="relative group"><img src="${URL.createObjectURL(f)}" class="w-16 h-16 object-cover rounded border border-white/10 hover:ring-2 hover:ring-indigo-400"></div>`).join('') : '';
-    });
     const editPdfInput = document.querySelector('#editProductForm input[name="pdf"]');
     editPdfInput && editPdfInput.addEventListener('change', e=>updatePdfPreview(e.target, 'editPdfPreview'));
 
