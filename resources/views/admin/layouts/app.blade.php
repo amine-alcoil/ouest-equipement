@@ -13,7 +13,40 @@
             opacity: 0;
             transform: translateX(-12px);
             animation: drawerIn 500ms ease forwards;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
         }
+
+        .drawer-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: #24da00ff; /* Green accent */
+            transform: scaleY(0);
+            transform-origin: bottom;
+            transition: transform 0.3s ease;
+        }
+
+        .drawer-item:hover::before,
+        .drawer-item.active::before {
+            transform: scaleY(1);
+            transform-origin: top;
+        }
+
+        .drawer-item:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            padding-left: 1.25rem; /* slightly shift content right on hover */
+        }
+
+        .drawer-item.active {
+            background-color: rgba(36, 218, 0, 0.1); /* Slight green tint for active */
+            border-right: 1px solid rgba(36, 218, 0, 0.2);
+        }
+
         .drawer-item:nth-child(1) { animation-delay: 60ms; }
         .drawer-item:nth-child(2) { animation-delay: 120ms; }
         .drawer-item:nth-child(3) { animation-delay: 180ms; }
@@ -81,8 +114,8 @@
 
         /* Active drawer item highlight */
         .drawer-item.active {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.25);
+            /* background-color: rgba(255, 255, 255, 0.1); replaced by above styles */
+            /* border-color: rgba(255, 255, 255, 0.25); replaced by above styles */
         }
     </style>
 </head>
