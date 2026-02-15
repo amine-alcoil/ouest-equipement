@@ -384,7 +384,7 @@ class DevisController extends Controller
             Log::error('Failed to send devis email', ['error' => $e->getMessage()]);
             return response()->json([
                 'success' => false, 
-                'message' => 'Erreur lors de l\'envoi de l\'email.'
+                'message' => 'Erreur lors de l\'envoi de l\'email: ' . $e->getMessage()
             ], 500);
         }
     }
