@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>Admin | Connexion</title>
     @vite(['resources/css/app.css','resources/js/app.js'])
+    <!-- Heroicons CDN for inline SVG icons -->
+     <link rel="icon" type="image/svg+xml" href="/images/Favicon_alcoil.svg">
 </head>
 <body class="min-h-screen bg-[#0f1e34] text-white flex items-center justify-center">
     <div class="relative w-full overflow-hidden">
