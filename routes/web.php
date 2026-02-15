@@ -56,7 +56,11 @@ Route::get('/confidentialite', function () { return view('layouts.privacy'); })-
 Route::get('/cookies', function () { return view('layouts.cookies'); })->name('cookies');
 
 Route::get('/produits', function () {
-    $products = \App\Models\Product::query()->orderBy('id')->get()->map(function($p){
+    $products = \App\Models\Product::query()
+        ->where('status', '!=', 'inactif')
+        ->orderBy('id')
+        ->get()
+        ->map(function($p){
         $images = is_array($p->images) ? $p->images : [];
         $image = $images[0] ?? '/images/no_image.png';
     $ratings = is_array($p->ratings) ? $p->ratings : ['counts'=>[]];
