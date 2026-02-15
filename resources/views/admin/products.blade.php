@@ -435,21 +435,24 @@
                     <select id="editTags" name="tags[]" multiple class="w-full px-2 py-1.5 rounded-lg bg-[#0f1e34] border border-white/10 text-white h-20"></select>
                     <div id="editTagsPreview" class="mt-2 flex flex-wrap gap-2"></div>
                 </div>
-                <div>
-                    <label class="block text-sm text-white/80 mb-1">Images (multiple)</label>
-                    <div class="flex items-center gap-2">
-                        <input id="editImagesInput" name="images[]" type="file" multiple accept="image/*" class="hidden">
-                        <label for="editImagesInput" class="cursor-pointer px-3 py-2 rounded-lg bg-[#0f1e34] border border-white/10 hover:bg-white/5 transition flex items-center gap-2 text-sm text-white/70">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                            Choisir des images
-                        </label>
-                        <button type="button" id="editAddMoreBtn" class="hidden px-3 py-2 rounded-lg bg-indigo-600/20 border border-indigo-500/30 text-indigo-300 hover:bg-indigo-600/30 transition flex items-center gap-1 text-sm">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                            Ajouter
-                        </button>
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-white/80 mb-2">Images du produit</label>
+                    <div class="flex flex-wrap gap-4 p-4 rounded-xl bg-black/20 border border-white/5">
+                        <!-- Existing Images List -->
+                        <div id="editImagesList" class="flex flex-wrap gap-3"></div>
+                        
+                        <!-- New Images Preview -->
+                        <div id="editNewImagesPreview" class="flex flex-wrap gap-3"></div>
+
+                        <!-- Modern Add Button Card -->
+                        <div class="relative">
+                            <input id="editImagesInput" name="images[]" type="file" multiple accept="image/*" class="hidden">
+                            <label for="editImagesInput" class="flex flex-col items-center justify-center w-24 h-24 rounded-xl border-2 border-dashed border-white/10 hover:border-indigo-500/50 hover:bg-indigo-500/5 transition-all cursor-pointer group">
+                                <svg class="w-8 h-8 text-white/20 group-hover:text-indigo-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                <span class="text-[10px] text-white/30 group-hover:text-indigo-300 mt-1 uppercase font-bold tracking-wider">Ajouter</span>
+                            </label>
+                        </div>
                     </div>
-                    <div id="editImagesList" class="mt-3 flex flex-wrap gap-3"></div>
-                    <div id="editNewImagesPreview" class="mt-3 flex flex-wrap gap-3 border-t border-white/5 pt-3 hidden"></div>
                 </div>
                 
                 <div>
@@ -848,13 +851,16 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderEditImages(images){
         const box = document.getElementById('editImagesList');
         if(!box) return;
-        const html = (Array.isArray(images) ? images : []).map(url => `
-            <div class="relative group">
-              <img src="${url}" class="w-16 h-16 object-cover rounded border border-white/10 hover:ring-2 hover:ring-indigo-400">
-              <button type="button" data-del-image="${url}" class="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-6 h-6">×</button>
+        box.innerHTML = (Array.isArray(images) ? images : []).map(url => `
+            <div class="relative w-24 h-24 group">
+                <img src="${url}" class="w-full h-full object-cover rounded-xl border border-white/10 shadow-lg">
+                <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center">
+                    <button type="button" data-del-image="${url}" class="bg-red-500 text-white p-1.5 rounded-lg hover:bg-red-600 transition-transform hover:scale-110">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                    </button>
+                </div>
             </div>
         `).join('');
-        box.innerHTML = html || '<div class="text-white/60 text-xs">Aucune image associée</div>';
     }
 
     document.getElementById('editImagesList')?.addEventListener('click', async (e)=>{
@@ -911,22 +917,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateEditNewImagesPreview() {
         const box = document.getElementById('editNewImagesPreview');
-        const addMoreBtn = document.getElementById('editAddMoreBtn');
         if (!box) return;
+        
         if (editSelectedFiles.length === 0) {
             box.innerHTML = '';
-            box.classList.add('hidden');
-            addMoreBtn?.classList.add('hidden');
             return;
         }
-        box.classList.remove('hidden');
-        addMoreBtn?.classList.remove('hidden');
+
         box.innerHTML = editSelectedFiles.map((file, index) => `
-            <div class="relative group w-20 h-20">
-                <img src="${URL.createObjectURL(file)}" class="w-full h-full object-cover rounded-lg border border-white/10 group-hover:ring-2 group-hover:ring-indigo-500 transition">
-                <button type="button" onclick="removeEditSelectedFile(${index})" class="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-lg hover:bg-red-700 transition">
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                </button>
+            <div class="relative w-24 h-24 group">
+                <img src="${URL.createObjectURL(file)}" class="w-full h-full object-cover rounded-xl border border-white/10 shadow-lg">
+                <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center">
+                    <button type="button" onclick="removeEditSelectedFile(${index})" class="bg-red-500 text-white p-1.5 rounded-lg hover:bg-red-600 transition-transform hover:scale-110">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
+                <div class="absolute bottom-1 right-1 bg-indigo-500 text-[8px] font-bold px-1.5 py-0.5 rounded text-white uppercase">Nouveau</div>
             </div>
         `).join('');
     }
