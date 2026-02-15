@@ -13,40 +13,9 @@
             opacity: 0;
             transform: translateX(-12px);
             animation: drawerIn 500ms ease forwards;
-            position: relative;
+            white-space: nowrap; /* Prevent text wrapping */
             overflow: hidden;
-            transition: all 0.3s ease;
         }
-
-        .drawer-item::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            height: 100%;
-            width: 4px;
-            background: #24da00ff; /* Green accent */
-            transform: scaleY(0);
-            transform-origin: bottom;
-            transition: transform 0.3s ease;
-        }
-
-        .drawer-item:hover::before,
-        .drawer-item.active::before {
-            transform: scaleY(1);
-            transform-origin: top;
-        }
-
-        .drawer-item:hover {
-            background-color: rgba(255, 255, 255, 0.05);
-            padding-left: 1.25rem; /* slightly shift content right on hover */
-        }
-
-        .drawer-item.active {
-            background-color: rgba(36, 218, 0, 0.1); /* Slight green tint for active */
-            border-right: 1px solid rgba(36, 218, 0, 0.2);
-        }
-
         .drawer-item:nth-child(1) { animation-delay: 60ms; }
         .drawer-item:nth-child(2) { animation-delay: 120ms; }
         .drawer-item:nth-child(3) { animation-delay: 180ms; }
@@ -56,89 +25,92 @@
             to { opacity: 1; transform: translateX(0); }
         }
 
-        /* Drawer behavior: height, non-scroll, slide */
+        /* Drawer Layout & Transitions */
         #adminDrawer {
             position: fixed;
             top: 0;
             left: 0;
-            width: 4.5rem;          /* Default collapsed width */
             height: 100vh;
-            overflow: hidden;      /* no scrollbars in drawer */
+            background-color: #122241;
             z-index: 40;
-            transition: width 300ms ease, transform 300ms ease-out;
+            overflow: hidden;
+            transition: width 300ms ease, transform 300ms ease;
             will-change: width, transform;
-            background-color: #122241; /* Ensure bg is set */
+            width: 18rem; /* Mobile width */
+            transform: translateX(-100%); /* Mobile hidden by default */
         }
 
-        #adminDrawer:hover {
-            width: 18rem;           /* Expanded width on hover */
-        }
-
-        /* Hide text when collapsed, show on hover */
+        /* Text Visibility Transition */
         .drawer-item span {
             opacity: 0;
-            white-space: nowrap;
             transition: opacity 200ms ease;
-            margin-left: 0.5rem;
+            display: none; /* Hidden in mini mode */
         }
 
-        #adminDrawer:hover .drawer-item span {
-            opacity: 1;
-            transition-delay: 100ms;
-        }
-
-        /* Ensure icons are centered/visible */
-        .drawer-item svg {
-            min-width: 1.25rem; /* Ensure icon size doesn't shrink */
-        }
-
-        #adminDrawer.drawer--collapsed {
-            transform: translateX(-100%); /* slide out on small screens */
-        }
+        /* Desktop Styles (>= 768px) */
         @media (min-width: 768px) {
-            /* On desktop, drawer is static and always shown (but mini) */
-            #adminDrawer.drawer--collapsed {
-                transform: none;
+            #adminDrawer {
+                transform: none; /* Always visible */
+                width: 4.5rem;   /* Mini mode default */
+            }
+            
+            /* Expanded State on Desktop */
+            body.drawer-expanded #adminDrawer {
+                width: 18rem;
+            }
+
+            body.drawer-expanded .drawer-item span {
+                display: inline;
+                opacity: 1;
+                transition-delay: 100ms;
+            }
+
+            /* Adjust Main Content & Header */
+            #adminHeader, #contentScroll {
+                left: 4.5rem;
+                transition: left 300ms ease;
+            }
+
+            body.drawer-expanded #adminHeader,
+            body.drawer-expanded #contentScroll {
+                left: 18rem;
             }
         }
+
+        /* Mobile Open State */
+        body.mobile-open #adminDrawer {
+            transform: translateX(0);
+        }
+        body.mobile-open .drawer-item span {
+            display: inline;
+            opacity: 1;
+        }
+
         /* Layout fix: fixed drawer + header; only content scrolls */
         html, body { height: 100%; }
         body { overflow: hidden; }
 
-        /* Remove duplicate definition of #adminDrawer if present below, merging here */
-        
         #adminHeader {
             position: fixed;
             top: 0;
-            left: 4.5rem;           /* offset equal to collapsed drawer width */
             right: 0;
-            height: 4rem;          /* h-16 = 64px */
+            height: 4rem;
             z-index: 30;
-            transition: left 300ms ease;
         }
 
         #contentScroll {
             position: fixed;
-            top: 4rem;             /* below header */
-            left: 4.5rem;           /* beside drawer */
+            top: 4rem;
             right: 0;
             bottom: 0;
-            overflow: auto;        /* only content area scrolls */
+            overflow: auto;
             padding: 1rem;
-            transition: left 300ms ease;
-        }
-
-        /* Optional: adjust for small screens if needed */
-        @media (max-width: 767px) {
-            #adminDrawer { width: 16rem; }
-            #adminHeader { left: 16rem; }
-            #contentScroll { left: 16rem; }
         }
 
         /* Active drawer item highlight */
         .drawer-item.active {
-            /* background-color: rgba(255, 255, 255, 0.1); replaced by above styles */
-            /* border-color: rgba(255, 255, 255, 0.25); replaced by above styles */
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.25);
         }
     </style>
 </head>
@@ -219,8 +191,14 @@
         <!-- Header -->
         <header id="adminHeader" class="z-30 h-16 bg-[#122241]/90 backdrop-blur border-b border-white/10">
             <div class="h-full px-4 flex items-center">
-                <div class="inline-flex items-center gap-2">
-                    <span class="font-semibold text-3xl">Dashboard</span>
+                <div class="inline-flex items-center gap-4">
+                    <!-- Toggle Button -->
+                    <button id="toggleDrawerBtn" class="p-2 rounded-lg hover:bg-white/10 text-white transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
+                        </svg>
+                    </button>
+                    <span class="font-semibold text-3xl hidden md:block">Dashboard</span>
                 </div>
                 <div class="ml-auto flex items-center gap-3">
                     <img src="{{ (isset($companyInfo) && $companyInfo->logo_path) ? Storage::url($companyInfo->logo_path) : (session('admin_user')['avatar'] ?? '/images/Logo_ALCOIL_without_txt_white@3x.png') }}" alt="Avatar" class="h-10 w-10 rounded-full border border-white/10 object-cover bg-white">
@@ -246,5 +224,22 @@
         @yield('scripts')
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const toggleBtn = document.getElementById('toggleDrawerBtn');
+        const body = document.body;
+        
+        toggleBtn.addEventListener('click', () => {
+            if (window.innerWidth >= 768) {
+                // Desktop: Toggle between Mini (default) and Expanded
+                body.classList.toggle('drawer-expanded');
+            } else {
+                // Mobile: Toggle between Hidden (default) and Open
+                body.classList.toggle('mobile-open');
+            }
+        });
+    });
+</script>
 </body>
 </html>
