@@ -115,36 +115,42 @@ Route::get('/produits/{id}', function ($id) {
 })->name('produit.details');
 
 Route::post('/produits/{id}/rate', function (Request $request, $id) {
-    $p = \App\Models\Product::find($id);
-    if (!$p) { return response()->json(['ok'=>false,'message'=>'Produit introuvable'],404); }
-    $stars = (int) $request->input('stars');
-    if ($stars < 1 || $stars > 5) { return response()->json(['ok'=>false,'message'=>'Note invalide'],422); }
+    try {
+        $p = \App\Models\Product::find($id);
+        if (!$p) { return response()->json(['ok'=>false,'message'=>'Produit introuvable'],404); }
+        $stars = (int) $request->input('stars');
+        if ($stars < 1 || $stars > 5) { return response()->json(['ok'=>false,'message'=>'Note invalide'],422); }
 
-    $rated = [];
-    try { $rated = json_decode((string) $request->cookie('alc_rated_products','[]'), true) ?: []; } catch (\Throwable $e) { $rated = []; }
-    if (in_array($id, $rated, true)) {
+        $rated = [];
+        try { $rated = json_decode((string) $request->cookie('alc_rated_products','[]'), true) ?: []; } catch (\Throwable $e) { $rated = []; }
+        
+        if (in_array($id, $rated, true)) {
+            $ratings = is_array($p->ratings) ? $p->ratings : ['counts'=>[]];
+            $counts = $ratings['counts'] ?? [];
+            $totalVotes = array_sum(array_map('intval', $counts));
+            $weighted = 0; foreach ($counts as $s => $n) { $weighted += ((int)$s) * ((int)$n); }
+            $avgRating = $totalVotes > 0 ? round($weighted / $totalVotes, 1) : 0;
+            return response()->json(['ok'=>false,'message'=>'Vous avez déjà voté pour ce produit','rating'=>$avgRating,'count'=>$totalVotes], 409);
+        }
+
         $ratings = is_array($p->ratings) ? $p->ratings : ['counts'=>[]];
         $counts = $ratings['counts'] ?? [];
+        $counts[(string)$stars] = ((int)($counts[(string)$stars] ?? 0)) + 1;
+        $p->ratings = ['counts' => $counts];
+        $p->save();
+
+        $rated[] = $id;
+        $minutes = 365*24*60;
         $totalVotes = array_sum(array_map('intval', $counts));
         $weighted = 0; foreach ($counts as $s => $n) { $weighted += ((int)$s) * ((int)$n); }
         $avgRating = $totalVotes > 0 ? round($weighted / $totalVotes, 1) : 0;
-        return response()->json(['ok'=>false,'message'=>'Vous avez déjà voté pour ce produit','rating'=>$avgRating,'count'=>$totalVotes], 409);
+
+        return response()->json(['ok'=>true,'rating'=>$avgRating,'count'=>$totalVotes])
+            ->cookie('alc_rated_products', json_encode($rated), $minutes);
+    } catch (\Exception $e) {
+        \Illuminate\Support\Facades\Log::error('Rating error: ' . $e->getMessage());
+        return response()->json(['ok'=>false, 'message'=>'Erreur serveur lors du vote.'], 500);
     }
-
-    $ratings = is_array($p->ratings) ? $p->ratings : ['counts'=>[]];
-    $counts = $ratings['counts'] ?? [];
-    $counts[(string)$stars] = ((int)($counts[(string)$stars] ?? 0)) + 1;
-    $p->ratings = ['counts' => $counts];
-    $p->save();
-
-    $rated[] = $id;
-    $minutes = 365*24*60;
-    $totalVotes = array_sum(array_map('intval', $counts));
-    $weighted = 0; foreach ($counts as $s => $n) { $weighted += ((int)$s) * ((int)$n); }
-    $avgRating = $totalVotes > 0 ? round($weighted / $totalVotes, 1) : 0;
-
-    return response()->json(['ok'=>true,'rating'=>$avgRating,'count'=>$totalVotes])
-        ->cookie('alc_rated_products', json_encode($rated), $minutes);
 })->name('produit.rate');
 
 Route::get('/test', function () {
