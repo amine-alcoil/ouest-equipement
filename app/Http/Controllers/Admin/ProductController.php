@@ -33,6 +33,59 @@ class ProductController extends Controller
         return view('admin.products', ['products' => $products, 'q' => $q]);
     }
 
+    /**
+     * Process and compress product images for optimal performance.
+     */
+    private function processImage($file): ?string
+    {
+        if (!$file) return null;
+
+        $raw = @file_get_contents($file->getRealPath());
+        $src = ($raw !== false && function_exists('imagecreatefromstring')) ? @imagecreatefromstring($raw) : false;
+        
+        if (!$src) {
+            return Storage::url($file->store('products', 'public'));
+        }
+
+        $sw = imagesx($src); 
+        $sh = imagesy($src);
+        
+        // Target maximum dimensions for speed and smoothness
+        $mw = 1000; 
+        $mh = 1000; 
+        $r = min($mw / max(1,$sw), $mh / max(1,$sh), 1);
+        
+        $nw = (int)floor($sw * $r); 
+        $nh = (int)floor($sh * $r);
+        
+        $dst = imagecreatetruecolor($nw, $nh);
+        imagealphablending($dst, false); 
+        imagesavealpha($dst, true);
+        imagecopyresampled($dst, $src, 0,0,0,0, $nw,$nh, $sw,$sh);
+        @imagedestroy($src);
+
+        $name = (string) Str::uuid();
+        $dir = 'products';
+        Storage::disk('public')->makeDirectory($dir);
+        
+        $webpRel = $dir . '/' . $name . '.webp';
+        $jpgRel  = $dir . '/' . $name . '.jpg';
+        $webpAbs = storage_path('app/public/' . $webpRel);
+        $jpgAbs  = storage_path('app/public/' . $jpgRel);
+
+        // Compress with WebP (Priority) or JPG fallback
+        if (function_exists('imagewebp')) { 
+            @imagewebp($dst, $webpAbs, 60); 
+        }
+        
+        imageinterlace($dst, true);
+        @imagejpeg($dst, $jpgAbs, 65);
+        @imagedestroy($dst);
+
+        $finalRel = file_exists($webpAbs) ? $webpRel : $jpgRel;
+        return Storage::url($finalRel);
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -47,8 +100,8 @@ class ProductController extends Controller
             'tags'        => 'array',
             'tags.*'      => 'string|max:40',
             'images'      => 'array',
-            'images.*'    => 'nullable|image|max:4096',
-            'pdf'         => 'nullable|file|mimes:pdf|max:8192',
+            'images.*'    => 'nullable|image|max:10240',
+            'pdf'         => 'nullable|file|mimes:pdf|max:12288',
         ], [
             'name.required' => 'Please enter a product name.',
             'category.required' => 'Please select a category.',
@@ -56,43 +109,16 @@ class ProductController extends Controller
             'stock.required' => 'Please provide a stock quantity.',
             'images.array' => 'Please select one or more image files.',
             'images.*.image' => 'Each file must be a valid image.',
-            'images.*.max' => 'Each image must be at most 4 MB.',
+            'images.*.max' => 'Each image must be at most 10 MB.',
             'pdf.mimes' => 'The technical sheet must be a PDF file.',
-            'pdf.max' => 'The PDF must be at most 8 MB.'
+            'pdf.max' => 'The PDF must be at most 12 MB.'
         ]);
 
         $images = [];
         if ($request->hasFile('images')) {
-            Storage::disk('public')->makeDirectory('products');
             foreach ((array) $request->file('images') as $file) {
-                if ($file) {
-                    $raw = @file_get_contents($file->getRealPath());
-                    $src = ($raw !== false && function_exists('imagecreatefromstring')) ? @imagecreatefromstring($raw) : false;
-                    if ($src) {
-                        $sw = imagesx($src); $sh = imagesy($src);
-                        $mw = 1400; $mh = 1400; $r = min($mw / max(1,$sw), $mh / max(1,$sh), 1);
-                        $nw = (int)floor($sw * $r); $nh = (int)floor($sh * $r);
-                        $dst = imagecreatetruecolor($nw, $nh);
-                        imagealphablending($dst, false); imagesavealpha($dst, true);
-                        imagecopyresampled($dst, $src, 0,0,0,0, $nw,$nh, $sw,$sh);
-                        @imagedestroy($src);
-                        $name = (string) Str::uuid();
-                        $dir = 'products';
-                        $webpRel = $dir . '/' . $name . '.webp';
-                        $jpgRel  = $dir . '/' . $name . '.jpg';
-                        $webpAbs = storage_path('app/public/' . $webpRel);
-                        $jpgAbs  = storage_path('app/public/' . $jpgRel);
-                        if (function_exists('imagewebp')) { @imagewebp($dst, $webpAbs, 70); }
-                        imageinterlace($dst, true);
-                        @imagejpeg($dst, $jpgAbs, 75);
-                        @imagedestroy($dst);
-                        $finalRel = file_exists($webpAbs) ? $webpRel : $jpgRel;
-                        $images[] = Storage::url($finalRel);
-                    } else {
-                        $path = $file->store('products', 'public');
-                        $images[] = Storage::url($path);
-                    }
-                }
+                $url = $this->processImage($file);
+                if ($url) $images[] = $url;
             }
         }
         
@@ -158,8 +184,8 @@ class ProductController extends Controller
             'tags'        => 'array',
             'tags.*'      => 'string|max:40',
             'images'      => 'array',
-            'images.*'    => 'nullable|image|max:4096',
-            'pdf'         => 'nullable|file|mimes:pdf|max:8192',
+            'images.*'    => 'nullable|image|max:10240',
+            'pdf'         => 'nullable|file|mimes:pdf|max:12288',
         ], [
             'name.required' => 'Please enter a product name.',
             'category.required' => 'Please select a category.',
@@ -167,9 +193,9 @@ class ProductController extends Controller
             'stock.required' => 'Please provide a stock quantity.',
             'images.array' => 'Please select one or more image files.',
             'images.*.image' => 'Each file must be a valid image.',
-            'images.*.max' => 'Each image must be at most 4 MB.',
+            'images.*.max' => 'Each image must be at most 10 MB.',
             'pdf.mimes' => 'The technical sheet must be a PDF file.',
-            'pdf.max' => 'The PDF must be at most 8 MB.'
+            'pdf.max' => 'The PDF must be at most 12 MB.'
         ]);
 
         $productModel->name = $validated['name'];
@@ -183,36 +209,10 @@ class ProductController extends Controller
         
 
         if ($request->hasFile('images')) {
-            Storage::disk('public')->makeDirectory('products');
             $imgs = [];
             foreach ((array) $request->file('images') as $file) {
-                if ($file) {
-                    $raw = @file_get_contents($file->getRealPath());
-                    $src = ($raw !== false && function_exists('imagecreatefromstring')) ? @imagecreatefromstring($raw) : false;
-                    if ($src) {
-                        $sw = imagesx($src); $sh = imagesy($src);
-                        $mw = 1400; $mh = 1400; $r = min($mw / max(1,$sw), $mh / max(1,$sh), 1);
-                        $nw = (int)floor($sw * $r); $nh = (int)floor($sh * $r);
-                        $dst = imagecreatetruecolor($nw, $nh);
-                        imagealphablending($dst, false); imagesavealpha($dst, true);
-                        imagecopyresampled($dst, $src, 0,0,0,0, $nw,$nh, $sw,$sh);
-                        @imagedestroy($src);
-                        $name = (string) Str::uuid();
-                        $dir = 'products';
-                        $webpRel = $dir . '/' . $name . '.webp';
-                        $jpgRel  = $dir . '/' . $name . '.jpg';
-                        $webpAbs = storage_path('app/public/' . $webpRel);
-                        $jpgAbs  = storage_path('app/public/' . $jpgRel);
-                        if (function_exists('imagewebp')) { @imagewebp($dst, $webpAbs, 70); }
-                        imageinterlace($dst, true);
-                        @imagejpeg($dst, $jpgAbs, 75);
-                        @imagedestroy($dst);
-                        $finalRel = file_exists($webpAbs) ? $webpRel : $jpgRel;
-                        $imgs[] = Storage::url($finalRel);
-                    } else {
-                        $imgs[] = Storage::url($file->store('products', 'public'));
-                    }
-                }
+                $url = $this->processImage($file);
+                if ($url) $imgs[] = $url;
             }
             $existing = is_array($productModel->images) ? $productModel->images : [];
             $productModel->images = array_values(array_unique(array_merge($existing, $imgs)));
