@@ -211,7 +211,7 @@
 
                     <div class="md:col-span-3">
                         <label class="block text-sm text-white/80 mb-1">Tags</label>
-                        <div class="relative group">
+                        <div class="relative group" id="newTagsWrapper">
                             <select id="newTags" name="tags[]" multiple class="hidden"></select>
                             <div id="newTagsInputArea" class="w-full min-h-[46px] px-3 py-2 rounded-lg bg-[#0f1e34] border border-white/10 focus-within:ring-2 focus-within:ring-white/20 flex flex-wrap items-center gap-2 cursor-text transition-all">
                                 <input type="text" id="newTagsSearch" placeholder="Ajouter des tags..." class="bg-transparent border-none outline-none text-white text-sm flex-1 min-w-[120px] placeholder-white/30 h-7">
@@ -461,7 +461,7 @@
                 </div>
                 <div class="md:col-span-3">
                     <label class="block text-sm text-white/80 mb-1">Tags</label>
-                    <div class="relative group">
+                    <div class="relative group" id="editTagsWrapper">
                         <select id="editTags" name="tags[]" multiple class="hidden"></select>
                         <div id="editTagsInputArea" class="w-full min-h-[46px] px-3 py-2 rounded-lg bg-[#0f1e34] border border-white/10 focus-within:ring-2 focus-within:ring-white/20 flex flex-wrap items-center gap-2 cursor-text transition-all">
                             <input type="text" id="editTagsSearch" placeholder="Ajouter des tags..." class="bg-transparent border-none outline-none text-white text-sm flex-1 min-w-[120px] placeholder-white/30 h-7">
@@ -706,15 +706,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 form.querySelector('[name=status]').value = data.product.status ?? 'actif';
                 const et = document.getElementById('editTags');
                 if (et) {
-                    if (!et.options.length || !window._tagsList) { await loadTags(); }
+                    if (!window._tagsList || window._tagsList.length === 0) { await loadTags(); }
+                    et.innerHTML = ''; 
                     const tags = data.product.tags || [];
                     tags.forEach(t => {
-                        if (!Array.from(et.options).some(o => o.value === t)) {
-                            const opt = document.createElement('option'); opt.value = t; opt.textContent = t; et.appendChild(opt);
-                        }
+                        const opt = new Option(t, t);
+                        opt.selected = true;
+                        et.add(opt);
                     });
-                    Array.from(et.options).forEach(opt => { opt.selected = tags.includes(opt.value); });
-                    updateEditTagsPreview();
+                    et.dispatchEvent(new Event('change'));
                 }
                 // Clear previous new image selection
                 editSelectedFiles = [];
@@ -1163,42 +1163,91 @@ document.addEventListener('DOMContentLoaded', () => {
         editSub.innerHTML = '<option value=""></option>' + children.map(ch => `<option value="${ch.name}">${ch.name}</option>`).join('');
     });
     loadCategories();
-    const updateTagsPreview = () => {
-        const box = document.getElementById('newTagsPreview');
-        if (!tagsSel || !box) return;
-        const selected = Array.from(tagsSel.selectedOptions).map(o => o.value);
-        box.innerHTML = selected.map(t => `<span class="inline-flex items-center px-2 py-1 rounded bg-indigo-600/20 text-indigo-200 text-xs">${t}</span>`).join('');
-    };
-    const updateEditTagsPreview = () => {
-        const box = document.getElementById('editTagsPreview');
-        if (!editTags || !box) return;
-        const selected = Array.from(editTags.selectedOptions).map(o => o.value);
-        box.innerHTML = selected.map(t => `
-            <span class="inline-flex items-center gap-2 px-2 py-1 rounded bg-indigo-600/20 text-indigo-200 text-xs">
-                <span>${t}</span>
-                <button type="button" data-remove-tag="${t}" class="rounded bg-white/10 px-1">×</button>
-            </span>
-        `).join('');
-        box.querySelectorAll('[data-remove-tag]').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const val = btn.getAttribute('data-remove-tag');
-                Array.from(editTags.options).forEach(o => { if (o.value === val) o.selected = false; });
-                updateEditTagsPreview();
-            });
-        });
-    };
+    // Enhanced Tag Input Logic
+    window._tagsList = [];
     const loadTags = async () => {
-        const res = await fetch(tagsUrl, { headers: { 'Accept': 'application/json' } });
-        const data = await res.json();
-        const list = (res.ok && data.tags) ? data.tags : [];
-        const names = list.map(t => t.name);
-        window._tagsList = names;
-        if (tagsSel) { tagsSel.innerHTML = names.map(n => `<option value="${n}">${n}</option>`).join(''); updateTagsPreview(); }
-        if (editTags) { editTags.innerHTML = names.map(n => `<option value="${n}">${n}</option>`).join(''); updateEditTagsPreview(); }
+        try {
+            const res = await fetch(tagsUrl, { headers: { 'Accept': 'application/json' } });
+            const data = await res.json();
+            window._tagsList = (res.ok && data.tags) ? data.tags.map(t => t.name) : [];
+            initTagInputs(); 
+        } catch(e) { console.error('Tags load error', e); }
     };
+
+    function setupTagInput(wrapperId, selectId, searchId, dropdownId) {
+        const wrapper = document.getElementById(wrapperId);
+        if(!wrapper) return;
+        const select = document.getElementById(selectId);
+        const search = document.getElementById(searchId);
+        const dropdown = document.getElementById(dropdownId);
+        const inputArea = wrapper.querySelector('div[id$="InputArea"]');
+        
+        if (!select || !search || !dropdown || !inputArea) return;
+
+        const renderChips = () => {
+            Array.from(inputArea.querySelectorAll('.tag-chip')).forEach(el => el.remove());
+            const selected = Array.from(select.options).filter(o => o.selected).map(o => o.value);
+            selected.forEach(tag => {
+                const chip = document.createElement('div');
+                chip.className = 'tag-chip inline-flex items-center gap-1 px-2 py-1 rounded-md bg-indigo-500/20 text-indigo-300 text-xs font-medium border border-indigo-500/30';
+                chip.innerHTML = `<span>${tag}</span><button type="button" class="hover:text-white transition-colors focus:outline-none ml-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>`;
+                chip.querySelector('button').onclick = (e) => { e.stopPropagation(); toggleTag(tag, false); };
+                inputArea.insertBefore(chip, search);
+            });
+        };
+
+        const toggleTag = (tag, state) => {
+            let opt = Array.from(select.options).find(o => o.value === tag);
+            if (!opt) { opt = new Option(tag, tag); select.add(opt); }
+            opt.selected = state;
+            renderChips();
+            search.value = '';
+            search.focus();
+            filterDropdown();
+        };
+
+        const filterDropdown = () => {
+            const query = search.value.toLowerCase();
+            const selected = Array.from(select.options).filter(o => o.selected).map(o => o.value);
+            const filtered = window._tagsList.filter(t => !selected.includes(t) && t.toLowerCase().includes(query));
+            
+            if (filtered.length === 0 && query.trim() !== '') {
+                dropdown.innerHTML = `<div class="px-3 py-2 text-sm text-white/50 italic">Aucun tag trouvé</div><div class="px-3 py-2 text-sm text-indigo-300 hover:bg-white/5 cursor-pointer border-t border-white/5" id="createNewTag_${selectId}">Créer "${search.value}"</div>`;
+                dropdown.classList.remove('hidden');
+                const createBtn = document.getElementById(`createNewTag_${selectId}`);
+                if(createBtn) createBtn.onclick = () => {
+                    const newTag = search.value.trim();
+                    if(newTag) {
+                        if(!window._tagsList.includes(newTag)) window._tagsList.push(newTag);
+                        toggleTag(newTag, true);
+                    }
+                    dropdown.classList.add('hidden');
+                };
+                return;
+            }
+
+            if (filtered.length === 0) { dropdown.classList.add('hidden'); return; }
+
+            dropdown.innerHTML = filtered.map(t => `<div class="px-3 py-2 text-sm text-white/80 hover:bg-indigo-500/20 hover:text-white cursor-pointer transition-colors" data-tag="${t}">${t}</div>`).join('');
+            dropdown.querySelectorAll('[data-tag]').forEach(el => { el.onclick = () => { toggleTag(el.dataset.tag, true); dropdown.classList.add('hidden'); }; });
+            dropdown.classList.remove('hidden');
+        };
+
+        inputArea.onclick = (e) => { if(e.target === inputArea) search.focus(); };
+        search.onfocus = () => filterDropdown();
+        search.oninput = () => filterDropdown();
+        search.onkeydown = (e) => { if (e.key === 'Backspace' && search.value === '') { const selected = Array.from(select.options).filter(o => o.selected); if (selected.length > 0) toggleTag(selected[selected.length - 1].value, false); } };
+        document.addEventListener('click', (e) => { if (!wrapper.contains(e.target)) dropdown.classList.add('hidden'); });
+        select.addEventListener('change', renderChips);
+        renderChips();
+    }
+
+    const initTagInputs = () => {
+        setupTagInput('newTagsWrapper', 'newTags', 'newTagsSearch', 'newTagsDropdown');
+        setupTagInput('editTagsWrapper', 'editTags', 'editTagsSearch', 'editTagsDropdown');
+    };
+
     loadTags();
-    tagsSel && tagsSel.addEventListener('change', updateTagsPreview);
-    editTags && editTags.addEventListener('change', updateEditTagsPreview);
     window.viewProduct = (id) => {
         const modal = document.getElementById('productDetailsModal');
         const tr = document.querySelector(`tr[data-id="${id}"]`);
