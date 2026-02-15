@@ -24,7 +24,7 @@
                     @endforeach
                 @endif
             </select>
-            <button id="newProductBtn" type="button" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-medium flex items-center gap-2 shadow-lg shadow-indigo-500/20 transition-all active:scale-95">
+            <button id="newProductBtn" type="button" class="px-4 py-2 rounded-xl bg-secondary hover:bg-secondary/90 text-white font-medium flex items-center gap-2 shadow-lg shadow-secondary-500/20 transition-all active:scale-95">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                 Ajouter un produit
             </button>
@@ -925,9 +925,31 @@ document.addEventListener('DOMContentLoaded', () => {
     const newProductBtn = document.getElementById('newProductBtn');
     const closeNewProduct = document.getElementById('closeNewProduct');
     const cancelNewProduct = document.getElementById('cancelNewProduct');
-    if (newProductBtn) newProductBtn.addEventListener('click', () => newPanel.classList.remove('hidden'));
-    if (closeNewProduct) closeNewProduct.addEventListener('click', () => newPanel.classList.add('hidden'));
-    if (cancelNewProduct) cancelNewProduct.addEventListener('click', () => newPanel.classList.add('hidden'));
+
+    const resetNewProductForm = () => {
+        if (createForm) {
+            createForm.reset();
+            selectedFiles = [];
+            updateNewImagesPreview();
+            const pdfPreview = document.getElementById('newPdfPreview');
+            if (pdfPreview) pdfPreview.innerHTML = 'Choisir le fichier PDF';
+            const tagsPreview = document.getElementById('newTagsPreview');
+            if (tagsPreview) tagsPreview.innerHTML = '';
+        }
+    };
+
+    if (newProductBtn) newProductBtn.addEventListener('click', () => {
+        resetNewProductForm();
+        newPanel.classList.remove('hidden');
+    });
+    if (closeNewProduct) closeNewProduct.addEventListener('click', () => {
+        newPanel.classList.add('hidden');
+        resetNewProductForm();
+    });
+    if (cancelNewProduct) cancelNewProduct.addEventListener('click', () => {
+        newPanel.classList.add('hidden');
+        resetNewProductForm();
+    });
 
     function updateNewImagesPreview() {
         const box = document.getElementById('newImagesPreview');
