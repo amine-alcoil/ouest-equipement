@@ -39,7 +39,7 @@ class AdminAuthController extends Controller
                 ? back()->with(['status' => __($status)])
                 : back()->withErrors(['email' => __($status)]);
         } catch (\Exception $e) {
-            return back()->with('error', 'Erreur lors de l\'envoi de l\'email.');
+            return back()->withErrors(['email' => 'Erreur lors de l\'envoi de l\'email.']);
         }
     }
 
