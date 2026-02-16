@@ -25,19 +25,23 @@ class AdminAuthController extends Controller
     }
 
     public function sendResetLinkEmail(Request $request)
-{
-    $request->validate([
-        'email' => 'required|email'
-    ]);
+    {
+        $request->validate([
+            'email' => 'required|email'
+        ]);
 
-    $status = Password::broker('admins')->sendResetLink(
-        $request->only('email')
-    );
+        try {
+            $status = Password::broker('admins')->sendResetLink(
+                $request->only('email')
+            );
 
-    return $status === Password::RESET_LINK_SENT
-        ? back()->with(['status' => __($status)])
-        : back()->withErrors(['email' => __($status)]);
-}
+            return $status === Password::RESET_LINK_SENT
+                ? back()->with(['status' => __($status)])
+                : back()->withErrors(['email' => __($status)]);
+        } catch (\Exception $e) {
+            return back()->withErrors(['email' => 'Erreur lors de l\'envoi de l\'email: ' . $e->getMessage()]);
+        }
+    }
 
 public function resetPassword(Request $request)
 {
