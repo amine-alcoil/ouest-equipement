@@ -27,6 +27,8 @@ class Devis extends Model
         'largeur_mm' => 'decimal:2',
         'longueur_mm' => 'decimal:2',
         'longueur_totale_mm' => 'decimal:2',
+        'collecteur1' => 'decimal:2',
+        'collecteur2' => 'decimal:2',
         'collecteur1_diametre' => 'decimal:2',
         'collecteur2_diametre' => 'decimal:2',
         'geometrie_x_mm' => 'decimal:2',
