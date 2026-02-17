@@ -144,6 +144,18 @@
             </div>
         </div>
     </section>
+     <!-- CTA -->
+    <section class="container mx-auto px-4 pb-16">
+        <div class="rounded-2xl bg-gradient-to-r from-secondary to-secondary_2 px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div>
+                <h3 class="text-2xl font-semibold text-white">Besoin d’un produit sur mesure ?</h3>
+                <p class="text-white/90 mt-1">Demandez un devis gratuit et adapté à vos exigences.</p>
+            </div>
+            <a href="{{ url('/devis') }}" class="inline-flex items-center bg-white text-secondary_2 font-semibold rounded-xl px-5 py-2.5 hover:bg-gray-50 transition">
+                Demander un devis
+            </a>
+        </div>
+    </section>
 
     <!-- Results -->
     <section id="results" class="container mx-auto px-4 py-10">
@@ -177,18 +189,7 @@
         </div>
     </section>
 
-    <!-- CTA -->
-    <section class="container mx-auto px-4 pb-16">
-        <div class="rounded-2xl bg-gradient-to-r from-secondary to-secondary_2 px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
-            <div>
-                <h3 class="text-2xl font-semibold text-white">Besoin d’un produit sur mesure ?</h3>
-                <p class="text-white/90 mt-1">Demandez un devis gratuit et adapté à vos exigences.</p>
-            </div>
-            <a href="{{ url('/devis') }}" class="inline-flex items-center bg-white text-secondary_2 font-semibold rounded-xl px-5 py-2.5 hover:bg-gray-50 transition">
-                Demander un devis
-            </a>
-        </div>
-    </section>
+   
 </div>
 
 <!-- Animations + Filtering Script -->
