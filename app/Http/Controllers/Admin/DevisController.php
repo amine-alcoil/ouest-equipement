@@ -434,13 +434,26 @@ class DevisController extends Controller
             $attachments = $devis->attachments ?? [];
             $urlToRemove = $validated['attachment_url'];
             
+            // Normalize URLs for comparison (handle full URL vs relative path)
+            $pathToRemove = parse_url($urlToRemove, PHP_URL_PATH);
+            
             // Filter out the attachment to remove
-            $updatedAttachments = array_values(array_filter($attachments, function($url) use ($urlToRemove) {
-                return $url !== $urlToRemove;
+            $updatedAttachments = array_values(array_filter($attachments, function($url) use ($urlToRemove, $pathToRemove) {
+                // If direct match fails, try matching path components
+                if ($url === $urlToRemove) return false;
+                
+                $storedPath = parse_url($url, PHP_URL_PATH);
+                return $storedPath !== $pathToRemove;
             }));
 
-            // If no change, maybe it wasn't found, but we proceed anyway
+            // If no change, maybe it wasn't found
             if (count($attachments) === count($updatedAttachments)) {
+                Log::warning('Attachment not found for deletion', [
+                    'devis_id' => $id,
+                    'url_to_remove' => $urlToRemove,
+                    'stored_attachments' => $attachments
+                ]);
+                
                 return response()->json([
                     'success' => false,
                     'message' => 'Fichier introuvable dans ce devis.'
@@ -448,13 +461,26 @@ class DevisController extends Controller
             }
 
             // Try to delete the physical file
-            // Assuming URL format is /storage/path/to/file
-            // We need to convert it back to storage path relative to 'public' disk
+            // We need to convert URL path to storage path relative to 'public' disk
+            // URL usually is /storage/path/to/file
+            // Storage path is path/to/file
             $storagePrefix = '/storage/';
-            if (strpos($urlToRemove, $storagePrefix) === 0) {
+            $relativePath = null;
+            
+            if ($pathToRemove && strpos($pathToRemove, $storagePrefix) === 0) {
+                $relativePath = substr($pathToRemove, strlen($storagePrefix));
+            } elseif (strpos($urlToRemove, $storagePrefix) === 0) {
                 $relativePath = substr($urlToRemove, strlen($storagePrefix));
+            }
+
+            if ($relativePath) {
+                // Decode URL encoding (e.g. %20 -> space)
+                $relativePath = urldecode($relativePath);
+                
                 if (Storage::disk('public')->exists($relativePath)) {
                     Storage::disk('public')->delete($relativePath);
+                } else {
+                    Log::info('Physical file not found for deletion', ['path' => $relativePath]);
                 }
             }
 
@@ -466,77 +492,16 @@ class DevisController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            Log::error('Failed to delete attachment', ['error' => $e->getMessage()]);
+            Log::error('Failed to delete attachment', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
             
             return response()->json([
                 'success' => false,
-                'message' => 'Erreur lors de la suppression du fichier.'
+                'message' => 'Erreur lors de la suppression du fichier: ' . $e->getMessage()
             ], 500);
         }
     }
 
-    /**
-     * Remove a specific attachment from a devis.
-     */
-    public function deleteAttachment(Request $request, $id)
-    {
-        $validated = $request->validate([
-            'attachment_url' => 'required|string'
-        ]);
-
-        try {
-            $devis = Devis::where('ref_id', $id)->first();
-            
-            if (!$devis) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Devis introuvable.'
-                ], 404);
-            }
-
-            $attachments = $devis->attachments ?? [];
-            $urlToRemove = $validated['attachment_url'];
-            
-            // Filter out the attachment to remove
-            $updatedAttachments = array_values(array_filter($attachments, function($url) use ($urlToRemove) {
-                return $url !== $urlToRemove;
-            }));
-
-            // If no change, maybe it wasn't found, but we proceed anyway
-            if (count($attachments) === count($updatedAttachments)) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Fichier introuvable dans ce devis.'
-                ], 404);
-            }
-
-            // Try to delete the physical file
-            // Assuming URL format is /storage/path/to/file
-            // We need to convert it back to storage path relative to 'public' disk
-            $storagePrefix = '/storage/';
-            if (strpos($urlToRemove, $storagePrefix) === 0) {
-                $relativePath = substr($urlToRemove, strlen($storagePrefix));
-                if (Storage::disk('public')->exists($relativePath)) {
-                    Storage::disk('public')->delete($relativePath);
-                }
-            }
-
-            $devis->update(['attachments' => $updatedAttachments]);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Fichier supprimé avec succès!'
-            ]);
-
-        } catch (\Exception $e) {
-            Log::error('Failed to delete attachment', ['error' => $e->getMessage()]);
-            
-            return response()->json([
-                'success' => false,
-                'message' => 'Erreur lors de la suppression du fichier.'
-            ], 500);
-        }
-    }
+   
 
     /**
      * Update devis status.
