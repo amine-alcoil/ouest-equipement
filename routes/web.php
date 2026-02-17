@@ -383,6 +383,7 @@ Route::prefix('admin')->group(function () {
         Route::get('/devis/{id}/edit', [DevisController::class, 'edit'])->name('admin.devis.edit');
         Route::put('/devis/{id}', [DevisController::class, 'update'])->name('admin.devis.update');
         Route::delete('/devis/{id}', [DevisController::class, 'destroy'])->name('admin.devis.destroy');
+        Route::delete('/devis/{id}/attachment', [DevisController::class, 'deleteAttachment'])->name('admin.devis.delete-attachment');
         Route::patch('/devis/{id}/status', [DevisController::class, 'updateStatus'])->name('admin.devis.update-status');
         Route::post('/devis/send-email', [DevisController::class, 'sendEmail'])->name('admin.devis.send-email');
         Route::get('/devis/export', [DevisController::class, 'export'])->name('admin.devis.export');

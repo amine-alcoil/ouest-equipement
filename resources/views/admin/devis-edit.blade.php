@@ -171,29 +171,36 @@
                     <label class="block text-white text-sm font-medium mb-2">Description technique</label>
                     <textarea name="requirements" rows="4" class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50 focus:ring-2 focus:ring-secondary focus:border-transparent" placeholder="Décrivez vos exigences spécifiques...">{{ $devis['requirements'] ?? '' }}</textarea>
                 </div>
-            </div>
 
-            <!-- Attachments (Available for both) -->
-            <div>
-                <label class="block text-white text-sm font-medium mb-2">Pièces jointes (schémas, plans)</label>
-                <input type="file" name="files[]" multiple class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50 focus:ring-2 focus:ring-secondary focus:border-transparent">
-                
-                @if(!empty($devis['attachments']))
-                    <div class="mt-4">
-                        <p class="text-sm font-medium text-white mb-2">Fichiers actuels :</p>
-                        <ul class="space-y-2">
+                <!-- Attachments (Specific only) -->
+                <div>
+                    <label class="block text-white text-sm font-medium mb-2">Pièces jointes (schémas, plans)</label>
+                    <input type="file" name="files[]" multiple class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50 focus:ring-2 focus:ring-secondary focus:border-transparent">
+                    
+                    @if(!empty($devis['attachments']))
+                        <div class="mt-4">
+                            <p class="text-sm font-medium text-white mb-2">Fichiers actuels :</p>
+                        <ul class="space-y-2" id="attachments-list">
                             @foreach($devis['attachments'] as $attachment)
-                                <li class="flex items-center text-sm text-white/80 bg-white/5 rounded px-3 py-2">
-                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
-                                    <a href="{{ $attachment }}" target="_blank" class="hover:text-secondary hover:underline truncate">
-                                        {{ basename($attachment) }}
-                                    </a>
+                                <li class="flex items-center justify-between text-sm text-white/80 bg-white/5 rounded px-3 py-2 group">
+                                    <div class="flex items-center truncate">
+                                        <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
+                                        <a href="{{ $attachment }}" target="_blank" class="hover:text-secondary hover:underline truncate">
+                                            {{ basename($attachment) }}
+                                        </a>
+                                    </div>
+                                    <button type="button" onclick="deleteAttachment('{{ $attachment }}', this)" class="text-red-400 hover:text-red-300 ml-2 p-1 rounded hover:bg-white/10 transition-colors" title="Supprimer ce fichier">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                        </svg>
+                                    </button>
                                 </li>
                             @endforeach
                         </ul>
                     </div>
                 @endif
             </div>
+        </div>
 
             
 
@@ -285,5 +292,50 @@
             submitButton.disabled = false;
         });
     });
+
+    // Function to delete attachment
+    function deleteAttachment(url, btnElement) {
+        if (!confirm('Êtes-vous sûr de vouloir supprimer ce fichier ?')) {
+            return;
+        }
+
+        const liElement = btnElement.closest('li');
+        const originalContent = btnElement.innerHTML;
+        btnElement.innerHTML = '<svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>';
+        btnElement.disabled = true;
+
+        fetch('{{ route("admin.devis.delete-attachment", $devis["id"]) }}', {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            },
+            body: JSON.stringify({ attachment_url: url })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                liElement.remove();
+                showAlert('success', 'Fichier supprimé avec succès');
+                
+                // Check if list is empty and hide container if so
+                const list = document.getElementById('attachments-list');
+                if (list && list.children.length === 0) {
+                    list.parentElement.remove();
+                }
+            } else {
+                showAlert('error', data.message || 'Erreur lors de la suppression');
+                btnElement.innerHTML = originalContent;
+                btnElement.disabled = false;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showAlert('error', 'Erreur de connexion');
+            btnElement.innerHTML = originalContent;
+            btnElement.disabled = false;
+        });
+    }
 </script>
 @endsection
