@@ -129,8 +129,8 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label class="block text-white text-sm font-medium mb-2">Collecteur 1</label>
-                        <input type="text" name="collecteur1" value="{{ $devis['collecteur1'] ?? '' }}" class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50 focus:ring-2 focus:ring-secondary focus:border-transparent" placeholder="ex. 2">
+                        <label class="block text-white text-sm font-medium mb-2">Collecteur 1 (mm)</label>
+                        <input type="number" step="0.01" name="collecteur1_mm" value="{{ $devis['collecteur1_mm'] ?? '' }}" class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50 focus:ring-2 focus:ring-secondary focus:border-transparent" placeholder="mm">
                     </div>
                     <div>
                         <label class="block text-white text-sm font-medium mb-2">Ø Collecteur 1 (mm)</label>
@@ -140,8 +140,8 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label class="block text-white text-sm font-medium mb-2">Collecteur 2</label>
-                        <input type="text" name="collecteur2" value="{{ $devis['collecteur2'] ?? '' }}" class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50 focus:ring-2 focus:ring-secondary focus:border-transparent" placeholder="ex. 2">
+                        <label class="block text-white text-sm font-medium mb-2">Collecteur 2 (mm)</label>
+                        <input type="number" step="0.01" name="collecteur2_mm" value="{{ $devis['collecteur2_mm'] ?? '' }}" class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50 focus:ring-2 focus:ring-secondary focus:border-transparent" placeholder="mm">
                     </div>
                     <div>
                         <label class="block text-white text-sm font-medium mb-2">Ø Collecteur 2 (mm)</label>
