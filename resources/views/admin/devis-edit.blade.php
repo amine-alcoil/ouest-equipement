@@ -195,27 +195,7 @@
                 @endif
             </div>
 
-            <!-- Attachments (Available for both) -->
-            <div>
-                <label class="block text-white text-sm font-medium mb-2">Pièces jointes (schémas, plans)</label>
-                <input type="file" name="files[]" multiple class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50 focus:ring-2 focus:ring-secondary focus:border-transparent">
-                
-                @if(!empty($devis['attachments']))
-                    <div class="mt-4">
-                        <p class="text-sm font-medium text-white mb-2">Fichiers actuels :</p>
-                        <ul class="space-y-2">
-                            @foreach($devis['attachments'] as $attachment)
-                                <li class="flex items-center text-sm text-white/80 bg-white/5 rounded px-3 py-2">
-                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
-                                    <a href="{{ $attachment }}" target="_blank" class="hover:text-secondary hover:underline truncate">
-                                        {{ basename($attachment) }}
-                                    </a>
-                                </li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
-            </div>
+            
 
             <!-- Submit Button -->
             <div class="flex justify-end gap-4">
