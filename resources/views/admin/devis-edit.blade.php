@@ -12,7 +12,7 @@
 
     <!-- Edit Form -->
     <div class="bg-white/5 backdrop-blur-sm rounded-lg border border-white/10 p-6">
-        <form id="editDevisForm" class="space-y-6">
+        <form id="editDevisForm" class="space-y-6" enctype="multipart/form-data">
             @csrf
             @method('PUT')
             
