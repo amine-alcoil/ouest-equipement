@@ -13,6 +13,7 @@ class Devis extends Model
         'requirements', 'status', 'date',
         'type_exchangeur','cuivre_diametre','pas_ailette',
         'hauteur_mm','largeur_mm','longueur_mm','longueur_totale_mm',
+        'collecteur1', 'collecteur2',
         'collecteur1_diametre','collecteur2_diametre',
         'nombre_tubes','geometrie_x_mm','geometrie_y_mm','collecteur1_nb','collecteur2_nb',
         'attachments'

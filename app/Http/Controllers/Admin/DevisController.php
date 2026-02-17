@@ -147,7 +147,24 @@ class DevisController extends Controller
             'quantity' => 'nullable|integer|min:1',
             'message' => 'required_if:type,standard|string|max:3000',
             'requirements' => 'required_if:type,specific|string|max:5000',
-            'budget' => 'nullable|numeric|min:0'
+            
+            // Technical fields
+            'type_exchangeur' => 'nullable|string|max:100',
+            'cuivre_diametre' => 'nullable|numeric',
+            'pas_ailette' => 'nullable|numeric',
+            'hauteur_mm' => 'nullable|numeric',
+            'largeur_mm' => 'nullable|numeric',
+            'longueur_mm' => 'nullable|numeric',
+            'longueur_totale_mm' => 'nullable|numeric',
+            'collecteur1' => 'nullable|string|max:100',
+            'collecteur1_diametre' => 'nullable|numeric',
+            'collecteur2' => 'nullable|string|max:100',
+            'collecteur2_diametre' => 'nullable|numeric',
+            'nombre_tubes' => 'nullable|integer',
+            'geometrie_x_mm' => 'nullable|numeric',
+            'geometrie_y_mm' => 'nullable|numeric',
+            'collecteur1_nb' => 'nullable|integer',
+            'collecteur2_nb' => 'nullable|integer',
         ]);
 
         try {
@@ -164,7 +181,25 @@ class DevisController extends Controller
                 'quantity' => $validated['quantity'] ?? 1,
                 'message' => $validated['message'] ?? null,
                 'requirements' => $validated['requirements'] ?? null,
-                'budget' => $validated['budget'] ?? null,
+                
+                // Technical fields
+                'type_exchangeur' => $validated['type_exchangeur'] ?? null,
+                'cuivre_diametre' => $validated['cuivre_diametre'] ?? null,
+                'pas_ailette' => $validated['pas_ailette'] ?? null,
+                'hauteur_mm' => $validated['hauteur_mm'] ?? null,
+                'largeur_mm' => $validated['largeur_mm'] ?? null,
+                'longueur_mm' => $validated['longueur_mm'] ?? null,
+                'longueur_totale_mm' => $validated['longueur_totale_mm'] ?? null,
+                'collecteur1' => $validated['collecteur1'] ?? null,
+                'collecteur1_diametre' => $validated['collecteur1_diametre'] ?? null,
+                'collecteur2' => $validated['collecteur2'] ?? null,
+                'collecteur2_diametre' => $validated['collecteur2_diametre'] ?? null,
+                'nombre_tubes' => $validated['nombre_tubes'] ?? null,
+                'geometrie_x_mm' => $validated['geometrie_x_mm'] ?? null,
+                'geometrie_y_mm' => $validated['geometrie_y_mm'] ?? null,
+                'collecteur1_nb' => $validated['collecteur1_nb'] ?? null,
+                'collecteur2_nb' => $validated['collecteur2_nb'] ?? null,
+                
                 'status' => 'nouveau',
             ]);
 
@@ -206,8 +241,23 @@ class DevisController extends Controller
             'quantity' => $devis->quantity,
             'message' => $devis->message,
             'requirements' => $devis->requirements,
-            'budget' => $devis->budget,
             'status' => $devis->status,
+            'type_exchangeur' => $devis->type_exchangeur,
+            'cuivre_diametre' => $devis->cuivre_diametre,
+            'pas_ailette' => $devis->pas_ailette,
+            'hauteur_mm' => $devis->hauteur_mm,
+            'largeur_mm' => $devis->largeur_mm,
+            'longueur_mm' => $devis->longueur_mm,
+            'longueur_totale_mm' => $devis->longueur_totale_mm,
+            'collecteur1' => $devis->collecteur1,
+            'collecteur1_diametre' => $devis->collecteur1_diametre,
+            'collecteur2' => $devis->collecteur2,
+            'collecteur2_diametre' => $devis->collecteur2_diametre,
+            'nombre_tubes' => $devis->nombre_tubes,
+            'geometrie_x_mm' => $devis->geometrie_x_mm,
+            'geometrie_y_mm' => $devis->geometrie_y_mm,
+            'collecteur1_nb' => $devis->collecteur1_nb,
+            'collecteur2_nb' => $devis->collecteur2_nb,
         ];
 
         return view('admin.devis-edit', ['devis' => $devisArray]);
@@ -233,8 +283,25 @@ class DevisController extends Controller
             'quantity' => 'nullable|integer|min:1',
             'message' => 'required_if:type,standard|string|max:3000',
             'requirements' => 'required_if:type,specific|string|max:5000',
-            'budget' => 'nullable|numeric|min:0',
-            'status' => 'required|in:nouveau,en_cours,envoye,confirme,annule'
+            'status' => 'required|in:nouveau,en_cours,envoye,confirme,annule',
+            
+            // Technical fields
+            'type_exchangeur' => 'nullable|string|max:100',
+            'cuivre_diametre' => 'nullable|numeric',
+            'pas_ailette' => 'nullable|numeric',
+            'hauteur_mm' => 'nullable|numeric',
+            'largeur_mm' => 'nullable|numeric',
+            'longueur_mm' => 'nullable|numeric',
+            'longueur_totale_mm' => 'nullable|numeric',
+            'collecteur1' => 'nullable|string|max:100',
+            'collecteur1_diametre' => 'nullable|numeric',
+            'collecteur2' => 'nullable|string|max:100',
+            'collecteur2_diametre' => 'nullable|numeric',
+            'nombre_tubes' => 'nullable|integer',
+            'geometrie_x_mm' => 'nullable|numeric',
+            'geometrie_y_mm' => 'nullable|numeric',
+            'collecteur1_nb' => 'nullable|integer',
+            'collecteur2_nb' => 'nullable|integer',
         ]);
 
         try {
@@ -254,8 +321,25 @@ class DevisController extends Controller
                 'quantity' => $validated['quantity'] ?? 1,
                 'message' => $validated['message'] ?? null,
                 'requirements' => $validated['requirements'] ?? null,
-                'budget' => $validated['budget'] ?? null,
                 'status' => $validated['status'],
+                
+                // Technical fields
+                'type_exchangeur' => $validated['type_exchangeur'] ?? null,
+                'cuivre_diametre' => $validated['cuivre_diametre'] ?? null,
+                'pas_ailette' => $validated['pas_ailette'] ?? null,
+                'hauteur_mm' => $validated['hauteur_mm'] ?? null,
+                'largeur_mm' => $validated['largeur_mm'] ?? null,
+                'longueur_mm' => $validated['longueur_mm'] ?? null,
+                'longueur_totale_mm' => $validated['longueur_totale_mm'] ?? null,
+                'collecteur1' => $validated['collecteur1'] ?? null,
+                'collecteur1_diametre' => $validated['collecteur1_diametre'] ?? null,
+                'collecteur2' => $validated['collecteur2'] ?? null,
+                'collecteur2_diametre' => $validated['collecteur2_diametre'] ?? null,
+                'nombre_tubes' => $validated['nombre_tubes'] ?? null,
+                'geometrie_x_mm' => $validated['geometrie_x_mm'] ?? null,
+                'geometrie_y_mm' => $validated['geometrie_y_mm'] ?? null,
+                'collecteur1_nb' => $validated['collecteur1_nb'] ?? null,
+                'collecteur2_nb' => $validated['collecteur2_nb'] ?? null,
             ]);
 
             return response()->json([

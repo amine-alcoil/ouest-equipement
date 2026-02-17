@@ -87,14 +87,89 @@
 
             <!-- Specific Devis Fields -->
             <div id="specificFields" class="space-y-4 {{ $devis['type'] == 'standard' ? 'hidden' : '' }}">
-                <div>
-                    <label class="block text-white text-sm font-medium mb-2">Exigences spécifiques</label>
-                    <textarea name="requirements" rows="4" class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50 focus:ring-2 focus:ring-secondary focus:border-transparent" placeholder="Décrivez vos exigences spécifiques...">{{ $devis['requirements'] ?? '' }}</textarea>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-white text-sm font-medium mb-2">Type d'échangeur</label>
+                        <input type="text" name="type_exchangeur" value="{{ $devis['type_exchangeur'] ?? '' }}" class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50 focus:ring-2 focus:ring-secondary focus:border-transparent" placeholder="Ex. Condenseur">
+                    </div>
                 </div>
-                
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-white text-sm font-medium mb-2">Cuivre Ø (mm)</label>
+                        <input type="number" step="0.01" name="cuivre_diametre" value="{{ $devis['cuivre_diametre'] ?? '' }}" class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50 focus:ring-2 focus:ring-secondary focus:border-transparent" placeholder="mm">
+                    </div>
+                    <div>
+                        <label class="block text-white text-sm font-medium mb-2">Pas Ailette (mm)</label>
+                        <input type="number" step="0.01" name="pas_ailette" value="{{ $devis['pas_ailette'] ?? '' }}" class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50 focus:ring-2 focus:ring-secondary focus:border-transparent" placeholder="mm">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-white text-sm font-medium mb-2">La hauteur (mm)</label>
+                        <input type="number" step="0.01" name="hauteur_mm" value="{{ $devis['hauteur_mm'] ?? '' }}" class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50 focus:ring-2 focus:ring-secondary focus:border-transparent" placeholder="mm">
+                    </div>
+                    <div>
+                        <label class="block text-white text-sm font-medium mb-2">La largeur (mm)</label>
+                        <input type="number" step="0.01" name="largeur_mm" value="{{ $devis['largeur_mm'] ?? '' }}" class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50 focus:ring-2 focus:ring-secondary focus:border-transparent" placeholder="mm">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-white text-sm font-medium mb-2">La longueur (mm)</label>
+                        <input type="number" step="0.01" name="longueur_mm" value="{{ $devis['longueur_mm'] ?? '' }}" class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50 focus:ring-2 focus:ring-secondary focus:border-transparent" placeholder="mm">
+                    </div>
+                    <div>
+                        <label class="block text-white text-sm font-medium mb-2">La longueur totale (mm)</label>
+                        <input type="number" step="0.01" name="longueur_totale_mm" value="{{ $devis['longueur_totale_mm'] ?? '' }}" class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50 focus:ring-2 focus:ring-secondary focus:border-transparent" placeholder="mm">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-white text-sm font-medium mb-2">Collecteur 1</label>
+                        <input type="text" name="collecteur1" value="{{ $devis['collecteur1'] ?? '' }}" class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50 focus:ring-2 focus:ring-secondary focus:border-transparent" placeholder="ex. 2">
+                    </div>
+                    <div>
+                        <label class="block text-white text-sm font-medium mb-2">Ø Collecteur 1 (mm)</label>
+                        <input type="number" step="0.01" name="collecteur1_diametre" value="{{ $devis['collecteur1_diametre'] ?? '' }}" class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50 focus:ring-2 focus:ring-secondary focus:border-transparent" placeholder="mm">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-white text-sm font-medium mb-2">Collecteur 2</label>
+                        <input type="text" name="collecteur2" value="{{ $devis['collecteur2'] ?? '' }}" class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50 focus:ring-2 focus:ring-secondary focus:border-transparent" placeholder="ex. 2">
+                    </div>
+                    <div>
+                        <label class="block text-white text-sm font-medium mb-2">Ø Collecteur 2 (mm)</label>
+                        <input type="number" step="0.01" name="collecteur2_diametre" value="{{ $devis['collecteur2_diametre'] ?? '' }}" class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50 focus:ring-2 focus:ring-secondary focus:border-transparent" placeholder="mm">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-white text-sm font-medium mb-2">Nombre de tubes</label>
+                        <input type="number" name="nombre_tubes" value="{{ $devis['nombre_tubes'] ?? '' }}" class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50 focus:ring-2 focus:ring-secondary focus:border-transparent" placeholder="ex. 24">
+                    </div>
+                    <div>
+                        <label class="block text-white text-sm font-medium mb-2">Géométrie X (mm)</label>
+                        <input type="number" step="0.01" name="geometrie_x_mm" value="{{ $devis['geometrie_x_mm'] ?? '' }}" class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50 focus:ring-2 focus:ring-secondary focus:border-transparent" placeholder="mm">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-white text-sm font-medium mb-2">Géométrie Y (mm)</label>
+                        <input type="number" step="0.01" name="geometrie_y_mm" value="{{ $devis['geometrie_y_mm'] ?? '' }}" class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50 focus:ring-2 focus:ring-secondary focus:border-transparent" placeholder="mm">
+                    </div>
+                </div>
+
                 <div>
-                    <label class="block text-white text-sm font-medium mb-2">Budget estimé (DA)</label>
-                    <input type="number" name="budget" value="{{ $devis['budget'] ?? '' }}" min="0" class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50 focus:ring-2 focus:ring-secondary focus:border-transparent" placeholder="250000">
+                    <label class="block text-white text-sm font-medium mb-2">Description technique</label>
+                    <textarea name="requirements" rows="4" class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50 focus:ring-2 focus:ring-secondary focus:border-transparent" placeholder="Décrivez vos exigences spécifiques...">{{ $devis['requirements'] ?? '' }}</textarea>
                 </div>
             </div>
 
