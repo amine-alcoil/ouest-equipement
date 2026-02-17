@@ -165,6 +165,18 @@
                 </div>
             </div>
 
+            <!-- Attachments (Available for both) -->
+            <div>
+                <label class="block text-white text-sm font-medium mb-2">Pièces jointes (schémas, plans)</label>
+                <input type="file" name="files[]" multiple class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50 focus:ring-2 focus:ring-secondary focus:border-transparent">
+            </div>
+
+            <!-- Attachments (Available for both) -->
+            <div>
+                <label class="block text-white text-sm font-medium mb-2">Pièces jointes (schémas, plans)</label>
+                <input type="file" name="files[]" multiple class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50 focus:ring-2 focus:ring-secondary focus:border-transparent">
+            </div>
+
             <!-- Submit Button -->
             <div class="flex justify-end gap-4">
                 <a href="{{ route('admin.devis') }}" class="rounded-lg bg-white/10 hover:bg-white/20 text-white px-6 py-2 transition">

@@ -147,6 +147,8 @@ class DevisController extends Controller
             'quantity' => 'nullable|integer|min:1',
             'message' => 'required_if:type,standard|string|max:3000',
             'requirements' => 'required_if:type,specific|string|max:5000',
+            'files' => 'nullable',
+            'files.*' => 'file|mimes:jpg,jpeg,png,gif,webp,pdf,dwg,dxf|max:8192',
             
             // Technical fields
             'type_exchangeur' => 'nullable|string|max:100',
@@ -170,6 +172,15 @@ class DevisController extends Controller
         try {
             $refId = $this->nextId();
 
+            $attachments = [];
+            if ($request->hasFile('files')) {
+                foreach ($request->file('files') as $file) {
+                    if (!$file->isValid()) continue;
+                    $path = $file->store('devis', 'public');
+                    $attachments[] = \Illuminate\Support\Facades\Storage::url($path);
+                }
+            }
+
             $devis = Devis::create([
                 'ref_id' => $refId,
                 'name' => $validated['name'],
@@ -181,6 +192,7 @@ class DevisController extends Controller
                 'quantity' => $validated['quantity'] ?? 1,
                 'message' => $validated['message'] ?? null,
                 'requirements' => $validated['requirements'] ?? null,
+                'attachments' => $attachments,
                 
                 // Technical fields
                 'type_exchangeur' => $validated['type_exchangeur'] ?? null,
@@ -242,6 +254,7 @@ class DevisController extends Controller
             'message' => $devis->message,
             'requirements' => $devis->requirements,
             'status' => $devis->status,
+            'attachments' => $devis->attachments,
             'type_exchangeur' => $devis->type_exchangeur,
             'cuivre_diametre' => $devis->cuivre_diametre,
             'pas_ailette' => $devis->pas_ailette,
@@ -284,6 +297,8 @@ class DevisController extends Controller
             'message' => 'required_if:type,standard|string|max:3000',
             'requirements' => 'required_if:type,specific|string|max:5000',
             'status' => 'required|in:nouveau,en_cours,envoye,confirme,annule',
+            'files' => 'nullable',
+            'files.*' => 'file|mimes:jpg,jpeg,png,gif,webp,pdf,dwg,dxf|max:8192',
             
             // Technical fields
             'type_exchangeur' => 'nullable|string|max:100',
@@ -311,7 +326,17 @@ class DevisController extends Controller
                 abort(404, 'Devis introuvable');
             }
 
+            $attachments = $devis->attachments ?? [];
+            if ($request->hasFile('files')) {
+                foreach ($request->file('files') as $file) {
+                    if (!$file->isValid()) continue;
+                    $path = $file->store('devis', 'public');
+                    $attachments[] = \Illuminate\Support\Facades\Storage::url($path);
+                }
+            }
+
             $devis->update([
+                'attachments' => $attachments,
                 'name' => $validated['name'],
                 'email' => $validated['email'],
                 'phone' => $validated['phone'] ?? null,
