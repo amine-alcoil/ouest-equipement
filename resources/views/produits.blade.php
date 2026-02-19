@@ -145,20 +145,39 @@
         </div>
     </section>
      <!-- CTA -->
-    <section class="container mx-auto px-4 pb-16">
-        <div class="rounded-2xl bg-gradient-to-r from-secondary to-secondary_2 px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
-            <div>
-                <h3 class="text-2xl font-semibold text-white">Besoin d’un produit sur mesure ?</h3>
-                <p class="text-white/90 mt-1">Demandez un devis gratuit et adapté à vos exigences.</p>
+    <section class="container mx-auto px-4 py-16">
+        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-secondary to-secondary_2 shadow-xl hover:shadow-2xl transition-shadow duration-300">
+            <!-- Abstract Shapes -->
+            <div class="absolute top-0 right-0 -mt-16 -mr-16 w-80 h-80 bg-white opacity-10 rounded-full blur-3xl animate-pulse"></div>
+            <div class="absolute bottom-0 left-0 -mb-16 -ml-16 w-80 h-80 bg-black opacity-5 rounded-full blur-3xl"></div>
+            
+            <div class="relative z-10 flex flex-col md:flex-row items-center justify-between px-8 py-12 md:px-16 gap-8 text-center md:text-left">
+                <div class="max-w-2xl">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 text-white text-sm font-medium mb-4 backdrop-blur-sm border border-white/10">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                        <span>Service Premium</span>
+                    </div>
+                    <h3 class="text-3xl md:text-4xl font-bold text-white tracking-tight mb-4">Besoin d’un produit sur mesure ?</h3>
+                    <p class="text-green-50 text-lg leading-relaxed">
+                        Nos experts sont à votre écoute pour concevoir la solution idéale. <br class="hidden md:block" />Demandez un devis gratuit et personnalisé dès aujourd'hui.
+                    </p>
+                </div>
+                
+                <div class="flex-shrink-0 relative group">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-white to-gray-200 rounded-xl blur opacity-25 group-hover:opacity-50 transition duration-200"></div>
+                    <a href="{{ url('/devis') }}" class="relative inline-flex items-center gap-3 bg-white text-secondary_2 font-bold text-lg px-8 py-4 rounded-xl shadow-lg hover:bg-gray-50 transition-all transform hover:-translate-y-1 hover:scale-105">
+                        <span>Demander un devis</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                        </svg>
+                    </a>
+                </div>
             </div>
-            <a href="{{ url('/devis') }}" class="inline-flex items-center bg-white text-secondary_2 font-semibold rounded-xl px-5 py-2.5 hover:bg-gray-50 transition">
-                Demander un devis
-            </a>
         </div>
     </section>
 
     <!-- Results -->
-    <section id="results" class="container mx-auto px-4 py-10">
+    <section id="results" class="container mx-auto px-4 py-16">
         <div class="flex items-center justify-between mb-6">
             <h2 class="text-xl font-semibold text-gray-900">Résultats</h2>
             <div id="resultsCount" class="text-gray-600"></div>
@@ -395,53 +414,76 @@
 
         sorted.forEach((p, idx) => {
             const card = document.createElement('article');
-            card.className = 'group rounded-2xl overflow-hidden bg-white border border-gray-200 hover:border-secondary_2 transition shadow-md hover:shadow-lg flex flex-col h-full';
+            card.className = 'group relative flex flex-col bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden cursor-pointer h-full';
             card.style.animation = `fadeSlideUp 500ms ease ${idx * 60}ms both`;
+            
+            // Make whole card clickable
+            card.onclick = (e) => {
+                if (e.target.closest('button') || e.target.closest('.no-click')) return;
+                window.location.href = `/produits/${p.id}`;
+            };
 
             card.innerHTML = `
-                <div class="relative aspect-[4/3] sm:aspect-video lg:aspect-[4/3] overflow-hidden bg-gray-50">
-                    <img src="${p.image ? p.image : '/images/no_image.png'}" alt="${escapeHtml(p.name)}" class="w-full h-full object-cover opacity-95 group-hover:scale-105 group-hover:opacity-100 transition duration-500 ${p.image ? '' : 'max-h-20 max-w-20 object-contain'}">
-                    <div class="absolute top-2 left-2 sm:top-3 sm:left-3 inline-flex items-center gap-1.5 sm:gap-2 px-2 py-1 sm:px-3 sm:py-1.5 rounded-full bg-white/80 backdrop-blur text-gray-700 text-[10px] sm:text-xs">
-                        <span class="truncate max-w-[80px] sm:max-w-none">${escapeHtml(p.category)}</span>
-                        ${p.available ? '<span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-500"></span>' : '<span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-red-500"></span>'}
+                <div class="relative aspect-[4/3] overflow-hidden bg-gray-50">
+                    <img src="${p.image ? p.image : '/images/no_image.png'}" 
+                         alt="${escapeHtml(p.name)}" 
+                         class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 ${p.image ? '' : 'p-8 opacity-50'}">
+                    
+                    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300"></div>
+
+                    <div class="absolute top-3 left-3 flex flex-wrap gap-2">
+                        <span class="px-2.5 py-1 text-xs font-semibold bg-white/90 backdrop-blur text-gray-800 rounded-lg shadow-sm">
+                            ${escapeHtml(p.category)}
+                        </span>
+                    </div>
+
+                    <div class="absolute top-3 right-3">
+                         ${p.available 
+                            ? '<span class="flex h-3 w-3"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span></span>' 
+                            : '<span class="flex h-3 w-3"><span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span></span>'}
                     </div>
                 </div>
-                <div class="p-3 sm:p-4 flex flex-col flex-1">
-                    <div class="flex items-start justify-between gap-2 sm:gap-3">
-                        <h3 class="text-base sm:text-lg font-semibold text-gray-900 line-clamp-1">${escapeHtml(p.name)}</h3>
-                        <div class="inline-flex items-center gap-0.5 text-secondary shrink-0">
-                            <div class="flex items-center">
-                                ${Array.from({length: 5}, (_, i) => `
-                                    <svg class="w-3 h-3 sm:w-3.5 sm:h-3.5 ${i < Math.round(p.rating) ? 'text-secondary fill-current' : 'text-gray-200 fill-current'}" viewBox="0 0 20 20">
-                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                    </svg>
-                                `).join('')}
-                            </div>
-                            <span class="text-gray-500 text-[10px] sm:text-xs ml-1 font-medium">${p.rating.toFixed(1)}</span>
+
+                <div class="flex flex-col flex-1 p-5">
+                    <div class="flex justify-between items-start gap-3 mb-2">
+                        <h3 class="font-bold text-gray-900 text-lg leading-tight group-hover:text-secondary transition-colors line-clamp-2">
+                            ${escapeHtml(p.name)}
+                        </h3>
+                        <div class="flex items-center gap-1 bg-yellow-50 px-2 py-1 rounded-md shrink-0 border border-yellow-100">
+                            <svg class="w-3.5 h-3.5 text-yellow-500 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                            <span class="text-xs font-bold text-yellow-700">${p.rating.toFixed(1)}</span>
                         </div>
                     </div>
-                    <p class="mt-1 sm:mt-2 text-gray-600 text-xs sm:text-sm line-clamp-2">${escapeHtml(p.description)}</p>
 
-                    <div class="mt-2 sm:mt-3 flex flex-wrap gap-1.5 sm:gap-2">
+                    <p class="text-gray-500 text-sm line-clamp-2 mb-4 flex-1">
+                        ${escapeHtml(p.description)}
+                    </p>
+
+                    <div class="flex flex-wrap gap-2 mb-5 no-click">
                         ${(p.tags || []).slice(0, 3).map(t => `
-                            <button class="text-[10px] sm:text-xs px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full bg-gray-100 border border-gray-200 text-gray-700 hover:bg-gray-200 transition"
-                                    onclick="toggleTag('${t}')">${t}</button>
+                            <button class="text-[10px] uppercase tracking-wider font-semibold px-2 py-1 rounded-md bg-gray-100 text-gray-600 hover:bg-gray-200 transition"
+                                    onclick="event.stopPropagation(); toggleTag('${t}')">${t}</button>
                         `).join('')}
                     </div>
 
-                    <div class="mt-auto pt-3 sm:pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                        <div class="text-lg sm:text-xl font-bold text-secondary_2">${p.price.toLocaleString('fr-DZ')} DA</div>
-                        <div class="flex items-center gap-2 w-full sm:w-auto">
-                            <a href="/produits/${p.id}" class="flex-1 sm:flex-none text-center px-3 py-1.5 rounded-lg bg-gray-100 border border-gray-200 hover:bg-gray-200 transition text-xs sm:text-sm text-gray-700">
-                                Détails
-                            </a>
-                            <button type="button" 
-                                    data-commander
-                                    data-product-name="${escapeHtml(p.name)}"
-                                    class="flex-1 sm:flex-none px-3 py-1.5 rounded-lg bg-secondary hover:bg-secondary_2 text-white transition text-xs sm:text-sm">
-                                Commander
-                            </button>
+                    <div class="pt-4 border-t border-gray-100 flex items-center justify-between gap-3">
+                        <div class="flex flex-col">
+                            <span class="text-xs text-gray-400 font-medium uppercase tracking-wide">Prix</span>
+                            <div class="text-xl font-bold text-secondary_2">
+                                ${p.price.toLocaleString('fr-DZ')} <span class="text-sm font-normal text-gray-500">DA</span>
+                            </div>
                         </div>
+                        
+                        <button type="button" 
+                                onclick="event.stopPropagation()"
+                                data-commander
+                                data-product-name="${escapeHtml(p.name)}"
+                                class="px-5 py-2.5 bg-secondary hover:bg-secondary_2 text-white rounded-xl font-medium text-sm transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 active:scale-95 flex items-center gap-2">
+                            <span>Commander</span>
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                            </svg>
+                        </button>
                     </div>
                 </div>
             `;
