@@ -13,6 +13,7 @@
             <li><a href="/" class="hover:text-secondary transition">Accueil</a></li>
             <li><a href="/produits" class="hover:text-secondary transition">Produits</a></li>
             <li><a href="/a-propos" class="hover:text-secondary transition">À propos</a></li>
+            <li><a href="/telechargement" class="hover:text-secondary transition">Téléchargements</a></li>
             <li><a href="/contact" class="hover:text-secondary transition">Contact</a></li>
         </ul>
 
@@ -72,6 +73,7 @@
             <li><a href="/" class="block hover:text-secondary transition py-2 border-b border-gray-50">Accueil</a></li>
             <li><a href="/produits" class="block hover:text-secondary transition py-2 border-b border-gray-50">Produits</a></li>
             <li><a href="/a-propos" class="block hover:text-secondary transition py-2 border-b border-gray-50">À propos</a></li>
+            <li><a href="/telechargement" class="block hover:text-secondary transition py-2 border-b border-gray-50">Téléchargement</a></li>
             <li><a href="/contact" class="block hover:text-secondary transition py-2">Contact</a></li>
         </ul>
     </div>
@@ -103,7 +105,7 @@
         </div>
         <div>
           <div class="text-sm text-white/70">Téléphone</div>
-          <div class="font-medium">0555 02 60 31 / 0555 02 60 38</div>
+          <div class="font-medium">0555 02 60 38</div>
         </div>
       </div>
       <div class="flex items-start gap-3">
@@ -112,7 +114,7 @@
         </div>
         <div>
           <div class="text-sm text-white/70">Email</div>
-          <div class="font-medium">info@ouest-equipement.com</div>
+          <div class="font-medium">commercial@ouest-equipement.com</div>
         </div>
       </div>
       <div class="flex items-start gap-3">
@@ -127,8 +129,8 @@
     </div>
     <div class="p-6 border-t border-white/10">
       <div class="flex gap-3">
-        <a href="tel:0555026031" class="px-4 py-2 rounded bg-secondary text-clean hover:opacity-90 transition">Appeler</a>
-        <a href="mailto:contact@ouest-equipement.com" class="px-4 py-2 rounded bg-white/10 hover:bg-white/20 transition">Envoyer un email</a>
+        <a href="tel:0555026038" class="px-4 py-2 rounded bg-secondary text-clean hover:opacity-90 transition">Appeler</a>
+        <a href="mailto:commercial@ouest-equipement.com" class="px-4 py-2 rounded bg-white/10 hover:bg-white/20 transition">Envoyer un email</a>
       </div>
     </div>
   </div>

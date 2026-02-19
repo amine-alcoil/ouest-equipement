@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\SettingsController;      // Added
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\TaskController;
+use App\Http\Controllers\Admin\DownloadController;
 
 // Public pages
 Route::get('/', function () {
@@ -49,6 +50,11 @@ Route::get('/', function () {
 Route::get('/a-propos', function () {
     return view('apropos');
 })->name('apropos');
+
+Route::get('/telechargement', function () {
+    $downloads = \App\Models\Download::where('status', 'active')->orderBy('created_at', 'desc')->get();
+    return view('telechargement', compact('downloads'));
+})->name('telechargement');
 
 // Legal pages
 Route::get('/mentions-legales', function () { return view('layouts.legal'); })->name('legal');
@@ -159,6 +165,35 @@ Route::post('/produits/{id}/rate', function (Request $request, $id) {
 
 Route::get('/test', function () {
     return view('home');
+});
+
+Route::get('/test-storage', function () {
+    try {
+        // 1. Create a test file in storage/app/public
+        \Illuminate\Support\Facades\Storage::disk('public')->put('test.txt', 'Hello World');
+        
+        // 2. Get the path and url
+        $path = storage_path('app/public/test.txt');
+        $url = \Illuminate\Support\Facades\Storage::url('test.txt');
+        $publicPath = public_path('storage/test.txt');
+        
+        // 3. Check if file exists in storage
+        $existsInStorage = file_exists($path);
+        
+        // 4. Check if file exists via symlink
+        $existsInPublic = file_exists($publicPath);
+        
+        return [
+            'storage_path' => $path,
+            'public_path' => $publicPath,
+            'url' => $url,
+            'exists_in_storage' => $existsInStorage,
+            'exists_in_public' => $existsInPublic,
+            'symlink_target' => is_link(public_path('storage')) ? readlink(public_path('storage')) : 'Not a link',
+        ];
+    } catch (\Exception $e) {
+        return ['error' => $e->getMessage()];
+    }
 });
 
 // Contact page
@@ -399,6 +434,14 @@ Route::prefix('admin')->group(function () {
             ->name('admin.contact-messages.update-status');
         Route::delete('/contact-messages/{message}', [ContactMessageController::class, 'destroy'])
             ->name('admin.contact-messages.destroy');
+
+        // Downloads
+        Route::get('/downloads', [DownloadController::class, 'index'])->name('admin.downloads.index');
+        Route::get('/downloads/create', [DownloadController::class, 'create'])->name('admin.downloads.create');
+        Route::post('/downloads', [DownloadController::class, 'store'])->name('admin.downloads.store');
+        Route::get('/downloads/{id}/edit', [DownloadController::class, 'edit'])->name('admin.downloads.edit');
+        Route::put('/downloads/{id}', [DownloadController::class, 'update'])->name('admin.downloads.update');
+        Route::delete('/downloads/{id}', [DownloadController::class, 'destroy'])->name('admin.downloads.destroy');
 
         // Settings
         Route::get('/settings', [SettingsController::class, 'index'])

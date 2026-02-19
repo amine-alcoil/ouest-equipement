@@ -26,7 +26,7 @@
             <ul class="space-y-2 text-light">
                 <li>Zone Industrielle, Sidi Bel abbes</li>
                 <li>Tél: 0555 02 60 31 / 0555 02 60 38</li>
-                <li>Email: info@ouest-equipement.com</li>
+                <li>Email: commercial@ouest-equipement.com</li>
                 <li>Horaires: Dim–Jeu 8:00–17:00</li>
             </ul>
             <div class="mt-4 flex items-center gap-3">

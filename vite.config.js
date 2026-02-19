@@ -12,12 +12,10 @@ export default defineConfig({
     ],
     server: {
         host: '0.0.0.0',
-        port: 9000,
         strictPort: true,
         hmr: {
-            host: 'ouest-equipement.up.railway.app',
-            protocol: 'wss',
-            clientPort: 443,
+            host: 'localhost',
+           
         },
         watch: {
             usePolling: true

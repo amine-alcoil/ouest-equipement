@@ -71,7 +71,7 @@
 </svg>
                         <div>
                             <div class="font-semibold">Email</div>
-                            <a href="mailto:contact@alcoil.dz" class="hover:text-secondary transition">info@ouest-equipement.com</a>
+                            <a href="mailto:contact@alcoil.dz" class="hover:text-secondary transition">commercial@ouest-equipement.com</a>
                         </div>
                     </div>
 
@@ -89,13 +89,10 @@
                             <div class="font-semibold">Téléphone</div>
                             <div class="relative inline-block group" id="phoneContainer">
                                 <button type="button" class="hover:text-secondary transition text-left focus:outline-none" id="phoneDropdownBtn">
-                                    0555 02 60 31 / 0555 02 60 38
+                                    0555 02 60 38
                                 </button>
                                 <div id="phoneMenu" class="hidden absolute left-0 mt-2 w-48 bg-white border border-slate-200 rounded-xl shadow-xl z-[60] overflow-hidden">
-                                    <a href="tel:0555026031" class="block px-4 py-3 text-sm text-slate-700 hover:bg-slate-50 hover:text-secondary transition-colors border-b border-slate-100 flex items-center gap-2">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
-                                        0555 02 60 31
-                                    </a>
+                                   
                                     <a href="tel:0555026038" class="block px-4 py-3 text-sm text-slate-700 hover:bg-slate-50 hover:text-secondary transition-colors flex items-center gap-2">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
                                         0555 02 60 38
