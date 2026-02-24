@@ -6,7 +6,7 @@
     <!-- Hero -->
     <section class="relative overflow-hidden">
         <div class="absolute inset-0 bg-gradient-to-br from-[#0f2c4f] via-[#0f2c4f] to-[#0f2c4f]"></div>
-        <img src="{{ asset('images/BG_usine.jpg') }}" alt="ALCOIL hero" class="absolute inset-0 w-full h-full object-cover opacity-20 select-none">
+        <img src="@webp('images/BG_usine.jpg')" alt="ALCOIL hero" class="absolute inset-0 w-full h-full object-cover opacity-20 select-none">
         <div class="relative max-w-7xl mx-auto px-4 py-20 text-white">
             <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight">À propos d’ALCOIL</h1>
             <p class="mt-5 max-w-2xl text-sm sm:text-base md:text-lg text-slate-200">
@@ -131,7 +131,7 @@
                     </style>
                     <div class="w-full h-auto animate-float">
                     <div class="relative w-full max-w-full h-auto rounded-lg shadow-lg overflow-hidden" >
-                        <img src="{{ asset('images/BG_usine.jpg') }}" alt="Animation historique ALCOIL"
+                        <img src="@webp('images/BG_usine.jpg')" alt="Animation historique ALCOIL"
                              >
                         
                     </div>

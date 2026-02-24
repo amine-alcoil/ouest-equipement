@@ -162,7 +162,7 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-slate-700">Collecteur 1</label>
-                        <input name="collecteur1_nb" type="number" min="0" placeholder="ex. 2" class="mt-1 w-full rounded-lg border border-slate-300/70 bg-white/70 backdrop-blur-sm px-4 py-3 text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary transition">
+                        <input name="collecteur1_nb" type="number" min="0" placeholder="mm" class="mt-1 w-full rounded-lg border border-slate-300/70 bg-white/70 backdrop-blur-sm px-4 py-3 text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary transition">
                     </div>
                     
                     <div>
@@ -171,7 +171,7 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-slate-700">Collecteur 2</label>
-                        <input name="collecteur2_nb" type="number" min="0" placeholder="ex. 2" class="mt-1 w-full rounded-lg border border-slate-300/70 bg-white/70 backdrop-blur-sm px-4 py-3 text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary transition">
+                        <input name="collecteur2_nb" type="number" min="0" placeholder="mm" class="mt-1 w-full rounded-lg border border-slate-300/70 bg-white/70 backdrop-blur-sm px-4 py-3 text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary transition">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-slate-700">Ø Collecteur 2</label>
@@ -259,6 +259,32 @@
                 dots[idx].classList.remove('bg-gray-300');
             }
             dots.forEach(function(d, i){ d.addEventListener('click', function(){ show(i); }); });
+            
+            // Touch gestures for mobile
+            var touchStartX = 0;
+            var touchEndX = 0;
+            
+            slider.addEventListener('touchstart', function(e) {
+                touchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+
+            slider.addEventListener('touchend', function(e) {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            }, { passive: true });
+
+            function handleSwipe() {
+                var threshold = 50;
+                if (touchEndX < touchStartX - threshold) {
+                    // Swipe left - next slide
+                    show((idx + 1) % slides.length);
+                }
+                if (touchEndX > touchStartX + threshold) {
+                    // Swipe right - previous slide
+                    show((idx - 1 + slides.length) % slides.length);
+                }
+            }
+
             setInterval(function(){ show((idx + 1) % slides.length); }, 9000);
         }
     });

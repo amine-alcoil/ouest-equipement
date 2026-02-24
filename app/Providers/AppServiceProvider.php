@@ -17,6 +17,8 @@ use Illuminate\Auth\Events\Login;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Activity;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\File;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -50,6 +52,38 @@ class AppServiceProvider extends ServiceProvider
         Devis::observe(DevisObserver::class);
         Client::observe(ClientObserver::class);
         Product::observe(ProductObserver::class);
+
+        // Blade directive for WebP conversion
+        Blade::directive('webp', function ($expression) {
+            return "<?php
+                \$path = trim($expression, \"'\");
+                \$fullPath = public_path(\$path);
+                if (File::exists(\$fullPath)) {
+                    \$extension = File::extension(\$fullPath);
+                    \$webpPath = str_replace('.' . \$extension, '.webp', \$path);
+                    \$fullWebpPath = public_path(\$webpPath);
+
+                    if (!File::exists(\$fullWebpPath) || File::lastModified(\$fullPath) > File::lastModified(\$fullWebpPath)) {
+                        try {
+                            if (\$extension === 'jpg' || \$extension === 'jpeg') {
+                                \$image = imagecreatefromjpeg(\$fullPath);
+                            } elseif (\$extension === 'png') {
+                                \$image = imagecreatefrompng(\$fullPath);
+                            }
+                            if (isset(\$image)) {
+                                imagewebp(\$image, \$fullWebpPath, 80); // 80 quality for compression
+                                imagedestroy(\$image);
+                            }
+                        } catch (\Exception \$e) {
+                            // Fallback to original
+                        }
+                    }
+                    echo asset(File::exists(\$fullWebpPath) ? \$webpPath : \$path);
+                } else {
+                    echo asset(\$path);
+                }
+            ?>";
+        });
 
         Event::listen(function (Login $event) {
             try {

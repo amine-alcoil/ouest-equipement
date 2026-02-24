@@ -153,10 +153,7 @@
             
             <div class="relative z-10 flex flex-col md:flex-row items-center justify-between px-8 py-12 md:px-16 gap-8 text-center md:text-left">
                 <div class="max-w-2xl">
-                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 text-white text-sm font-medium mb-4 backdrop-blur-sm border border-white/10">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                        <span>Service Premium</span>
-                    </div>
+                    
                     <h3 class="text-3xl md:text-4xl font-bold text-white tracking-tight mb-4">Besoin d’un produit sur mesure ?</h3>
                     <p class="text-green-50 text-lg leading-relaxed">
                         Nos experts sont à votre écoute pour concevoir la solution idéale. <br class="hidden md:block" />Demandez un devis gratuit et personnalisé dès aujourd'hui.
@@ -260,6 +257,16 @@
         el.availabilityToggle = document.getElementById('availabilityToggle');
         el.sortSelect = document.getElementById('sortSelect');
         el.resetBtn = document.getElementById('resetBtn');
+
+        // Check for search query in URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const searchQuery = urlParams.get('search');
+        if (searchQuery) {
+            state.search = searchQuery.toLowerCase();
+            el.searchInput.value = searchQuery;
+            // Scroll to results if searching from another page
+            document.getElementById('results')?.scrollIntoView({ behavior: 'smooth' });
+        }
 
         // Mobile filter toggle
         const filterToggle = document.getElementById('mobileFilterToggle');
@@ -475,7 +482,7 @@
                         </div>
                         
                         <button type="button" 
-                                onclick="event.stopPropagation()"
+                                onclick="event.stopPropagation(); window.showComingSoon ? window.showComingSoon('${escapeHtml(p.name)}') : null"
                                 data-commander
                                 data-product-name="${escapeHtml(p.name)}"
                                 class="px-5 py-2.5 bg-secondary hover:bg-secondary_2 text-white rounded-xl font-medium text-sm transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 active:scale-95 flex items-center gap-2">

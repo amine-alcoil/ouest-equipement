@@ -15,10 +15,18 @@
             <li><a href="/a-propos" class="hover:text-secondary transition">À propos</a></li>
             <li><a href="/telechargement" class="hover:text-secondary transition">Téléchargements</a></li>
             <li><a href="/contact" class="hover:text-secondary transition">Contact</a></li>
+            <li>
+                <a href="/devis" class="relative inline-flex items-center gap-2 bg-secondary hover:bg-secondary_2 text-white px-5 py-2 rounded-full transition-all duration-300 transform hover:scale-105 hover:shadow-lg active:scale-95 group">
+                    <span class="text-xs lg:text-sm">Demander un devis</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
+                </a>
+            </li>
         </ul>
 
         <!-- Icons -->
-        <div class="flex items-center icons">
+        <div class="flex items-center gap-2 icons">
 
             <!-- Search Icon -->
             <div class="relative group">
@@ -58,10 +66,15 @@
     </div>
 
     <!-- Search Bar (hidden by default) -->
-    <div id="searchBar" class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between hidden">
-        <input type="text" id="searchInput" placeholder="Rechercher..." class="flex-1 border-none outline-none text-lg">
-        <button id="searchCancel" class="ml-4 text-gray-500 hover:text-black transition">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+    <div id="searchBar" class="max-w-7xl mx-auto px-6 h-16 flex items-center gap-4 hidden">
+        <div class="flex-1 flex items-center bg-gray-50 rounded-full px-4 py-1.5 border border-gray-100 focus-within:border-secondary transition">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-5 text-gray-400">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+            </svg>
+            <input type="text" id="searchInput" placeholder="Rechercher un produit..." class="flex-1 bg-transparent border-none outline-none text-base px-3 py-1">
+        </div>
+        <button id="searchCancel" class="text-gray-400 hover:text-secondary transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-6">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
             </svg>
         </button>
@@ -74,7 +87,15 @@
             <li><a href="/produits" class="block hover:text-secondary transition py-2 border-b border-gray-50">Produits</a></li>
             <li><a href="/a-propos" class="block hover:text-secondary transition py-2 border-b border-gray-50">À propos</a></li>
             <li><a href="/telechargement" class="block hover:text-secondary transition py-2 border-b border-gray-50">Téléchargement</a></li>
-            <li><a href="/contact" class="block hover:text-secondary transition py-2">Contact</a></li>
+            <li><a href="/contact" class="block hover:text-secondary transition py-2 border-b border-gray-50">Contact</a></li>
+            <li class="pt-2">
+                <a href="/devis" class="flex items-center justify-center gap-2 bg-secondary text-white px-6 py-3 rounded-xl font-bold transition-all active:scale-95 shadow-lg">
+                    <span>Demander un devis</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
+                </a>
+            </li>
         </ul>
     </div>
 </nav>
@@ -260,7 +281,21 @@
         if (event.key === 'Enter') {
             const query = searchInput.value.trim();
             if (query) {
-                window.location.href = `/search?query=${encodeURIComponent(query)}`;
+                // If we are already on the products page, update the local search
+                if (window.location.pathname === '/produits') {
+                    const productSearchInput = document.getElementById('productSearchInput');
+                    if (productSearchInput) {
+                        productSearchInput.value = query;
+                        // Trigger the input event to start filtering
+                        productSearchInput.dispatchEvent(new Event('input'));
+                        // Close navbar search
+                        searchCancel.click();
+                        // Scroll to results
+                        document.getElementById('results')?.scrollIntoView({ behavior: 'smooth' });
+                        return;
+                    }
+                }
+                window.location.href = `/produits?search=${encodeURIComponent(query)}`;
             }
         }
     });

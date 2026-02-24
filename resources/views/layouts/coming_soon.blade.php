@@ -30,19 +30,25 @@
     var modal = document.getElementById('comingSoonModal');
     function open() { modal.classList.remove('hidden'); }
     function close() { modal.classList.add('hidden'); }
+
+    // Expose global function for dynamic elements
+    window.showComingSoon = function(productName) {
+        var devisLink = modal.querySelector('a[href^="/devis"]');
+        if (productName && devisLink) {
+            devisLink.href = '/devis?product=' + encodeURIComponent(productName);
+        } else if (devisLink) {
+            devisLink.href = '/devis';
+        }
+        open();
+    };
+
     document.addEventListener('click', function(e){
         var t = e.target;
         var btn = t.closest('[data-commander]');
         if (btn) { 
             e.preventDefault(); 
             var productName = btn.getAttribute('data-product-name');
-            var devisLink = modal.querySelector('a[href^="/devis"]');
-            if (productName && devisLink) {
-                devisLink.href = '/devis?product=' + encodeURIComponent(productName);
-            } else if (devisLink) {
-                devisLink.href = '/devis';
-            }
-            open(); 
+            window.showComingSoon(productName);
         }
         if (t.closest('[data-close-modal]')) { close(); }
     });

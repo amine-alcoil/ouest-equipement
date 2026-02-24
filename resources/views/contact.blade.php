@@ -7,7 +7,7 @@
     <section class="relative overflow-hidden">
         <div class="absolute inset-0 bg-[#0f2c4f]"></div>
         <!-- Decorative hero image (subtle, responsive) -->
-        <img src="{{ asset('images/3.jpg') }}" alt="Contact ALCOIL"
+        <img src="@webp('images/3.jpg')" alt="Contact ALCOIL"
              class="absolute right-0 top-0 h-full w-1/2 object-cover opacity-20 hidden md:block select-none">
         <div class="relative max-w-7xl mx-auto px-4 py-20 text-white">
             <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight">Contactez-nous</h1>
@@ -125,7 +125,7 @@
 
                 <!-- Contact image block -->
                 <figure class="mt-8 rounded-xl overflow-hidden border border-slate-200 shadow-sm">
-                    <img src="{{ asset('images/1.png') }}" alt="Nous contacter"
+                    <img src="@webp('images/1.png')" alt="Nous contacter"
                          class="w-full h-56 md:h-72 object-cover select-none">
                 </figure>
 
