@@ -36,14 +36,17 @@
 <style>
     .reveal-on-load {
         opacity: 0;
-        transform: translateX(-30px);
-        animation: revealLeft 0.8s ease-out forwards;
+        transform: translateX(-20px);
+        animation: revealLeft 0.6s ease-out forwards;
     }
     @keyframes revealLeft {
         to { opacity: 1; transform: translateX(0); }
     }
     /* Hardware acceleration for smooth scrolling */
-    * { backface-visibility: hidden; -webkit-font-smoothing: antialiased; }
+    #navbar, #stats, #services-modern, #products, #partners {
+        transform: translateZ(0);
+        will-change: transform;
+    }
 </style>
 
 
