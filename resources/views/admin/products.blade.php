@@ -747,16 +747,56 @@ document.addEventListener('DOMContentLoaded', () => {
                         // Handle delete button
                         const delBtn = currentPdfContainer.querySelector('button');
                         if(delBtn) {
-                            delBtn.onclick = (e) => {
+                            delBtn.onclick = async (e) => {
                                 e.preventDefault();
-                                if(confirm('Supprimer ce PDF ?')) {
-                                    currentPdfContainer.innerHTML = '';
-                                    // TODO: Add hidden input to signal backend to delete file
+                                const confirmed = await showConfirm('Souhaitez-vous vraiment supprimer le fichier technique actuel ? Cette action sera validée lors de l\'enregistrement.');
+                                if(confirmed) {
+                                    currentPdfContainer.innerHTML = `
+                                        <div class="flex items-center gap-3 px-3 py-2 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 w-full animate-pulse">
+                                            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                            <span class="text-sm font-medium line-through opacity-50 truncate flex-1">${pdfName}</span>
+                                            <input type="hidden" name="delete_pdf" value="1">
+                                            <button type="button" class="text-[10px] font-bold uppercase tracking-widest bg-white/10 hover:bg-white/20 px-2 py-1 rounded transition-all" onclick="window.revertPdfDeletion('${data.product.pdf}', '${pdfName}')">Annuler</button>
+                                        </div>
+                                    `;
                                 }
                             };
                         }
                     }
                 }
+
+                // Global helper to revert PDF deletion mark
+                window.revertPdfDeletion = (url, name) => {
+                    if (currentPdfContainer) {
+                        currentPdfContainer.innerHTML = `
+                            <a href="${url}" target="_blank" class="flex items-center gap-1 text-emerald-400 hover:text-emerald-300 transition-colors bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/20" title="${name}">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                                <span class="max-w-[150px] truncate">${name}</span>
+                            </a>
+                            <button type="button" class="text-red-400 hover:text-red-300 hover:bg-red-500/10 p-1 rounded transition-colors" title="Supprimer le fichier">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                            </button>
+                        `;
+                        // Re-bind delete
+                        const newDelBtn = currentPdfContainer.querySelector('button');
+                        if(newDelBtn) {
+                            newDelBtn.onclick = async (e) => {
+                                e.preventDefault();
+                                const confirmed = await showConfirm('Souhaitez-vous vraiment supprimer le fichier technique actuel ?');
+                                if(confirmed) {
+                                    currentPdfContainer.innerHTML = `
+                                        <div class="flex items-center gap-3 px-3 py-2 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 w-full animate-pulse">
+                                            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                            <span class="text-sm font-medium line-through opacity-50 truncate flex-1">${name}</span>
+                                            <input type="hidden" name="delete_pdf" value="1">
+                                            <button type="button" class="text-[10px] font-bold uppercase tracking-widest bg-white/10 hover:bg-white/20 px-2 py-1 rounded transition-all" onclick="window.revertPdfDeletion('${url}', '${name}')">Annuler</button>
+                                        </div>
+                                    `;
+                                }
+                            };
+                        }
+                    }
+                };
 
                 renderEditImages(data.product.images || []);
                 panel.classList.remove('hidden');
