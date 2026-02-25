@@ -15,14 +15,19 @@ class AdminDashboardController extends Controller
 {
     public function visitorStats()
     {
-        // 1. Sessions actives (Visiteurs Anonymes uniquement)
+        // Temps limite pour considérer un visiteur comme "Live" (ex: 5 minutes)
+        $activeThreshold = time() - (5 * 60);
+
+        // 1. Visiteurs réellement actifs (Anonymes + Activité < 5 min)
         $activeVisitors = UserSession::whereNull('user_id')
+            ->where('last_activity', '>=', $activeThreshold)
             ->orderBy('last_activity', 'desc')
             ->get();
         $activeSessionsCount = $activeVisitors->count();
 
-        // 2. Utilisateurs Connectés (Admin/Staff)
+        // 2. Administrateurs réellement actifs (Activité < 5 min)
         $activeAdmins = UserSession::whereNotNull('user_id')
+            ->where('last_activity', '>=', $activeThreshold)
             ->with('user')
             ->orderBy('last_activity', 'desc')
             ->get();
