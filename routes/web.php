@@ -459,6 +459,9 @@ Route::prefix('admin')->group(function () {
             Route::post('/users', [UserController::class, 'store'])->name('admin.users.store');
             Route::put('/users/{user}', [UserController::class, 'update'])->name('admin.users.update');
             Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('admin.users.destroy');
+
+            // Visitor Statistics
+            Route::get('/statistics', [AdminDashboardController::class, 'visitorStats'])->name('admin.statistics');
         });
 
         // Tasks

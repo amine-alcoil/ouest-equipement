@@ -559,7 +559,8 @@ class DevisController extends Controller
 
             // Send email
             Mail::html(nl2br(e($validated['text'])), function ($message) use ($validated, $filePath) {
-                $message->to($validated['recipient_email'], $validated['recipient_name'])
+                $message->from('amine.nacer@ouest-equipement.com', 'Amine NACER | ALCOIL')
+                        ->to($validated['recipient_email'], $validated['recipient_name'])
                         ->subject($validated['subject']);
                 if ($filePath) {
                     $fullPath = storage_path('app/public/'.$filePath);

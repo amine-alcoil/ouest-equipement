@@ -87,7 +87,7 @@
         <div class="max-w-7xl mx-auto px-6 py-4 flex flex-wrap items-center justify-center gap-4">
          
             <div class="text-light">
-                © 2025 ALCOIL - Tous droits réservés
+                © {{ date('Y') }} ALCOIL - Tous droits réservés
             </div>
            
         </div>

@@ -41,20 +41,20 @@ class CustomResetPassword extends Notification
      * Get the mail representation of the notification.
      */
     public function toMail(object $notifiable): MailMessage
-     {
-         $url = url(route('admin.password.reset', [
-             'token' => $this->token,
-             'email' => $notifiable->email,
-         ], false));
+    {
+        $url = url(route('admin.password.reset', [
+            'token' => $this->token,
+            'email' => $notifiable->email,
+        ], false));
 
-         return (new MailMessage)
-             ->subject('Réinitialisation de votre mot de passe')
-             ->greeting('Bonjour '.$notifiable->name.',')
-             ->line('Vous recevez cet e-mail car nous avons reçu une demande de réinitialisation de mot de passe pour votre compte.')
-             ->action('Réinitialiser mon mot de passe', $url)
-             ->line('Ce lien de réinitialisation expirera dans 60 minutes.')
-             ->line('Si vous n\'avez pas demandé cette réinitialisation, aucune action n\'est requise.');
-     }
+        return (new MailMessage)
+            ->from('no-reply@ouest-equipement.com', 'ALCOIL Support')
+            ->subject('Réinitialisation de votre mot de passe')
+            ->view('emails.reset_password', [
+                'url' => $url,
+                'name' => $notifiable->name,
+            ]);
+    }
 
 
 
