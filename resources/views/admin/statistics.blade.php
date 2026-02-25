@@ -145,8 +145,11 @@
                         </div>
                     </div>
                     <div class="text-right">
-                        <div class="text-[10px] font-bold text-orange-400 uppercase tracking-tighter">En ligne</div>
-                        <div class="text-[10px] text-white/30">{{ \Carbon\Carbon::createFromTimestamp($adminSession->last_activity)->diffForHumans() }}</div>
+                        <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-tighter">En ligne</span>
+                        </div>
+                        <div class="text-[10px] text-white/30 mt-1">{{ \Carbon\Carbon::createFromTimestamp($adminSession->last_activity)->diffForHumans() }}</div>
                     </div>
                 </div>
                 @empty
@@ -162,7 +165,7 @@
             <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
                 <div>
                     <h3 class="text-2xl font-black text-white tracking-tight">Visiteurs Anonymes en Direct</h3>
-                    <div class="text-xs font-bold text-blue-400/60 uppercase tracking-widest mt-1">Surveillance détaillée de toutes les sessions actives</div>
+                    <div class="text-xs font-bold text-blue-400/60 uppercase tracking-widest mt-1">Temps réel strict (IP Uniques)</div>
                 </div>
                 <div class="relative group">
                     <input type="text" id="visitorSearch" placeholder="Rechercher par IP..." 

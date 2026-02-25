@@ -15,59 +15,48 @@ class AdminDashboardController extends Controller
 {
     public function visitorStats()
     {
-        // Temps limite pour considérer un visiteur comme "Live" (ex: 5 minutes)
-        $activeThreshold = time() - (5 * 60);
+        // Temps limite très court pour le "Temps Réel" (2 minutes)
+        // Si l'utilisateur ferme l'onglet, il disparaîtra rapidement
+        $activeThreshold = time() - (2 * 60);
 
-        // 1. Visiteurs réellement actifs (Anonymes + Activité < 5 min)
+        // 1. Visiteurs Anonymes (SANS doublons d'IP et SANS admins)
+        // On groupe par IP pour n'avoir qu'une ligne par visiteur réel
         $activeVisitors = UserSession::whereNull('user_id')
             ->where('last_activity', '>=', $activeThreshold)
+            ->select('ip_address', 'user_agent', DB::raw('MAX(last_activity) as last_activity'))
+            ->groupBy('ip_address', 'user_agent')
             ->orderBy('last_activity', 'desc')
             ->get();
+            
         $activeSessionsCount = $activeVisitors->count();
 
-        // 2. Administrateurs réellement actifs (Activité < 5 min)
+        // 2. Administrateurs Connectés (Activité < 2 min)
         $activeAdmins = UserSession::whereNotNull('user_id')
             ->where('last_activity', '>=', $activeThreshold)
             ->with('user')
+            ->select('user_id', 'ip_address', DB::raw('MAX(last_activity) as last_activity'))
+            ->groupBy('user_id', 'ip_address')
             ->orderBy('last_activity', 'desc')
             ->get();
-        
-        // 3. Répartition par navigateur et appareil (Visiteurs uniquement)
-        $browsers = [
-            'Chrome' => 0, 'Firefox' => 0, 'Safari' => 0, 'Edge' => 0, 'Mobile' => 0, 'Desktop' => 0,
-        ];
 
+        // 3. Répartition par navigateur (uniquement sur les visiteurs filtrés)
+        $browsers = ['Chrome' => 0, 'Firefox' => 0, 'Safari' => 0, 'Edge' => 0, 'Mobile' => 0, 'Desktop' => 0];
         foreach ($activeVisitors as $s) {
             $ua = $s->user_agent;
-            if (stripos($ua, 'Mobile') !== false || stripos($ua, 'Android') !== false || stripos($ua, 'iPhone') !== false) {
-                $browsers['Mobile']++;
-            } else {
-                $browsers['Desktop']++;
-            }
+            if (stripos($ua, 'Mobile') !== false) $browsers['Mobile']++; else $browsers['Desktop']++;
             if (stripos($ua, 'Edg') !== false) $browsers['Edge']++;
             elseif (stripos($ua, 'Chrome') !== false) $browsers['Chrome']++;
             elseif (stripos($ua, 'Firefox') !== false) $browsers['Firefox']++;
             elseif (stripos($ua, 'Safari') !== false) $browsers['Safari']++;
         }
 
-        // 4. Top IP Addresses (Historique)
-        $topIps = UserSession::select('ip_address', DB::raw('count(*) as count'))
-            ->groupBy('ip_address')
-            ->orderBy('count', 'desc')
-            ->take(10)
-            ->get();
-
-        // 5. Statistiques globales
+        // 4. Statistiques globales
         $totalLogins = \App\Models\User::sum('total_logins');
-        
-        // Simuler ou récupérer les vues totales (à stocker en DB idéalement)
-        // Ici on utilise le nombre total de sessions créées comme indicateur de vues uniques totales
-        $totalViews = UserSession::count(); 
+        $totalViews = UserSession::distinct('ip_address')->count(); 
 
         return view('admin.statistics', compact(
             'activeSessionsCount', 
             'browsers', 
-            'topIps', 
             'totalLogins', 
             'activeVisitors', 
             'activeAdmins',
