@@ -86,7 +86,7 @@
             <li><a href="/" class="block hover:text-secondary transition py-2 border-b border-gray-50">Accueil</a></li>
             <li><a href="/produits" class="block hover:text-secondary transition py-2 border-b border-gray-50">Produits</a></li>
             <li><a href="/a-propos" class="block hover:text-secondary transition py-2 border-b border-gray-50">À propos</a></li>
-            <li><a href="/telechargement" class="block hover:text-secondary transition py-2 border-b border-gray-50">Téléchargement</a></li>
+            <li><a href="/telechargement" class="block hover:text-secondary transition py-2 border-b border-gray-50">Téléchargements</a></li>
             <li><a href="/contact" class="block hover:text-secondary transition py-2 border-b border-gray-50">Contact</a></li>
             <li class="pt-2">
                 <a href="/devis" class="flex items-center justify-center gap-2 bg-secondary text-white px-6 py-3 rounded-xl font-bold transition-all active:scale-95 shadow-lg">
