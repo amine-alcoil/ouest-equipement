@@ -171,9 +171,7 @@
         body.is-collapsed .logo-full { display: none; }
         body.is-collapsed .logo-icon { display: block; }
     </style>
-
-       
-    </style>
+    
 </head>
 <body class="min-h-screen bg-[#0f1e34] text-white">
 
