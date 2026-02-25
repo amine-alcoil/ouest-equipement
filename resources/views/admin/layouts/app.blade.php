@@ -172,18 +172,7 @@
         body.is-collapsed .logo-icon { display: block; }
     </style>
 
-        /* Optional: adjust for small screens if needed */
-        @media (max-width: 767px) {
-            #adminDrawer { width: 16rem; }
-            #adminHeader { left: 16rem; }
-            #contentScroll { left: 16rem; }
-        }
-
-        /* Active drawer item highlight */
-        .drawer-item.active {
-            /* background-color: rgba(255, 255, 255, 0.1); replaced by above styles */
-            /* border-color: rgba(255, 255, 255, 0.25); replaced by above styles */
-        }
+       
     </style>
 </head>
 <body class="min-h-screen bg-[#0f1e34] text-white">
