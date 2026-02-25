@@ -203,60 +203,59 @@
         <nav class="p-3 space-y-1">
             <a href="{{ route('admin.dashboard') }}" class="drawer-item flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/10 border border-transparent {{ request()->routeIs('admin.dashboard') ? 'active bg-secondary/5 border-secondary_2' : '' }}">
                 <svg class="h-5 w-5 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
                 </svg>
                 <span>Tableau de bord</span>
             </a>
             <div class="flex flex-col gap-2">
                 <a href="{{ route('admin.products') }}" class="drawer-item flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/10 border border-transparent {{ request()->routeIs('admin.products') ? 'active bg-secondary/5 border-secondary_2' : '' }}">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-width="1.5" d="M3 7l9-4 9 4-9 4-9-4zM3 10l9 4 9-4M3 13l9 4 9-4"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                     </svg>
                     <span>Produits</span>
                 </a>
                 <a href="{{ route('admin.categories') }}" class="drawer-item flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/10 border border-transparent {{ request()->routeIs('admin.categories') ? 'active bg-secondary/5 border-secondary_2' : '' }}">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2 2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                     </svg>
                     <span>Catégories</span>
                 </a>
                 <a href="{{ route('admin.clients') }}" class="drawer-item flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/10 border border-transparent {{ request()->routeIs('admin.clients') ? 'active bg-secondary/5 border-secondary_2' : '' }}">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-width="1.5" d="M16 11c1.657 0 3-1.567 3-3.5S17.657 4 16 4s-3 1.567-3 3.5 1.343 3.5 3 3.5zM8 11c1.657 0 3-1.567 3-3.5S9.657 4 8 4 5 5.567 5 7.5 6.343 11 8 11zm8 2c-2.21 0-4.2 1.343-5 3.25C10.2 14.343 8.21 13 6 13c-2.761 0-5 2.239-5 5v2h22v-2c0-2.761-2.239-5-5-5z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
                     <span>Clients</span>
                 </a>
                 <!-- Devis -->
                 <a href="{{ route('admin.devis') }}" class="drawer-item flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/10 border border-transparent {{ request()->routeIs('admin.devis') ? 'active bg-secondary/5 border-secondary_2' : '' }}">
-                    <!-- Quotes icon -->
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-width="1.5" d="M3 7h18M6 12h12M9 17h6"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                     <span>Devis</span>
                 </a>
             </div>
             <a href="{{ route('admin.contact-messages') }}" class="drawer-item flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/10 border border-transparent {{ request()->routeIs('admin.contact-messages*') ? 'active bg-secondary/5 border-secondary_2' : '' }}">
                 <svg class="h-5 w-5 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
                 </svg>
                 <span>Messages de contact</span>
             </a>
             <a href="{{ route('admin.downloads.index') }}" class="drawer-item flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/10 border border-transparent {{ request()->routeIs('admin.downloads*') ? 'active bg-secondary/5 border-secondary_2' : '' }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
                 </svg>
                 <span>Téléchargements</span>
             </a>
             @if((session('admin_user')['role'] ?? null) === 'admin')
             <a href="{{ route('admin.users') }}" class="drawer-item flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/10 border border-transparent {{ request()->routeIs('admin.users') ? 'active bg-secondary/5 border-secondary_2' : '' }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-width="1.5" d="M16 11c1.657 0 3-1.567 3-3.5S17.657 4 16 4s-3 1.567-3 3.5 1.343 3.5 3 3.5zM8 11c1.657 0 3-1.567 3-3.5S9.657 4 8 4 5 5.567 5 7.5 6.343 11 8 11zm8 2c-2.21 0-4.2 1.343-5 3.25C10.2 14.343 8.21 13 6 13c-2.761 0-5 2.239-5 5v2h22v-2c0-2.761-2.239-5-5-5z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                 </svg>
                 <span>Utilisateurs</span>
             </a>
             <a href="{{ route('admin.statistics') }}" class="drawer-item flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/10 border border-transparent {{ request()->routeIs('admin.statistics') ? 'active bg-secondary/5 border-secondary_2' : '' }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
                 <span>Statistiques</span>
             </a>
