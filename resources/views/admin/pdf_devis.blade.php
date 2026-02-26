@@ -197,7 +197,7 @@
         </tr>
         <tr>
           <td class="tech-label">Géométrie X/Y</td><td>{{ $devis->geometrie_x_mm }} / {{ $devis->geometrie_y_mm }}</td>
-          <td class="tech-label">Collecteurs</td><td>C1: {{ $devis->collecteur1_nb }} / C2: {{ $devis->collecteur2_nb }}</td>
+          <td class="tech-label">Collecteurs</td><td>C1: {{ $devis->collecteur1_mm }} / C2: {{ $devis->collecteur2_mm }}</td>
         </tr>
       </table>
 
