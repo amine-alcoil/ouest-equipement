@@ -60,7 +60,7 @@
                 </div>
                 <div>
                     <div class="text-white/40 text-xs font-bold uppercase tracking-wider">Vues Totales</div>
-                    <div class="text-3xl font-black text-white mt-1">{{ number_format($totalViews, 0, ',', ' ') }}</div>
+                    <div id="stat-total-views" class="text-3xl font-black text-white mt-1">{{ number_format($totalViews, 0, ',', ' ') }}</div>
                 </div>
             </div>
         </div>
@@ -76,7 +76,7 @@
                 </div>
                 <div>
                     <div class="text-white/40 text-xs font-bold uppercase tracking-wider">Visiteurs Live</div>
-                    <div class="text-3xl font-black text-white mt-1">{{ $activeSessionsCount }}</div>
+                    <div id="stat-active-sessions" class="text-3xl font-black text-white mt-1">{{ $activeSessionsCount }}</div>
                 </div>
             </div>
         </div>
@@ -92,7 +92,7 @@
                 </div>
                 <div>
                     <div class="text-white/40 text-xs font-bold uppercase tracking-wider">Admins Online</div>
-                    <div class="text-3xl font-black text-white mt-1">{{ $activeAdmins->count() }}</div>
+                    <div id="stat-active-admins" class="text-3xl font-black text-white mt-1">{{ $activeAdmins->count() }}</div>
                 </div>
             </div>
         </div>
@@ -108,7 +108,7 @@
                 </div>
                 <div>
                     <div class="text-white/40 text-xs font-bold uppercase tracking-wider">Logins Total</div>
-                    <div class="text-3xl font-black text-white mt-1">{{ number_format($totalLogins, 0, ',', ' ') }}</div>
+                    <div id="stat-total-logins" class="text-3xl font-black text-white mt-1">{{ number_format($totalLogins, 0, ',', ' ') }}</div>
                 </div>
             </div>
         </div>
@@ -132,7 +132,7 @@
                 <h3 class="text-xl font-bold text-white tracking-tight">Administrateurs Connectés</h3>
                 <div class="text-[10px] font-bold text-orange-400/50 uppercase tracking-widest">Sessions Staff</div>
             </div>
-            <div class="space-y-4 max-h-[300px] overflow-y-auto custom-scrollbar pr-2">
+            <div id="admins-list" class="space-y-4 max-h-[300px] overflow-y-auto custom-scrollbar pr-2">
                 @forelse($activeAdmins as $adminSession)
                 <div class="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5 group hover:bg-orange-500/5 hover:border-orange-500/20 transition-all">
                     <div class="flex items-center gap-3">
@@ -187,7 +187,7 @@
                                 <th class="py-5 px-8 text-right">Dernière Activité</th>
                             </tr>
                         </thead>
-                        <tbody class="text-white/70 divide-y divide-white/5">
+                        <tbody id="visitors-list" class="text-white/70 divide-y divide-white/5">
                             @forelse($activeVisitors as $visitor)
                             <tr class="hover:bg-blue-500/5 transition-all group visitor-row">
                                 <td class="py-5 px-8">
@@ -255,14 +255,17 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // --- Existing Chart Code ---
+        // Global Chart Instance
+        let browserChart;
+        let currentActiveCount = {{ $activeSessionsCount }};
+
         const ctx = document.getElementById('browserChart').getContext('2d');
         
         // Custom plugin to draw text in the center
         const centerTextPlugin = {
             id: 'centerText',
             afterDraw: (chart) => {
-                const { ctx, canvas, chartArea: { top, bottom, left, right, width, height } } = chart;
+                const { ctx, chartArea: { top, bottom, left, right, width, height } } = chart;
                 ctx.save();
                 ctx.font = 'bold 12px sans-serif';
                 ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
@@ -272,12 +275,12 @@
                 
                 ctx.font = 'bold 24px sans-serif';
                 ctx.fillStyle = '#ffffff';
-                ctx.fillText('{{ $activeSessionsCount }}', width / 2, (height / 2) + top + 15);
+                ctx.fillText(currentActiveCount, width / 2, (height / 2) + top + 15);
                 ctx.restore();
             }
         };
 
-        new Chart(ctx, {
+        browserChart = new Chart(ctx, {
             type: 'doughnut',
             data: {
                 labels: {!! json_encode(array_keys($browsers)) !!},
@@ -289,7 +292,7 @@
                         '#ec4899', // Safari
                         '#06b6d4', // Edge
                         '#10b981', // Mobile
-                        '#64748b'  // Autre
+                        '#64748b'  // Desktop
                     ],
                     hoverBackgroundColor: [
                         '#60a5fa', '#fb923c', '#f472b6', '#22d3ee', '#34d399', '#94a3b8'
@@ -334,6 +337,108 @@
             },
             plugins: [centerTextPlugin]
         });
+
+        // --- NEW: Real-time Data Fetching ---
+        function refreshStats() {
+            fetch(window.location.href, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Update Simple Numbers
+                document.getElementById('stat-total-views').textContent = data.totalViews.toLocaleString();
+                document.getElementById('stat-active-sessions').textContent = data.activeSessionsCount;
+                document.getElementById('stat-active-admins').textContent = data.activeAdmins.length;
+                document.getElementById('stat-total-logins').textContent = data.totalLogins.toLocaleString();
+                
+                // Update Center Text in Chart
+                currentActiveCount = data.activeSessionsCount;
+
+                // Update Chart Data
+                browserChart.data.labels = Object.keys(data.browsers);
+                browserChart.data.datasets[0].data = Object.values(data.browsers);
+                browserChart.update();
+
+                // Update Admins List
+                const adminList = document.getElementById('admins-list');
+                if (data.activeAdmins.length === 0) {
+                    adminList.innerHTML = '<div class="text-center py-10 text-white/20 italic text-sm">Aucun administrateur connecté.</div>';
+                } else {
+                    adminList.innerHTML = data.activeAdmins.map(admin => `
+                        <div class="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5 group hover:bg-orange-500/5 hover:border-orange-500/20 transition-all">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-orange-500/20 flex items-center justify-center text-orange-400 font-bold">
+                                    ${admin.name.charAt(0)}
+                                </div>
+                                <div>
+                                    <div class="text-sm font-bold text-white">${admin.name}</div>
+                                    <div class="text-[10px] text-white/40 font-mono">${admin.ip_address}</div>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                    <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-tighter">En ligne</span>
+                                </div>
+                                <div class="text-[10px] text-white/30 mt-1">${admin.last_activity_human}</div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+
+                // Update Visitors List
+                const visitorsList = document.getElementById('visitors-list');
+                if (data.activeVisitors.length === 0) {
+                    visitorsList.innerHTML = '<tr><td colspan="4" class="py-20 text-center"><div class="flex flex-col items-center gap-3 text-white/20"><svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg><span class="text-lg font-medium italic">Aucun visiteur anonyme en ligne</span></div></td></tr>';
+                } else {
+                    visitorsList.innerHTML = data.activeVisitors.map(visitor => `
+                        <tr class="hover:bg-blue-500/5 transition-all group visitor-row">
+                            <td class="py-5 px-8">
+                                <div class="flex items-center gap-2">
+                                    <span class="relative flex h-3 w-3">
+                                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                                        <span class="relative inline-flex rounded-full h-3 w-3 bg-blue-500"></span>
+                                    </span>
+                                    <span class="text-[10px] font-bold text-blue-400/80">LIVE</span>
+                                </div>
+                            </td>
+                            <td class="py-5 px-6">
+                                <span class="font-mono text-base text-blue-100 font-bold visitor-ip group-hover:text-white transition-colors">${visitor.ip_address}</span>
+                            </td>
+                            <td class="py-5 px-6">
+                                <div class="flex flex-col max-w-md">
+                                    <span class="text-sm text-white/80 font-medium truncate" title="${visitor.user_agent}">
+                                        ${visitor.user_agent}
+                                    </span>
+                                    ${visitor.is_mobile ? `
+                                        <span class="text-[10px] text-purple-400 font-bold mt-1 flex items-center gap-1">
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                                            SMARTPHONE
+                                        </span>
+                                    ` : `
+                                        <span class="text-[10px] text-blue-400 font-bold mt-1 flex items-center gap-1">
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                            ORDINATEUR
+                                        </span>
+                                    `}
+                                </div>
+                            </td>
+                            <td class="py-5 px-8 text-right">
+                                <span class="px-4 py-1.5 rounded-full bg-blue-500/10 text-blue-300 text-xs font-bold border border-blue-500/20 shadow-sm">
+                                    ${visitor.last_activity_human}
+                                </span>
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+            })
+            .catch(error => console.error('Error refreshing stats:', error));
+        }
+
+        // Auto-refresh every 10 seconds
+        setInterval(refreshStats, 10000);
 
         // --- NEW: Real-time Visitor Search Function ---
         const visitorSearch = document.getElementById('visitorSearch');

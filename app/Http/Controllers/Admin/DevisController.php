@@ -625,7 +625,9 @@ class DevisController extends Controller
     {
         $devis = Devis::where('ref_id', $id)->firstOrFail();
         $company = CompanyInfo::first();
-        $candidate = ($company && $company->logo_path) ? $company->logo_path : 'images/Logo_ALCOIL_with_txt_b_org@3x.png';
+        
+        // Use the specific logo requested by the user
+        $candidate = 'images/Logo_ALCOIL_with_txt_b_org@3x.png';
         $logoSrc = null;
 
         try {

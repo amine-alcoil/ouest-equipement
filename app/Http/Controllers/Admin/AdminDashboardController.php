@@ -54,6 +54,30 @@ class AdminDashboardController extends Controller
         $totalLogins = \App\Models\User::sum('total_logins');
         $totalViews = UserSession::distinct('ip_address')->count(); 
 
+        if (request()->ajax()) {
+            return response()->json([
+                'activeSessionsCount' => $activeSessionsCount,
+                'totalLogins' => $totalLogins,
+                'totalViews' => $totalViews,
+                'browsers' => $browsers,
+                'activeAdmins' => $activeAdmins->map(function($session) {
+                    return [
+                        'name' => $session->user->name ?? 'Admin Inconnu',
+                        'ip_address' => $session->ip_address,
+                        'last_activity_human' => \Carbon\Carbon::createFromTimestamp($session->last_activity)->diffForHumans()
+                    ];
+                }),
+                'activeVisitors' => $activeVisitors->map(function($visitor) {
+                    return [
+                        'ip_address' => $visitor->ip_address,
+                        'user_agent' => $visitor->user_agent,
+                        'last_activity_human' => \Carbon\Carbon::createFromTimestamp($visitor->last_activity)->diffForHumans(),
+                        'is_mobile' => stripos($visitor->user_agent, 'Mobile') !== false
+                    ];
+                })
+            ]);
+        }
+
         return view('admin.statistics', compact(
             'activeSessionsCount', 
             'browsers', 
