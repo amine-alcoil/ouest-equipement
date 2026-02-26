@@ -75,16 +75,21 @@
                         <td class="px-4 py-3">{{ $u->updated_at->format('Y-m-d H:i') }}</td>
                         <td class="px-4 py-3 text-right">
                             <div class="inline-flex items-center gap-1">
-                                <button onclick="openEdit('{{ $u->id }}','{{ e($u->name) }}','{{ e($u->email) }}','{{ $u->role }}','{{ $u->status ?? 'actif' }}')" class="px-2 py-1 rounded bg-white/10 border border-white/10 hover:bg-white/15 text-xs">
-                                    Modifier
-                                </button>
-                                <button type="button" onclick="confirmDelete({{ $u->id }}, '{{ e($u->name) }}')" class="px-2 py-1 rounded bg-red-600/30 border border-white/10 hover:bg-red-600/40 text-xs">
-                                    Supprimer
-                                </button>
-                                <form id="deleteForm-{{ $u->id }}" method="POST" action="{{ route('admin.users.destroy', $u) }}" class="hidden">
-                                    @csrf
-                                    @method('DELETE')
-                                </form>
+                                @if($u->id != 1 || Auth::id() == 1)
+                                    <button onclick="openEdit('{{ $u->id }}','{{ e($u->name) }}','{{ e($u->email) }}','{{ $u->role }}','{{ $u->status ?? 'actif' }}')" class="px-2 py-1 rounded bg-white/10 border border-white/10 hover:bg-white/15 text-xs">
+                                        Modifier
+                                    </button>
+                                @endif
+                                
+                                @if($u->id != Auth::id() && $u->id != 1)
+                                    <button type="button" onclick="confirmDelete({{ $u->id }}, '{{ e($u->name) }}')" class="px-2 py-1 rounded bg-red-600/30 border border-white/10 hover:bg-red-600/40 text-xs">
+                                        Supprimer
+                                    </button>
+                                    <form id="deleteForm-{{ $u->id }}" method="POST" action="{{ route('admin.users.destroy', $u) }}" class="hidden">
+                                        @csrf
+                                        @method('DELETE')
+                                    </form>
+                                @endif
                             </div>
                         </td>
                     </tr>

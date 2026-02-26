@@ -130,19 +130,32 @@
         <div class="lg:col-span-5 space-y-8 animate-fadeInUp delay-200">
             <div class="glass-card rounded-[2.5rem] p-8 sm:p-10 shadow-2xl shadow-primary/5">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-10">
-                    <div class="space-y-1">
-                        <div class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Prix unitaire</div>
-                        <div class="text-4xl sm:text-5xl font-black text-primary tracking-tight">
-                            {{ number_format($product['price'], 0, ',', ' ') }}
-                            <span class="text-xl font-bold text-secondary ml-1">DA</span>
+                    @if(strtolower($product['category']) !== 'spécifique')
+                        <div class="space-y-1">
+                            <div class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Prix unitaire</div>
+                            <div class="text-4xl sm:text-5xl font-black text-primary tracking-tight">
+                                {{ number_format($product['price'], 0, ',', ' ') }}
+                                <span class="text-xl font-bold text-secondary ml-1">DA</span>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <button type="button" data-commander data-product-name="{{ $product['name'] }}" 
-                            class="relative group w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-secondary hover:bg-secondary_2 text-white font-black rounded-2xl px-10 py-5 transition-all shadow-xl shadow-secondary/25 hover:shadow-secondary/40 active:scale-95 overflow-hidden">
-                        <span class="relative z-10 uppercase tracking-widest text-sm">Commander</span>
-                        <div class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-                    </button>
+                        
+                        <button type="button" data-commander data-product-name="{{ $product['name'] }}" 
+                                class="relative group w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-secondary hover:bg-secondary_2 text-white font-black rounded-2xl px-10 py-5 transition-all shadow-xl shadow-secondary/25 hover:shadow-secondary/40 active:scale-95 overflow-hidden">
+                            <span class="relative z-10 uppercase tracking-widest text-sm">Commander</span>
+                            <div class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                        </button>
+                    @else
+                        <div class="space-y-1">
+                            <div class="text-[10px] font-black uppercase tracking-[0.2em] text-secondary">Produit Sur Mesure</div>
+                            <div class="text-3xl font-black text-primary tracking-tight">Prix sur devis</div>
+                        </div>
+                        
+                        <a href="{{ url('/devis?tab=specific') }}" 
+                           class="relative group w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-primary hover:bg-primary/90 text-white font-black rounded-2xl px-10 py-5 transition-all shadow-xl shadow-primary/25 hover:shadow-primary/40 active:scale-95 overflow-hidden">
+                            <span class="relative z-10 uppercase tracking-widest text-sm">Demander un devis</span>
+                            <div class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                        </a>
+                    @endif
                 </div>
                 
                 <div class="space-y-4">

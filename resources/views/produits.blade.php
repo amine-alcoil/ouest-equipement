@@ -475,22 +475,38 @@
 
                     <div class="pt-4 border-t border-gray-100 flex items-center justify-between gap-3">
                         <div class="flex flex-col">
-                            <span class="text-xs text-gray-400 font-medium uppercase tracking-wide">Prix</span>
-                            <div class="text-xl font-bold text-secondary_2">
-                                ${p.price.toLocaleString('fr-DZ')} <span class="text-sm font-normal text-gray-500">DA</span>
-                            </div>
+                            ${p.category.toLowerCase() !== 'spécifique' ? `
+                                <span class="text-xs text-gray-400 font-medium uppercase tracking-wide">Prix</span>
+                                <div class="text-xl font-bold text-secondary_2">
+                                    ${p.price.toLocaleString('fr-DZ')} <span class="text-sm font-normal text-gray-500">DA</span>
+                                </div>
+                            ` : `
+                                <span class="text-xs text-secondary font-bold uppercase tracking-wide">Sur Mesure</span>
+                                <div class="text-sm font-medium text-gray-500 italic">Prix sur devis</div>
+                            `}
                         </div>
                         
-                        <button type="button" 
-                                onclick="event.stopPropagation(); window.showComingSoon ? window.showComingSoon('${escapeHtml(p.name)}') : null"
-                                data-commander
-                                data-product-name="${escapeHtml(p.name)}"
-                                class="px-5 py-2.5 bg-secondary hover:bg-secondary_2 text-white rounded-xl font-medium text-sm transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 active:scale-95 flex items-center gap-2">
-                            <span>Commander</span>
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                            </svg>
-                        </button>
+                        ${p.category.toLowerCase() !== 'spécifique' ? `
+                            <button type="button" 
+                                    onclick="event.stopPropagation(); window.showComingSoon ? window.showComingSoon('${escapeHtml(p.name)}') : null"
+                                    data-commander
+                                    data-product-name="${escapeHtml(p.name)}"
+                                    class="px-5 py-2.5 bg-secondary hover:bg-secondary_2 text-white rounded-xl font-medium text-sm transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 active:scale-95 flex items-center justify-center gap-2 w-[140px]">
+                                <span>Commander</span>
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                                </svg>
+                            </button>
+                        ` : `
+                            <a href="/devis?tab=specific" 
+                               onclick="event.stopPropagation()"
+                               class="px-5 py-2.5 bg-primary hover:bg-primary/90 text-white rounded-xl font-medium text-sm transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 active:scale-95 flex items-center justify-center gap-2 w-[140px]">
+                                <span>Devis</span>
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                            </a>
+                        `}
                     </div>
                 </div>
             `;

@@ -185,20 +185,20 @@
 
                     <div>
                         <label class="block text-sm text-white/80 mb-1">Catégorie</label>
-                        <select id="newCategory" name="category" required class="w-full px-3 py-2 rounded-lg bg-[#0f1e34] border border-white/10 focus:outline-none focus:ring-2 focus:ring-white/20"></select>
+                        <select id="newCategory" name="category" required class="w-full px-3 py-2 rounded-lg bg-[#0f1e34] border border-white/10 focus:outline-none focus:ring-2 focus:ring-white/20" onchange="toggleTechnicalFields(this, 'new')"></select>
                     </div>
-                    <div>
+                    <div id="newSubcategoryField">
                         <label class="block text-sm text-white/80 mb-1">Sous-catégorie</label>
                         <select id="newSubcategory" name="subcategory" class="w-full px-3 py-2 rounded-lg bg-[#0f1e34] border border-white/10 focus:outline-none focus:ring-2 focus:ring-white/20"></select>
                     </div>
-                    <div>
+                    <div id="newPriceField">
                         <label class="block text-sm text-white/80 mb-1">Prix (DZD)</label>
-                        <input name="price" type="number" min="0" step="0.01" required class="w-full px-3 py-2 rounded-lg bg-[#0f1e34] border border-white/10 focus:outline-none focus:ring-2 focus:ring-white/20">
+                        <input name="price" type="number" min="0" step="0.01" class="w-full px-3 py-2 rounded-lg bg-[#0f1e34] border border-white/10 focus:outline-none focus:ring-2 focus:ring-white/20">
                     </div>
 
-                    <div>
+                    <div id="newStockField">
                         <label class="block text-sm text-white/80 mb-1">Stock</label>
-                        <input name="stock" type="number" min="0" required class="w-full px-3 py-2 rounded-lg bg-[#0f1e34] border border-white/10 focus:outline-none focus:ring-2 focus:ring-white/20">
+                        <input name="stock" type="number" min="0" class="w-full px-3 py-2 rounded-lg bg-[#0f1e34] border border-white/10 focus:outline-none focus:ring-2 focus:ring-white/20">
                     </div>
                     <div class="md:col-span-2">
                         <label class="block text-sm text-white/80 mb-1">Statut</label>
@@ -437,19 +437,19 @@
                 </div>
                 <div>
                     <label class="block text-sm text-white/80 mb-1">Catégorie</label>
-                    <select id="editCategory" name="category" required class="w-full px-3 py-2 rounded-lg bg-[#0f1e34] border border-white/10"></select>
+                    <select id="editCategory" name="category" required class="w-full px-3 py-2 rounded-lg bg-[#0f1e34] border border-white/10" onchange="toggleTechnicalFields(this, 'edit')"></select>
                 </div>
-                <div>
+                <div id="editSubcategoryField">
                     <label class="block text-sm text-white/80 mb-1">Sous-catégorie</label>
                     <select id="editSubcategory" name="subcategory" class="w-full px-3 py-2 rounded-lg bg-[#0f1e34] border border-white/10"></select>
                 </div>
-                <div>
+                <div id="editPriceField">
                     <label class="block text-sm text-white/80 mb-1">Prix (DZD)</label>
-                    <input type="number" name="price" min="0" step="0.01" required class="w-full px-3 py-2 rounded-lg bg-[#0f1e34] border border-white/10">
+                    <input type="number" name="price" min="0" step="0.01" class="w-full px-3 py-2 rounded-lg bg-[#0f1e34] border border-white/10">
                 </div>
-                <div>
+                <div id="editStockField">
                     <label class="block text-sm text-white/80 mb-1">Stock</label>
-                    <input type="number" name="stock" min="0" required class="w-full px-3 py-2 rounded-lg bg-[#0f1e34] border border-white/10">
+                    <input type="number" name="stock" min="0" class="w-full px-3 py-2 rounded-lg bg-[#0f1e34] border border-white/10">
                 </div>
                 <div>
                     <label class="block text-sm text-white/80 mb-1">Statut</label>
@@ -584,6 +584,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const toInt = (v) => parseInt(v, 10) || 0;
 
+    window.toggleTechnicalFields = (select, prefix) => {
+        const isSpecific = select.value.toLowerCase() === 'spécifique';
+        const priceField = document.getElementById(prefix + 'PriceField');
+        const stockField = document.getElementById(prefix + 'StockField');
+        const subcatField = document.getElementById(prefix + 'SubcategoryField');
+        
+        if (priceField && stockField) {
+            if (isSpecific) {
+                priceField.classList.add('hidden');
+                stockField.classList.add('hidden');
+                if (subcatField) subcatField.classList.add('hidden');
+                priceField.querySelector('input').required = false;
+                stockField.querySelector('input').required = false;
+            } else {
+                priceField.classList.remove('hidden');
+                stockField.classList.remove('hidden');
+                if (subcatField) subcatField.classList.remove('hidden');
+                priceField.querySelector('input').required = true;
+                stockField.querySelector('input').required = true;
+            }
+        }
+    };
+
     const refreshTable = (products) => {
         if (!products || products.length === 0) {
             tbody.innerHTML = `<tr><td colspan="11" class="px-4 py-12 text-white/60 text-center align-middle">Aucun produit disponible.</td></tr>`;
@@ -700,6 +723,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         es.value = data.product.subcate ?? '';
                     }
                 }
+                toggleTechnicalFields(ec, 'edit');
                 form.querySelector('[name=description]').value = data.product.description ?? '';
                 form.querySelector('[name=price]').value = data.product.price ?? 0;
                 form.querySelector('[name=stock]').value = data.product.stock ?? 0;

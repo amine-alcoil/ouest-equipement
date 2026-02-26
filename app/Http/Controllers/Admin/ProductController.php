@@ -88,14 +88,16 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
+        $isSpecific = strtolower($request->input('category')) === 'spécifique';
+
         $validated = $request->validate([
             'sku'         => 'nullable|string|max:40|unique:products,sku',
             'name'        => 'required|string|max:160',
             'category'    => 'required|string|max:80',
             'subcategory' => 'nullable|string|max:80',
             'description' => 'nullable|string|max:5000',
-            'price'       => 'required|numeric|min:0',
-            'stock'       => 'required|integer|min:0',
+            'price'       => ($isSpecific ? 'nullable' : 'required') . '|numeric|min:0',
+            'stock'       => ($isSpecific ? 'nullable' : 'required') . '|integer|min:0',
             'status'      => 'nullable|string|in:actif,inactif,rupture',
             'tags'        => 'array',
             'tags.*'      => 'string|max:40',
@@ -141,9 +143,9 @@ class ProductController extends Controller
             'tags' => $validated['tags'] ?? [],
             'images' => $images,
             'pdf' => $pdfUrl,
-            'price' => $validated['price'],
-            'stock' => $validated['stock'],
-            'status' => ((int)$validated['stock'] === 0) ? 'rupture' : ($validated['status'] ?? 'actif'),
+            'price' => $validated['price'] ?? 0,
+            'stock' => $validated['stock'] ?? 0,
+            'status' => ((int)($validated['stock'] ?? 0) === 0) ? 'rupture' : ($validated['status'] ?? 'actif'),
         ]);
 
         if ($request->expectsJson() || $request->ajax()) {
@@ -172,13 +174,15 @@ class ProductController extends Controller
             return response()->json(['ok' => false, 'message' => 'Produit introuvable pour mise à jour.'], 404);
         }
 
+        $isSpecific = strtolower($request->input('category')) === 'spécifique';
+
         $validated = $request->validate([
             'name'        => 'required|string|max:160',
             'category'    => 'required|string|max:80',
             'subcategory' => 'nullable|string|max:80',
             'description' => 'nullable|string|max:5000',
-            'price'       => 'required|numeric|min:0',
-            'stock'       => 'required|integer|min:0',
+            'price'       => ($isSpecific ? 'nullable' : 'required') . '|numeric|min:0',
+            'stock'       => ($isSpecific ? 'nullable' : 'required') . '|integer|min:0',
             'status'      => 'nullable|string|in:actif,inactif,rupture',
             'sku'         => 'nullable|string|max:40|unique:products,sku,' . $product,
             'tags'        => 'array',
@@ -202,8 +206,8 @@ class ProductController extends Controller
         $productModel->category = $validated['category'];
         $productModel->subcate = $validated['subcategory'] ?? $productModel->subcate;
         $productModel->description = $validated['description'] ?? $productModel->description;
-        $productModel->price = $validated['price'];
-        $productModel->stock = $validated['stock'];
+        $productModel->price = $validated['price'] ?? ($isSpecific ? 0 : $productModel->price);
+        $productModel->stock = $validated['stock'] ?? ($isSpecific ? 0 : $productModel->stock);
         $productModel->sku = $validated['sku'] ?? $productModel->sku;
         $productModel->tags = $validated['tags'] ?? $productModel->tags;
         
