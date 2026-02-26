@@ -334,7 +334,16 @@
   <div class="absolute inset-0 bg-black/60"></div>
   <div class="relative h-full flex items-center justify-center p-4">
     <div class="w-full max-w-3xl md:max-w-4xl rounded-2xl bg-[#122241] border border-white/10 p-6 shadow-2xl max-h-[85vh] overflow-y-auto">
-      <h3 class="text-lg font-semibold text-white mb-4">Détails du devis</h3>
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-semibold text-white">Détails du devis</h3>
+        <a id="detailsPdfBtn" href="#" target="_blank" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-red-600/20 border border-red-500/30 text-red-400 hover:bg-red-600/30 transition-all text-sm font-medium">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm9 1v5h5"/>
+            <path d="M8 17h2.5c1.4 0 2.5-1.1 2.5-2.5S11.9 12 10.5 12H8v5zm2.3-3.4c.6 0 1 .4 1 1s-.4 1-1 1H9.1v-2h1.2zM14 17h1.6c1.3 0 2.4-.7 2.4-2.2 0-1.5-1.1-2.3-2.4-2.3H14v4.5zm1.6-3.5c.6 0 1.1.3 1.1 1.2s-.5 1.1-1.1 1.1H15v-2.3h.6z"/>
+          </svg>
+          Exporter PDF
+        </a>
+      </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-white/90 text-sm" id="detailsBody"></div>
       <div class="flex justify-end mt-4">
         <button onclick="closeDetails()" class="rounded-lg bg-white/10 hover:bg-white/20 text-white px-4 py-2">Fermer</button>
@@ -463,6 +472,12 @@ function viewDevis(id){
     }
   }
   
+  // Set PDF export link
+  const pdfBtn = document.getElementById('detailsPdfBtn');
+  if (pdfBtn) {
+    pdfBtn.href = "{{ route('admin.devis.export-pdf', ['id' => '__ID__']) }}".replace('__ID__', id);
+  }
+  
   // Add additional information
   
   
@@ -508,11 +523,14 @@ function viewDevis(id){
             return `
             <div class="relative group aspect-square rounded-xl overflow-hidden border border-white/10 bg-white/5 hover:border-secondary/50 transition-all">
               ${icon}
-              <a href="${src}" download class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                <div class="p-2 rounded-full bg-secondary text-white shadow-lg transform translate-y-2 group-hover:translate-y-0 transition-transform">
+              <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-3 transition-opacity">
+                <a href="${src}" target="_blank" class="p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all transform translate-y-2 group-hover:translate-y-0" title="Voir">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                </a>
+                <a href="${src}" download class="p-2.5 rounded-full bg-secondary hover:bg-secondary_2 text-white transition-all transform translate-y-2 group-hover:translate-y-0" title="Télécharger">
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                </div>
-              </a>
+                </a>
+              </div>
             </div>`;
           }).join('')}
         </div>
