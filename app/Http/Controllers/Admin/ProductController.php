@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -86,6 +87,13 @@ class ProductController extends Controller
         return Storage::url($finalRel);
     }
 
+    private function syncTags(array $tagNames)
+    {
+        foreach ($tagNames as $name) {
+            Tag::firstOrCreate(['name' => $name]);
+        }
+    }
+
     public function store(Request $request)
     {
         $isSpecific = strtolower($request->input('category')) === 'spécifique';
@@ -147,6 +155,10 @@ class ProductController extends Controller
             'stock' => $validated['stock'] ?? 0,
             'status' => ((int)($validated['stock'] ?? 0) === 0) ? 'rupture' : ($validated['status'] ?? 'actif'),
         ]);
+
+        if (!empty($validated['tags'])) {
+            $this->syncTags($validated['tags']);
+        }
 
         if ($request->expectsJson() || $request->ajax()) {
             return response()->json(['ok' => true, 'product' => $product]);
@@ -260,6 +272,10 @@ class ProductController extends Controller
         }
 
         $productModel->save();
+
+        if (!empty($validated['tags'])) {
+            $this->syncTags($validated['tags']);
+        }
 
         if ($request->expectsJson() || $request->ajax()) {
             return response()->json(['ok' => true, 'product' => $productModel]);
