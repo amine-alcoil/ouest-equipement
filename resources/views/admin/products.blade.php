@@ -307,11 +307,11 @@
                         <td class="px-4 py-3">{{ isset($p['price']) ? number_format($p['price'], 0, ',', ' ') . ' DZD' : '—' }}</td>
                         <td class="px-4 py-3">{{ $p['stock'] ?? '—' }}</td>
                         <td class="px-4 py-3">
-                            @php $s = ($p['stock'] ?? 0) == 0 ? 'inactif' : strtolower($p['status'] ?? 'actif'); @endphp
+                            @php $s = ($p['stock'] ?? 0) == 0 ? 'rupture' : strtolower($p['status'] ?? 'actif'); @endphp
                             @if($s === 'actif')
                                 <span class="px-2 py-1 rounded bg-green-600/30 text-green-300 text-xs">Actif</span>
-                            @elseif($s === 'inactif')
-                                <span class="px-2 py-1 rounded bg-yellow-600/30 text-yellow-300 text-xs">Inactif</span>
+                            @elseif($s === 'rupture')
+                                <span class="px-2 py-1 rounded bg-red-600/30 text-red-300 text-xs">Rupture</span>
                             @else
                                 <span class="px-2 py-1 rounded bg-yellow-600/30 text-yellow-300 text-xs">Inactif</span>
                             @endif
@@ -1331,8 +1331,14 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('pdCategory').textContent = cells[3]?.textContent.trim() || dash;
         document.getElementById('pdSubcategory').textContent = cells[4]?.textContent.trim() || dash;
         document.getElementById('pdPrice').textContent = cells[5]?.textContent.trim() || dash;
-        document.getElementById('pdStock').textContent = cells[6]?.textContent.trim() || dash;
-        document.getElementById('pdStatus').textContent = tr.querySelector('td:nth-child(8) span')?.textContent.trim() || dash;
+        const stockVal = cells[6]?.textContent.trim() || '0';
+        document.getElementById('pdStock').textContent = stockVal;
+        
+        const statusSpan = tr.querySelector('td:nth-child(8) span');
+        const statusText = statusSpan ? statusSpan.textContent.trim() : 'Inactif';
+        const statusHtml = statusSpan ? statusSpan.outerHTML : `<span class="px-2 py-1 rounded bg-yellow-600/30 text-yellow-300 text-xs">Inactif</span>`;
+        document.getElementById('pdStatus').innerHTML = statusHtml;
+        
         document.getElementById('pdCreated').textContent = cells[8]?.textContent.trim() || dash;
         document.getElementById('pdUpdated').textContent = cells[9]?.textContent.trim() || dash;
         document.getElementById('pdDesc').textContent = tr.getAttribute('data-desc') || dash;
