@@ -99,6 +99,7 @@
         </ul>
     </div>
 </nav>
+
 <!-- CONTACT INFO SLIDE -->
 <div id="contactOverlay" class="fixed inset-0 bg-black/40 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-500 z-40"></div>
 <aside id="contactBox" class="fixed right-0 top-0 h-full w-[360px] max-w-full bg-primary text-white shadow-2xl border-l border-white/10 transform translate-x-full opacity-0 transition-all duration-500 z-50">
