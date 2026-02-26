@@ -236,6 +236,19 @@ class ProductController extends Controller
                 }
             }
             $productModel->pdf = Storage::url($request->file('pdf')->store('products', 'public'));
+        } elseif ($request->input('delete_pdf') == '1') {
+            // Manual deletion of PDF
+            if ($productModel->pdf) {
+                try {
+                    $rel = str_replace('/storage/', '', $productModel->pdf);
+                    if (\Illuminate\Support\Facades\Storage::disk('public')->exists($rel)) {
+                        \Illuminate\Support\Facades\Storage::disk('public')->delete($rel);
+                    }
+                } catch (\Throwable $e) {
+                    \Illuminate\Support\Facades\Log::error('Failed to manually delete PDF: ' . $e->getMessage());
+                }
+                $productModel->pdf = null;
+            }
         }
 
         // Allow manual status override, otherwise default to 'rupture' if stock is 0
