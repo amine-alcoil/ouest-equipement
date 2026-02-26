@@ -162,7 +162,7 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-slate-700">Collecteur 1</label>
-                        <input name="collecteur1_nb" type="number" min="0" placeholder="mm" class="mt-1 w-full rounded-lg border border-slate-300/70 bg-white/70 backdrop-blur-sm px-4 py-3 text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary transition">
+                        <input name="collecteur1_mm" type="number" min="0" placeholder="mm" class="mt-1 w-full rounded-lg border border-slate-300/70 bg-white/70 backdrop-blur-sm px-4 py-3 text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary transition">
                     </div>
                     
                     <div>
@@ -171,7 +171,7 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-slate-700">Collecteur 2</label>
-                        <input name="collecteur2_nb" type="number" min="0" placeholder="mm" class="mt-1 w-full rounded-lg border border-slate-300/70 bg-white/70 backdrop-blur-sm px-4 py-3 text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary transition">
+                        <input name="collecteur2_mm" type="number" min="0" placeholder="mm" class="mt-1 w-full rounded-lg border border-slate-300/70 bg-white/70 backdrop-blur-sm px-4 py-3 text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary transition">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-slate-700">Ø Collecteur 2</label>

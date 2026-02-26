@@ -434,9 +434,9 @@ function viewDevis(id){
       'Nombre de tubes': tr.dataset.nombre_tubes || '',
       'Géométrie X (mm)': tr.dataset.geometrie_x_mm || '',
       'Géométrie Y (mm)': tr.dataset.geometrie_y_mm || '',
-      'Collecteur 1 (nb)': tr.dataset.collecteur1_nb || '',
+      'Collecteur 1': tr.dataset.collecteur1_nb || '',
       'Ø Collecteur 1 (mm)': tr.dataset.collecteur1_diametre || '',
-      'Collecteur 2 (nb)': tr.dataset.collecteur2_nb || '',
+      'Collecteur 2': tr.dataset.collecteur2_nb || '',
       'Ø Collecteur 2 (mm)': tr.dataset.collecteur2_diametre || '',
       'Date de création': tds[6]?.innerText.trim()||'',
       'Statut actuel': tr.querySelector('select')?.selectedOptions[0]?.text||'',
@@ -479,14 +479,42 @@ function viewDevis(id){
     if (Array.isArray(atts) && atts.length) {
       attachmentsHtml = `
       <div class="md:col-span-2 mb-2">
-        <div class="text-white/60 text-xs uppercase tracking-wide">Pièces jointes</div>
-        <div class="mt-2 flex flex-wrap gap-2">
-          ${atts.map(src => `
-            <a href="${src}" download class="group">
-              <img src="${src}" class="w-16 h-16 object-cover rounded border border-white/10 group-hover:ring-2 group-hover:ring-indigo-400">
-              <div class="text-xs text-white/60 mt-1 text-center">Télécharger</div>
-            </a>
-          `).join('')}
+        <div class="text-white/60 text-xs uppercase tracking-wide mb-3">Pièces jointes</div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          ${atts.map(src => {
+            const ext = src.split('.').pop().toLowerCase();
+            let icon = '';
+            let isImg = ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext);
+            
+            if (isImg) {
+              icon = `<img src="${src}" class="w-full h-full object-cover">`;
+            } else if (ext === 'pdf') {
+              icon = `<div class="w-full h-full flex flex-col items-center justify-center bg-red-500/10 text-red-400">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                        <span class="text-[10px] mt-1 font-bold">PDF</span>
+                      </div>`;
+            } else if (['dwg', 'dxf'].includes(ext)) {
+              icon = `<div class="w-full h-full flex flex-col items-center justify-center bg-indigo-500/10 text-indigo-400">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A2 2 0 013 15.483V8.517a2 2 0 011.553-1.943L9 5.236m10 14.764l5.447-2.724A2 2 0 0021 15.483V8.517a2 2 0 00-1.553-1.943L15 5.236m-6 0V20m0-18l6 3.236m-6 0l6 3.236M9 20l6-3.236"/></svg>
+                        <span class="text-[10px] mt-1 font-bold">CAD</span>
+                      </div>`;
+            } else {
+              icon = `<div class="w-full h-full flex flex-col items-center justify-center bg-gray-500/10 text-gray-400">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                        <span class="text-[10px] mt-1 font-bold">${ext.toUpperCase()}</span>
+                      </div>`;
+            }
+
+            return `
+            <div class="relative group aspect-square rounded-xl overflow-hidden border border-white/10 bg-white/5 hover:border-secondary/50 transition-all">
+              ${icon}
+              <a href="${src}" download class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                <div class="p-2 rounded-full bg-secondary text-white shadow-lg transform translate-y-2 group-hover:translate-y-0 transition-transform">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                </div>
+              </a>
+            </div>`;
+          }).join('')}
         </div>
       </div>`;
     }
