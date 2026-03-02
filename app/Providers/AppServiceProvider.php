@@ -58,27 +58,29 @@ class AppServiceProvider extends ServiceProvider
             return "<?php
                 \$path = trim($expression, \"'\");
                 \$fullPath = public_path(\$path);
-                if (File::exists(\$fullPath)) {
-                    \$extension = File::extension(\$fullPath);
+                if (\Illuminate\Support\Facades\File::exists(\$fullPath)) {
+                    \$extension = \Illuminate\Support\Facades\File::extension(\$fullPath);
                     \$webpPath = str_replace('.' . \$extension, '.webp', \$path);
                     \$fullWebpPath = public_path(\$webpPath);
 
-                    if (!File::exists(\$fullWebpPath) || File::lastModified(\$fullPath) > File::lastModified(\$fullWebpPath)) {
+                    if (!\Illuminate\Support\Facades\File::exists(\$fullWebpPath) || \Illuminate\Support\Facades\File::lastModified(\$fullPath) > \Illuminate\Support\Facades\File::lastModified(\$fullWebpPath)) {
                         try {
-                            if (\$extension === 'jpg' || \$extension === 'jpeg') {
-                                \$image = imagecreatefromjpeg(\$fullPath);
-                            } elseif (\$extension === 'png') {
-                                \$image = imagecreatefrompng(\$fullPath);
+                            \$image = null;
+                            if ((\$extension === 'jpg' || \$extension === 'jpeg') && function_exists('imagecreatefromjpeg')) {
+                                \$image = @imagecreatefromjpeg(\$fullPath);
+                            } elseif (\$extension === 'png' && function_exists('imagecreatefrompng')) {
+                                \$image = @imagecreatefrompng(\$fullPath);
                             }
-                            if (isset(\$image)) {
-                                imagewebp(\$image, \$fullWebpPath, 80); // 80 quality for compression
-                                imagedestroy(\$image);
+                            
+                            if (\$image && function_exists('imagewebp')) {
+                                @imagewebp(\$image, \$fullWebpPath, 80);
+                                @imagedestroy(\$image);
                             }
                         } catch (\Exception \$e) {
                             // Fallback to original
                         }
                     }
-                    echo asset(File::exists(\$fullWebpPath) ? \$webpPath : \$path);
+                    echo asset(\Illuminate\Support\Facades\File::exists(\$fullWebpPath) ? \$webpPath : \$path);
                 } else {
                     echo asset(\$path);
                 }
