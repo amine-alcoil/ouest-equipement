@@ -274,7 +274,7 @@
                 <article class="group relative rounded-md overflow-hidden bg-white shadow-sm border border-slate-200 transition-all duration-300 hover:shadow-lg">
                     <a href="{{ $p['url'] }}" class="block h-full flex flex-col">
                         <div class="relative h-44 md:h-52 overflow-hidden flex items-center justify-center bg-gray-100">
-                            <img src="{{ $p['img'] ? $p['img'] : asset('images/no_image.png') }}" alt="{{ $p['name'] }}" class="w-full h-full object-cover select-none" loading="lazy" decoding="async" width="400" height="200" />
+                            <img src="{{ $p['img'] ? $p['img'] : asset('images/no_image.png') }}" alt="{{ $p['name'] }}" class="w-full h-full object-cover select-none" loading="lazy" decoding="async" width="400" height="300" />
                         </div>
                         <div class="p-5 flex flex-col flex-grow">
                             <h3 class="text-lg font-semibold text-slate-900">{{ $p['name'] }}</h3>
@@ -317,10 +317,10 @@
                 <div class="logo-tile bg-gray-50 rounded p-4 flex items-center justify-center h-24">
                     @if($website)
                         <a href="{{ $website }}" target="_blank" rel="noopener noreferrer" class="block w-full h-full flex items-center justify-center">
-                            <img class="logo-img max-h-full max-w-full object-contain" src="{{ $src }}" alt="Logo client {{ $idx + 1 }}" loading="lazy" decoding="async" width="120" height="60">
+                            <img class="logo-img max-h-full max-w-full object-contain" src="{{ $src }}" alt="Logo client {{ $idx + 1 }}" loading="lazy" decoding="async" width="150" height="75">
                         </a>
                     @else
-                        <img class="logo-img max-h-full max-w-full object-contain" src="{{ $src }}" alt="Logo client {{ $idx + 1 }}" loading="lazy" decoding="async" width="120" height="60">
+                        <img class="logo-img max-h-full max-w-full object-contain" src="{{ $src }}" alt="Logo client {{ $idx + 1 }}" loading="lazy" decoding="async" width="150" height="75">
                     @endif
                 </div>
             @endforeach

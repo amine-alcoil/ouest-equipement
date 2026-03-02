@@ -53,14 +53,14 @@ class AppServiceProvider extends ServiceProvider
         Client::observe(ClientObserver::class);
         Product::observe(ProductObserver::class);
 
-        // Optimized Blade directive for WebP
+        // أداة WebP محسنة: تكتشف وجود الملف ولا تقوم بتحويله برمجياً لتجنب الثقل
         Blade::directive('webp', function ($expression) {
             return "<?php
                 \$path = trim($expression, \"'\");
                 \$extension = pathinfo(\$path, PATHINFO_EXTENSION);
                 \$webpPath = str_replace('.' . \$extension, '.webp', \$path);
                 
-                // Only return WebP if it actually exists on disk
+                // نستخدم نسخة WebP فقط إذا كانت موجودة مسبقاً على القرص
                 if (\Illuminate\Support\Facades\File::exists(public_path(\$webpPath))) {
                     echo asset(\$webpPath);
                 } else {
