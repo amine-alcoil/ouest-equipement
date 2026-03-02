@@ -53,16 +53,32 @@ class AppServiceProvider extends ServiceProvider
         Client::observe(ClientObserver::class);
         Product::observe(ProductObserver::class);
 
-        // Optimized Blade directive for WebP
+        // Blade directive for WebP conversion
         Blade::directive('webp', function ($expression) {
             return "<?php
                 \$path = trim($expression, \"'\");
-                \$extension = pathinfo(\$path, PATHINFO_EXTENSION);
-                \$webpPath = str_replace('.' . \$extension, '.webp', \$path);
-                
-                // Only return WebP if it actually exists on disk
-                if (\Illuminate\Support\Facades\File::exists(public_path(\$webpPath))) {
-                    echo asset(\$webpPath);
+                \$fullPath = public_path(\$path);
+                if (File::exists(\$fullPath)) {
+                    \$extension = File::extension(\$fullPath);
+                    \$webpPath = str_replace('.' . \$extension, '.webp', \$path);
+                    \$fullWebpPath = public_path(\$webpPath);
+
+                    if (!File::exists(\$fullWebpPath) || File::lastModified(\$fullPath) > File::lastModified(\$fullWebpPath)) {
+                        try {
+                            if (\$extension === 'jpg' || \$extension === 'jpeg') {
+                                \$image = imagecreatefromjpeg(\$fullPath);
+                            } elseif (\$extension === 'png') {
+                                \$image = imagecreatefrompng(\$fullPath);
+                            }
+                            if (isset(\$image)) {
+                                imagewebp(\$image, \$fullWebpPath, 80); // 80 quality for compression
+                                imagedestroy(\$image);
+                            }
+                        } catch (\Exception \$e) {
+                            // Fallback to original
+                        }
+                    }
+                    echo asset(File::exists(\$fullWebpPath) ? \$webpPath : \$path);
                 } else {
                     echo asset(\$path);
                 }
