@@ -2,11 +2,14 @@
 
 @section('content')
 
+<!-- Preload Hero Image -->
+<link rel="preload" as="image" href="@webp('images/BG_usine.jpg')" fetchpriority="high">
+
 <!-- HERO SECTION -->
 <section class="relative bg-primary text-white py-32 overflow-hidden">
     <!-- Background -->
     <div class="absolute inset-0">
-        <img src="@webp('images/BG_usine.jpg')" alt="Background" class="w-full h-full object-cover opacity-30" fetchpriority="high">
+        <img src="@webp('images/BG_usine.jpg')" alt="Background" class="w-full h-full object-cover opacity-30" fetchpriority="high" loading="eager" decoding="async">
         <div class="absolute inset-0 bg-gradient-to-r from-primary/60 to-transparent"></div>
     </div>
 
@@ -34,6 +37,12 @@
 </section>
 
 <style>
+    /* Content visibility for performance */
+    #stats, #services-modern, #products, #partners {
+        content-visibility: auto;
+        contain-intrinsic-size: 300px 800px;
+    }
+
     .reveal-on-load {
         opacity: 0;
         transform: translateX(-20px);
@@ -171,8 +180,8 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
 
             <!-- Pattern Tile (same height) -->
-            <div class="relative rounded-md overflow-hidden shadow-sm border border-slate-200 h-[240px] sm:h-[280px] md:h-[320px]">
-                <img src="@webp('images/1.png')" alt="Service image 1" class="absolute inset-0 h-full w-full object-cover select-none" loading="lazy" decoding="async" />
+            <div class="relative rounded-md overflow-hidden shadow-sm border border-slate-200 h-[240px] sm:h-[280px] md:h-[320px] bg-gray-100">
+                <img src="@webp('images/1.png')" alt="Service image 1" class="absolute inset-0 h-full w-full object-cover select-none" loading="lazy" decoding="async" width="400" height="320" />
             </div>
 
             <!-- Card: Échangeurs Industriels (same height) -->
@@ -190,8 +199,8 @@
             </article>
 
             <!-- Image Tile -->
-            <div class="relative rounded-md overflow-hidden border border-slate-200 shadow-sm h-[240px] sm:h-[280px] md:h-[320px]">
-                <img src="@webp('images/2.png')" alt="Service image 1" class="absolute inset-0 h-full w-full object-cover select-none" loading="lazy" decoding="async" />
+            <div class="relative rounded-md overflow-hidden border border-slate-200 shadow-sm h-[240px] sm:h-[280px] md:h-[320px] bg-gray-100">
+                <img src="@webp('images/2.png')" alt="Service image 1" class="absolute inset-0 h-full w-full object-cover select-none" loading="lazy" decoding="async" width="400" height="320" />
             </div>
 
             <!-- Card: Solutions de Refroidissement -->
@@ -208,8 +217,8 @@
             </article>
 
             <!-- Image Tile -->
-            <div class="relative rounded-md overflow-hidden border border-slate-200 shadow-sm h-[240px] sm:h-[280px] md:h-[320px]">
-                <img src="@webp('images/3.jpg')" alt="Service image 2" class="absolute inset-0 h-full w-full object-cover select-none" loading="lazy" decoding="async" />
+            <div class="relative rounded-md overflow-hidden border border-slate-200 shadow-sm h-[240px] sm:h-[280px] md:h-[320px] bg-gray-100">
+                <img src="@webp('images/3.jpg')" alt="Service image 2" class="absolute inset-0 h-full w-full object-cover select-none" loading="lazy" decoding="async" width="400" height="320" />
             </div>
 
             <!-- Card: Fabrication sur Mesure -->
