@@ -97,18 +97,18 @@
             </div>
         </div>
 
-        <!-- Total Logins -->
+        <!-- Logins Today -->
         <div class="animate-stat-card glass-card rounded-3xl p-6 shadow-2xl relative overflow-hidden group" style="animation-delay: 200ms">
-            <div class="absolute -right-4 -top-4 w-24 h-24 bg-emerald-500/10 rounded-full blur-3xl group-hover:bg-emerald-500/20 transition-colors"></div>
+            <div class="absolute -right-4 -top-4 w-24 h-24 bg-pink-500/10 rounded-full blur-3xl group-hover:bg-pink-500/20 transition-colors"></div>
             <div class="flex items-center gap-5">
-                <div class="w-14 h-14 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
+                <div class="w-14 h-14 rounded-2xl bg-pink-500/20 text-pink-400 flex items-center justify-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                 </div>
                 <div>
-                    <div class="text-white/40 text-xs font-bold uppercase tracking-wider">Logins Total</div>
-                    <div id="stat-total-logins" class="text-3xl font-black text-white mt-1">{{ number_format($totalLogins, 0, ',', ' ') }}</div>
+                    <div class="text-white/40 text-xs font-bold uppercase tracking-wider">Logins Today</div>
+                    <div id="stat-logins-today" class="text-3xl font-black text-white mt-1">{{ $loginsToday }}</div>
                 </div>
             </div>
         </div>
@@ -351,7 +351,7 @@
                 document.getElementById('stat-total-views').textContent = data.totalViews.toLocaleString();
                 document.getElementById('stat-active-sessions').textContent = data.activeSessionsCount;
                 document.getElementById('stat-active-admins').textContent = data.activeAdmins.length;
-                document.getElementById('stat-total-logins').textContent = data.totalLogins.toLocaleString();
+                document.getElementById('stat-logins-today').textContent = data.loginsToday;
                 
                 // Update Center Text in Chart
                 currentActiveCount = data.activeSessionsCount;

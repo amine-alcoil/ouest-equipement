@@ -52,12 +52,19 @@ class AdminDashboardController extends Controller
 
         // 4. Statistiques globales
         $totalLogins = \App\Models\User::sum('total_logins');
+        
+        // 5. Logins Today (Admins connected today)
+        // We'll use the 'last_activity' from users table or a more specific activity log if available.
+        // For now, let's count users who were active today.
+        $loginsToday = \App\Models\User::whereDate('last_activity', \Carbon\Carbon::today())->count();
+
         $totalViews = UserSession::distinct('ip_address')->count(); 
 
         if (request()->ajax()) {
             return response()->json([
                 'activeSessionsCount' => $activeSessionsCount,
                 'totalLogins' => $totalLogins,
+                'loginsToday' => $loginsToday,
                 'totalViews' => $totalViews,
                 'browsers' => $browsers,
                 'activeAdmins' => $activeAdmins->map(function($session) {
@@ -82,6 +89,7 @@ class AdminDashboardController extends Controller
             'activeSessionsCount', 
             'browsers', 
             'totalLogins', 
+            'loginsToday',
             'activeVisitors', 
             'activeAdmins',
             'totalViews'

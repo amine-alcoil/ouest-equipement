@@ -98,7 +98,7 @@
         .partners-track {
             display: flex;
             width: max-content;
-            animation: scroll 40s linear infinite;
+            animation: scroll 20s linear infinite;
             gap: 2rem;
             padding: 1rem;
         }
@@ -138,7 +138,7 @@
             max-height: 80%;
             object-fit: contain;
             filter: grayscale(100%) opacity(0.5);
-            transition: all 0.4s ease;
+            transition: all 0.2s ease;
         }
 
         .logo-tile:hover .logo-img {
