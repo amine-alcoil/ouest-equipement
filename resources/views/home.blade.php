@@ -2,11 +2,14 @@
 
 @section('content')
 
+<!-- Preload Hero Image -->
+<link rel="preload" as="image" href="@webp('images/BG_usine.jpg')" fetchpriority="high">
+
 <!-- HERO SECTION -->
 <section class="relative bg-primary text-white py-32 overflow-hidden">
     <!-- Background -->
     <div class="absolute inset-0">
-        <img src="@webp('images/BG_usine.jpg')" alt="Background" class="w-full h-full object-cover opacity-30" fetchpriority="high">
+        <img src="@webp('images/BG_usine.jpg')" alt="Background" class="w-full h-full object-cover opacity-30" fetchpriority="high" loading="eager" decoding="async">
         <div class="absolute inset-0 bg-gradient-to-r from-primary/60 to-transparent"></div>
     </div>
 
@@ -171,8 +174,8 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
 
             <!-- Pattern Tile (same height) -->
-            <div class="relative rounded-md overflow-hidden shadow-sm border border-slate-200 h-[240px] sm:h-[280px] md:h-[320px]">
-                <img src="@webp('images/1.png')" alt="Service image 1" class="absolute inset-0 h-full w-full object-cover select-none" loading="lazy" decoding="async" />
+            <div class="relative rounded-md overflow-hidden shadow-sm border border-slate-200 h-[240px] sm:h-[280px] md:h-[320px] bg-gray-100">
+                <img src="@webp('images/1.png')" alt="Service image 1" class="absolute inset-0 h-full w-full object-cover select-none" loading="lazy" decoding="async" width="400" height="320" />
             </div>
 
             <!-- Card: Échangeurs Industriels (same height) -->
@@ -190,8 +193,8 @@
             </article>
 
             <!-- Image Tile -->
-            <div class="relative rounded-md overflow-hidden border border-slate-200 shadow-sm h-[240px] sm:h-[280px] md:h-[320px]">
-                <img src="@webp('images/2.png')" alt="Service image 1" class="absolute inset-0 h-full w-full object-cover select-none" loading="lazy" decoding="async" />
+            <div class="relative rounded-md overflow-hidden border border-slate-200 shadow-sm h-[240px] sm:h-[280px] md:h-[320px] bg-gray-100">
+                <img src="@webp('images/2.png')" alt="Service image 1" class="absolute inset-0 h-full w-full object-cover select-none" loading="lazy" decoding="async" width="400" height="320" />
             </div>
 
             <!-- Card: Solutions de Refroidissement -->
@@ -208,8 +211,8 @@
             </article>
 
             <!-- Image Tile -->
-            <div class="relative rounded-md overflow-hidden border border-slate-200 shadow-sm h-[240px] sm:h-[280px] md:h-[320px]">
-                <img src="@webp('images/3.jpg')" alt="Service image 2" class="absolute inset-0 h-full w-full object-cover select-none" loading="lazy" decoding="async" />
+            <div class="relative rounded-md overflow-hidden border border-slate-200 shadow-sm h-[240px] sm:h-[280px] md:h-[320px] bg-gray-100">
+                <img src="@webp('images/3.jpg')" alt="Service image 2" class="absolute inset-0 h-full w-full object-cover select-none" loading="lazy" decoding="async" width="400" height="320" />
             </div>
 
             <!-- Card: Fabrication sur Mesure -->
@@ -256,8 +259,8 @@
             @foreach ($products as $p)
                 <article class="group relative rounded-md overflow-hidden bg-white shadow-sm border border-slate-200 transition-all duration-300 hover:shadow-lg">
                     <a href="{{ $p['url'] }}" class="block h-full flex flex-col">
-                        <div class="relative h-44 md:h-52 overflow-hidden flex items-center justify-center bg-gray-50">
-                            <img src="{{ $p['img'] ? $p['img'] : asset('images/no_image.png') }}" alt="{{ $p['name'] }}" class="w-full h-full object-cover select-none" loading="lazy" />
+                        <div class="relative h-44 md:h-52 overflow-hidden flex items-center justify-center bg-gray-100">
+                            <img src="{{ $p['img'] ? $p['img'] : asset('images/no_image.png') }}" alt="{{ $p['name'] }}" class="w-full h-full object-cover select-none" loading="lazy" decoding="async" />
                         </div>
                         <div class="p-5 flex flex-col flex-grow">
                             <h3 class="text-lg font-semibold text-slate-900">{{ $p['name'] }}</h3>
@@ -297,13 +300,13 @@
                     $website  = is_array($item) ? ($item['siteweb'] ?? null) : null;
                     $src = is_string($logoPath) && \Illuminate\Support\Str::startsWith($logoPath, ['http://','https://']) ? $logoPath : asset($logoPath);
                 @endphp
-                <div class="logo-tile">
+                <div class="logo-tile bg-gray-50 rounded p-4 flex items-center justify-center h-24">
                     @if($website)
                         <a href="{{ $website }}" target="_blank" rel="noopener noreferrer" class="block w-full h-full flex items-center justify-center">
-                            <img class="logo-img" src="{{ $src }}" alt="Logo client {{ $idx + 1 }}">
+                            <img class="logo-img max-h-full max-w-full object-contain" src="{{ $src }}" alt="Logo client {{ $idx + 1 }}" loading="lazy" decoding="async">
                         </a>
                     @else
-                        <img class="logo-img" src="{{ $src }}" alt="Logo client {{ $idx + 1 }}">
+                        <img class="logo-img max-h-full max-w-full object-contain" src="{{ $src }}" alt="Logo client {{ $idx + 1 }}" loading="lazy" decoding="async">
                     @endif
                 </div>
             @endforeach

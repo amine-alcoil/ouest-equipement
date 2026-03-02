@@ -153,7 +153,7 @@ class ProductController extends Controller
             'pdf' => $pdfUrl,
             'price' => $validated['price'] ?? 0,
             'stock' => $validated['stock'] ?? 0,
-            'status' => ((int)($validated['stock'] ?? 0) === 0) ? 'rupture' : ($validated['status'] ?? 'actif'),
+            'status' => ((int)($validated['stock'] ?? 0) === 0 && ($validated['status'] ?? 'actif') !== 'inactif') ? 'rupture' : ($validated['status'] ?? 'actif'),
         ]);
 
         if (!empty($validated['tags'])) {

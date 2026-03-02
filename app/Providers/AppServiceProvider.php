@@ -57,31 +57,33 @@ class AppServiceProvider extends ServiceProvider
         Blade::directive('webp', function ($expression) {
             return "<?php
                 \$path = trim($expression, \"'\");
+                \$webpPath = null;
                 \$fullPath = public_path(\$path);
+
                 if (File::exists(\$fullPath)) {
                     \$extension = File::extension(\$fullPath);
-                    \$webpPath = str_replace('.' . \$extension, '.webp', \$path);
-                    \$fullWebpPath = public_path(\$webpPath);
+                    if (in_array(strtolower(\$extension), ['jpg', 'jpeg', 'png'])) {
+                        \$webpPath = str_replace('.' . \$extension, '.webp', \$path);
+                        \$fullWebpPath = public_path(\$webpPath);
 
-                    if (!File::exists(\$fullWebpPath) || File::lastModified(\$fullPath) > File::lastModified(\$fullWebpPath)) {
-                        try {
-                            if (\$extension === 'jpg' || \$extension === 'jpeg') {
-                                \$image = imagecreatefromjpeg(\$fullPath);
-                            } elseif (\$extension === 'png') {
-                                \$image = imagecreatefrompng(\$fullPath);
+                        if (!File::exists(\$fullWebpPath) || File::lastModified(\$fullPath) > File::lastModified(\$fullWebpPath)) {
+                            try {
+                                if (\$extension === 'jpg' || \$extension === 'jpeg') {
+                                    \$image = @imagecreatefromjpeg(\$fullPath);
+                                } elseif (\$extension === 'png') {
+                                    \$image = @imagecreatefrompng(\$fullPath);
+                                }
+                                if (isset(\$image) && \$image) {
+                                    @imagewebp(\$image, \$fullWebpPath, 75); // Slightly lower quality for better speed
+                                    @imagedestroy(\$image);
+                                }
+                            } catch (\Exception \$e) {
+                                \$webpPath = null; // Reset if conversion fails
                             }
-                            if (isset(\$image)) {
-                                imagewebp(\$image, \$fullWebpPath, 80); // 80 quality for compression
-                                imagedestroy(\$image);
-                            }
-                        } catch (\Exception \$e) {
-                            // Fallback to original
                         }
                     }
-                    echo asset(File::exists(\$fullWebpPath) ? \$webpPath : \$path);
-                } else {
-                    echo asset(\$path);
                 }
+                echo asset((\$webpPath && File::exists(public_path(\$webpPath))) ? \$webpPath : \$path);
             ?>";
         });
 

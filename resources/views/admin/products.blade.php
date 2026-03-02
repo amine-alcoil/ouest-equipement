@@ -307,7 +307,10 @@
                         <td class="px-4 py-3">{{ isset($p['price']) ? number_format($p['price'], 0, ',', ' ') . ' DZD' : '—' }}</td>
                         <td class="px-4 py-3">{{ $p['stock'] ?? '—' }}</td>
                         <td class="px-4 py-3">
-                            @php $s = ($p['stock'] ?? 0) == 0 ? 'rupture' : strtolower($p['status'] ?? 'actif'); @endphp
+                            @php 
+                                $dbStatus = strtolower($p['status'] ?? 'actif');
+                                $s = ($dbStatus === 'inactif') ? 'inactif' : (($p['stock'] ?? 0) == 0 ? 'rupture' : $dbStatus);
+                            @endphp
                             @if($s === 'actif')
                                 <span class="px-2 py-1 rounded bg-green-600/30 text-green-300 text-xs">Actif</span>
                             @elseif($s === 'rupture')
@@ -544,7 +547,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const formatDate = (iso) => { if (!iso) return '—'; const d = new Date(iso); if (isNaN(d)) return '—'; const dd = String(d.getDate()).padStart(2,'0'); const mm = String(d.getMonth()+1).padStart(2,'0'); const yyyy = d.getFullYear(); return `${dd}/${mm}/${yyyy}`; };
     const rowHtml = (p) => {
-        const s = (+p.stock === 0) ? 'rupture' : String(p.status ?? 'actif').toLowerCase();
+        const dbStatus = String(p.status ?? 'actif').toLowerCase();
+        const s = (dbStatus === 'inactif') ? 'inactif' : ((+p.stock === 0) ? 'rupture' : dbStatus);
         const statusLabel = s === 'rupture' ? 'Rupture' : (s === 'actif' ? 'Actif' : 'Inactif');
         const statusClass = s === 'actif' ? 'bg-green-600/30 text-green-300' : (s === 'rupture' ? 'bg-red-600/30 text-red-300' : 'bg-yellow-600/30 text-yellow-300');
         return `
