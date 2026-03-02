@@ -53,34 +53,16 @@ class AppServiceProvider extends ServiceProvider
         Client::observe(ClientObserver::class);
         Product::observe(ProductObserver::class);
 
-        // Blade directive for WebP conversion
+        // Optimized Blade directive for WebP
         Blade::directive('webp', function ($expression) {
             return "<?php
                 \$path = trim($expression, \"'\");
-                \$fullPath = public_path(\$path);
-                if (\Illuminate\Support\Facades\File::exists(\$fullPath)) {
-                    \$extension = \Illuminate\Support\Facades\File::extension(\$fullPath);
-                    \$webpPath = str_replace('.' . \$extension, '.webp', \$path);
-                    \$fullWebpPath = public_path(\$webpPath);
-
-                    if (!\Illuminate\Support\Facades\File::exists(\$fullWebpPath) || \Illuminate\Support\Facades\File::lastModified(\$fullPath) > \Illuminate\Support\Facades\File::lastModified(\$fullWebpPath)) {
-                        try {
-                            \$image = null;
-                            if ((\$extension === 'jpg' || \$extension === 'jpeg') && function_exists('imagecreatefromjpeg')) {
-                                \$image = @imagecreatefromjpeg(\$fullPath);
-                            } elseif (\$extension === 'png' && function_exists('imagecreatefrompng')) {
-                                \$image = @imagecreatefrompng(\$fullPath);
-                            }
-                            
-                            if (\$image && function_exists('imagewebp')) {
-                                @imagewebp(\$image, \$fullWebpPath, 80);
-                                @imagedestroy(\$image);
-                            }
-                        } catch (\Exception \$e) {
-                            // Fallback to original
-                        }
-                    }
-                    echo asset(\Illuminate\Support\Facades\File::exists(\$fullWebpPath) ? \$webpPath : \$path);
+                \$extension = pathinfo(\$path, PATHINFO_EXTENSION);
+                \$webpPath = str_replace('.' . \$extension, '.webp', \$path);
+                
+                // Only return WebP if it actually exists on disk
+                if (\Illuminate\Support\Facades\File::exists(public_path(\$webpPath))) {
+                    echo asset(\$webpPath);
                 } else {
                     echo asset(\$path);
                 }
