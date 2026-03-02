@@ -297,34 +297,60 @@
 
 
 <!-- Partners / Clients Logos -->
-<section id="partners" class="partners-section" style="position:relative; overflow:hidden; padding:40px 0; margin-bottom: 60px;">
-   
-    <!-- Title -->
-        <div class="text-center mb-10">
-            <h2 class="text-dark text-3xl md:text-4xl font-extrabold text-slate-900">Nos partenaires et clients</h2>
-            <div class="mt-3 mx-auto h-1 w-24 bg-secondary rounded"></div>
+<section id="partners" class="partners-section">
+    <div class="partners-container">
+        <!-- Title & Subtitle -->
+        <div class="text-center max-w-3xl mx-auto mb-16">
+            <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight">Nos partenaires et clients</h2>
+            <div class="mt-4 mx-auto h-1.5 w-20 bg-secondary rounded-full"></div>
+            <p class="mt-6 text-lg text-slate-600 font-medium">
+                Nous sommes fiers d'accompagner les leaders de l'industrie dans leurs projets les plus ambitieux.
+            </p>
         </div>
-    
 
         @if(!empty($partners))
-        <div class="partners-grid" aria-label="Partner & Client Logos">
-            @foreach ($partners as $idx => $item)
-                @php
-                    $logoPath = is_array($item) ? ($item['logo'] ?? '') : $item;
-                    $website  = is_array($item) ? ($item['siteweb'] ?? null) : null;
-                    $src = is_string($logoPath) && \Illuminate\Support\Str::startsWith($logoPath, ['http://','https://']) ? $logoPath : asset($logoPath);
-                @endphp
-                <div class="logo-tile bg-gray-50 rounded p-4 flex items-center justify-center h-24">
-                    @if($website)
-                        <a href="{{ $website }}" target="_blank" rel="noopener noreferrer" class="block w-full h-full flex items-center justify-center">
-                            <img class="logo-img max-h-full max-w-full object-contain" src="{{ $src }}" alt="Logo client {{ $idx + 1 }}" loading="lazy" decoding="async" width="150" height="75">
-                        </a>
-                    @else
-                        <img class="logo-img max-h-full max-w-full object-contain" src="{{ $src }}" alt="Logo client {{ $idx + 1 }}" loading="lazy" decoding="async" width="150" height="75">
-                    @endif
+            <div class="partners-slider-wrapper">
+                <div class="partners-track">
+                    {{-- First Set --}}
+                    @foreach ($partners as $idx => $item)
+                        @php
+                            $logoPath = is_array($item) ? ($item['logo'] ?? '') : $item;
+                            $website  = is_array($item) ? ($item['siteweb'] ?? null) : null;
+                            $src = is_string($logoPath) && \Illuminate\Support\Str::startsWith($logoPath, ['http://','https://']) ? $logoPath : asset($logoPath);
+                        @endphp
+                        <div class="logo-tile">
+                            @if($website)
+                                <a href="{{ $website }}" target="_blank" rel="noopener noreferrer" class="w-full h-full flex items-center justify-center">
+                                    <img class="logo-img" src="{{ $src }}" alt="Logo client {{ $idx + 1 }}" loading="lazy" decoding="async">
+                                </a>
+                            @else
+                                <img class="logo-img" src="{{ $src }}" alt="Logo client {{ $idx + 1 }}" loading="lazy" decoding="async">
+                            @endif
+                        </div>
+                    @endforeach
+                    {{-- Duplicate Set for seamless loop --}}
+                    @foreach ($partners as $idx => $item)
+                        @php
+                            $logoPath = is_array($item) ? ($item['logo'] ?? '') : $item;
+                            $website  = is_array($item) ? ($item['siteweb'] ?? null) : null;
+                            $src = is_string($logoPath) && \Illuminate\Support\Str::startsWith($logoPath, ['http://','https://']) ? $logoPath : asset($logoPath);
+                        @endphp
+                        <div class="logo-tile">
+                            @if($website)
+                                <a href="{{ $website }}" target="_blank" rel="noopener noreferrer" class="w-full h-full flex items-center justify-center">
+                                    <img class="logo-img" src="{{ $src }}" alt="Logo client {{ $idx + 1 }}" loading="lazy" decoding="async">
+                                </a>
+                            @else
+                                <img class="logo-img" src="{{ $src }}" alt="Logo client {{ $idx + 1 }}" loading="lazy" decoding="async">
+                            @endif
+                        </div>
+                    @endforeach
                 </div>
-            @endforeach
-        </div>
+            </div>
+        @else
+            <div class="text-center py-10">
+                <p class="text-slate-400 italic">De nouveaux partenaires nous rejoignent chaque jour.</p>
+            </div>
         @endif
     </div>
 </section>
