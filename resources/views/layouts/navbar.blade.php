@@ -5,7 +5,7 @@
 
         <!-- Logo -->
         <a href="/" class="flex items-center gap-3 logo group">
-            <img src="{{ asset('images/Logo_ALCOIL_without_txt_org.png') }}" alt="logo" class="h-10 w-auto transition-transform duration-500 ease-out group-hover:scale-110 group-hover:rotate-3" width="160" height="40">
+            <img src="{{ asset('images/Logo_ALCOIL_without_txt_org.png') }}" alt="logo" class="h-10 w-auto transition-transform duration-500 ease-out group-hover:scale-110 group-hover:rotate-3">
         </a>
 
         <!-- Menu -->
