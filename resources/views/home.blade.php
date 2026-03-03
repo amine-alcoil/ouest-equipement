@@ -175,6 +175,91 @@
     })();
 </script>
 
+<!-- VIDEO SECTION -->
+<section id="video-showcase" class="relative py-24 bg-white overflow-hidden">
+    <div class="container mx-auto px-6">
+        <div class="flex flex-col lg:flex-row items-center gap-16">
+            <!-- Text Content -->
+            <div class="w-full lg:w-1/2" data-aos="fade-right">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary/10 text-secondary text-xs font-bold uppercase tracking-wider mb-6">
+                    <span class="relative flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-secondary"></span>
+                    </span>
+                    Innovation & Technologie
+                </div>
+                <h2 class="text-4xl md:text-5xl font-black text-primary leading-tight mb-6">
+                    L'excellence au cœur de notre <span class="text-secondary">processus</span>
+                </h2>
+                <p class="text-lg text-slate-600 leading-relaxed mb-8">
+                    Découvrez comment nous combinons ingénierie de précision et technologies de pointe pour créer des échangeurs thermiques qui redéfinissent les standards industriels.
+                </p>
+                <div class="grid grid-cols-2 gap-6">
+                    <div class="flex flex-col gap-2">
+                        <span class="text-3xl font-bold text-primary">100%</span>
+                        <span class="text-sm text-slate-500 font-medium uppercase tracking-wide">Précision Suisse</span>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <span class="text-3xl font-bold text-primary">24/7</span>
+                        <span class="text-sm text-slate-500 font-medium uppercase tracking-wide">Performance Non-stop</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Video Player -->
+            <div class="w-full lg:w-1/2 relative group" data-aos="fade-left">
+                <!-- Decorative element -->
+                <div class="absolute -top-6 -right-6 w-32 h-32 bg-secondary/5 rounded-full blur-3xl group-hover:bg-secondary/10 transition-colors"></div>
+                
+                <div class="relative aspect-video rounded-3xl overflow-hidden shadow-[0_32px_64px_-16px_rgba(15,43,80,0.2)] border border-slate-100 bg-slate-900 group">
+                    <!-- Video Element -->
+                    <video id="mainVideo" class="absolute inset-0 w-full h-full object-cover" 
+                           autoplay muted loop playsinline preload="auto">
+                        <source src="/images/videos/Ouest-Equipement_2026.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+
+                    <!-- Loading & Blurry Cover Overlay -->
+                    <div id="videoLoader" class="absolute inset-0 z-10 flex items-center justify-center transition-opacity duration-1000">
+                        <!-- Blurry Background -->
+                        <div class="absolute inset-0 bg-cover bg-center blur-md scale-110 opacity-60" style="background-image: url('@webp('images/BG_usine.jpg')')"></div>
+                        <div class="absolute inset-0 bg-primary/40 backdrop-blur-sm"></div>
+                        
+                        <!-- Circular Spinner -->
+                        <div class="relative flex flex-col items-center gap-4">
+                            <div class="w-12 h-12 rounded-full border-4 border-white/20 border-t-secondary animate-spin"></div>
+                            <span class="text-white text-[10px] font-bold uppercase tracking-[0.2em] animate-pulse">Chargement...</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Subtle Overlay Gradient (Always present) -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-primary/40 via-transparent to-transparent pointer-events-none z-20"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const video = document.getElementById('mainVideo');
+        const loader = document.getElementById('videoLoader');
+        
+        if (video && loader) {
+            // Hide loader when video starts playing
+            video.addEventListener('playing', () => {
+                loader.classList.add('opacity-0');
+                setTimeout(() => loader.classList.add('hidden'), 1000);
+            });
+
+            // Force play in case browser policies block initial autoplay
+            video.play().catch(error => {
+                console.log("Autoplay was prevented, waiting for user interaction.");
+            });
+        }
+    });
+</script>
+
 <!-- SERVICES (Modern Grid Like Reference) -->
 <section id="services-modern" class="py-16">
     <div class="max-w-7xl mx-auto px-4">

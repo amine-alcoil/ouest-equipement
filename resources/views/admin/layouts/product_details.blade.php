@@ -74,6 +74,28 @@
                 <span class="px-4 py-1.5 rounded-full bg-secondary/20 border border-secondary/30 text-secondary text-xs sm:text-sm font-bold backdrop-blur-md">
                     {{ $product['category'] }}
                 </span>
+
+                <div class="flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md shadow-sm">
+                    <span class="relative flex h-2.5 w-2.5">
+                        @php
+                            $cat = strtolower($product['category'] ?? '');
+                            $dbStatus = strtolower($product['status'] ?? 'actif');
+                            $isSpecific = $cat === 'spécifique';
+                            $isAvailable = $product['available'] ?? false;
+                            $isInactive = $dbStatus === 'inactif';
+                            
+                            $dotClass = $isSpecific ? 'bg-orange-500' : ($isAvailable ? 'bg-emerald-500' : ($isInactive ? 'bg-gray-400' : 'bg-red-500'));
+                            $pingClass = $isSpecific ? 'bg-orange-400' : ($isAvailable ? 'bg-emerald-400' : '');
+                            $textClass = $isSpecific ? 'text-orange-400' : ($isAvailable ? 'text-emerald-400' : ($isInactive ? 'text-gray-400' : 'text-red-400'));
+                            $statusLabel = $isSpecific ? 'Sur commande' : ($isAvailable ? 'Disponible' : ($isInactive ? 'Indisponible' : 'Rupture'));
+                        @endphp
+                        @if($isAvailable)
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full {{ $pingClass }} opacity-75"></span>
+                        @endif
+                        <span class="relative inline-flex rounded-full h-2.5 w-2.5 {{ $dotClass }}"></span>
+                    </span>
+                    <span class="text-xs font-bold uppercase tracking-wider {{ $textClass }}">{{ $statusLabel }}</span>
+                </div>
                 
                 <div class="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md">
                     <div class="flex items-center gap-0.5 text-secondary">
@@ -87,11 +109,6 @@
                     <span class="text-white font-bold text-xs sm:text-sm">{{ number_format($product['rating'],1) }}</span>
                     <span class="text-white/40 text-[10px] font-medium ml-1">({{ $product['ratingCount'] }} avis)</span>
                 </div>
-
-                <span class="flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md text-xs sm:text-sm">
-                    <span class="w-2 h-2 rounded-full {{ $product['available'] ? 'bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.6)]' : 'bg-red-400' }}"></span>
-                    <span class="text-white/90 font-bold uppercase tracking-wider">{{ $product['available'] ? 'En stock' : 'Indisponible' }}</span>
-                </span>
             </div>
         </div>
     </div>
@@ -102,10 +119,10 @@
         
         <!-- Gallery Column -->
         <div class="lg:col-span-7 space-y-6 animate-fadeInUp delay-100">
-            <div class="relative aspect-square sm:aspect-video lg:aspect-square rounded-[2rem] overflow-hidden bg-white shadow-2xl group border border-gray-100">
+            <div class="relative aspect-square sm:aspect-[4/3] rounded-[2rem] overflow-hidden bg-white shadow-2xl group border border-gray-100">
                 <div class="absolute inset-0 bg-gradient-to-tr from-gray-50 to-white -z-10"></div>
                 <img id="mainImage" src="{{ $product['image'] }}" alt="{{ $product['name'] }}" 
-                     class="w-full h-full object-contain p-8 sm:p-12 transition-all duration-700 group-hover:scale-105">
+                     class="w-full h-full object-contain p-4 sm:p-6 transition-all duration-700 group-hover:scale-110">
                 
                 <!-- Overlay details -->
                

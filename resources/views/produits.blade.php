@@ -444,10 +444,19 @@
                         </span>
                     </div>
 
-                    <div class="absolute top-3 right-3">
-                         ${p.available 
-                            ? '<span class="flex h-3 w-3"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span></span>' 
-                            : '<span class="flex h-3 w-3"><span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span></span>'}
+                    <div class="absolute top-3 right-3 flex items-center gap-1.5 bg-white/90 backdrop-blur px-2 py-1 rounded-lg shadow-sm border border-white/20">
+                         ${p.category.toLowerCase() === 'spécifique'
+                            ? '<span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-orange-500"></span></span>'
+                            : (p.available 
+                                ? '<span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span></span>' 
+                                : (p.status.toLowerCase() === 'inactif' 
+                                    ? '<span class="relative flex h-2 w-2"><span class="relative inline-flex rounded-full h-2 w-2 bg-gray-400"></span></span>'
+                                    : '<span class="relative flex h-2 w-2"><span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span></span>'
+                                  )
+                              )}
+                         <span class="text-[10px] font-bold uppercase tracking-wider ${p.category.toLowerCase() === 'spécifique' ? 'text-orange-600' : (p.available ? 'text-emerald-600' : (p.status.toLowerCase() === 'inactif' ? 'text-gray-500' : 'text-red-600'))}">
+                            ${p.category.toLowerCase() === 'spécifique' ? 'Sur commande' : (p.available ? 'En stock' : (p.status.toLowerCase() === 'inactif' ? 'Indisponible' : 'Rupture'))}
+                         </span>
                     </div>
                 </div>
 

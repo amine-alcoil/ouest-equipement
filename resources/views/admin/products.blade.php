@@ -308,8 +308,13 @@
                         <td class="px-4 py-3">{{ $p['stock'] ?? '—' }}</td>
                         <td class="px-4 py-3">
                             @php 
+                                $cat = strtolower($p['category'] ?? '');
                                 $dbStatus = strtolower($p['status'] ?? 'actif');
-                                $s = ($dbStatus === 'inactif') ? 'inactif' : (($p['stock'] ?? 0) == 0 ? 'rupture' : $dbStatus);
+                                if ($cat === 'spécifique') {
+                                    $s = ($dbStatus === 'inactif') ? 'inactif' : 'actif';
+                                } else {
+                                    $s = ($dbStatus === 'inactif') ? 'inactif' : (($p['stock'] ?? 0) == 0 ? 'rupture' : $dbStatus);
+                                }
                             @endphp
                             @if($s === 'actif')
                                 <span class="px-2 py-1 rounded bg-green-600/30 text-green-300 text-xs">Actif</span>
@@ -547,8 +552,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const formatDate = (iso) => { if (!iso) return '—'; const d = new Date(iso); if (isNaN(d)) return '—'; const dd = String(d.getDate()).padStart(2,'0'); const mm = String(d.getMonth()+1).padStart(2,'0'); const yyyy = d.getFullYear(); return `${dd}/${mm}/${yyyy}`; };
     const rowHtml = (p) => {
+        const cat = String(p.category ?? '').toLowerCase();
         const dbStatus = String(p.status ?? 'actif').toLowerCase();
-        const s = (dbStatus === 'inactif') ? 'inactif' : ((+p.stock === 0) ? 'rupture' : dbStatus);
+        let s = dbStatus;
+        
+        if (cat === 'spécifique') {
+            s = (dbStatus === 'inactif') ? 'inactif' : 'actif';
+        } else {
+            s = (dbStatus === 'inactif') ? 'inactif' : ((+p.stock === 0) ? 'rupture' : dbStatus);
+        }
+
         const statusLabel = s === 'rupture' ? 'Rupture' : (s === 'actif' ? 'Actif' : 'Inactif');
         const statusClass = s === 'actif' ? 'bg-green-600/30 text-green-300' : (s === 'rupture' ? 'bg-red-600/30 text-red-300' : 'bg-yellow-600/30 text-yellow-300');
         return `

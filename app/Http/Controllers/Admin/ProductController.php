@@ -142,6 +142,16 @@ class ProductController extends Controller
             $validated['sku'] = 'PRD-' . strtoupper(Str::random(6));
         }
 
+        $isSpecific = strtolower($validated['category']) === 'spécifique';
+        $status = $validated['status'] ?? 'actif';
+        
+        // Specific products should not be 'rupture' by default
+        if ($isSpecific && $status !== 'inactif') {
+            $status = 'actif';
+        } elseif (!$isSpecific && (int)($validated['stock'] ?? 0) === 0 && $status !== 'inactif') {
+            $status = 'rupture';
+        }
+
         $product = Product::create([
             'sku' => $validated['sku'],
             'name' => $validated['name'],
@@ -153,7 +163,7 @@ class ProductController extends Controller
             'pdf' => $pdfUrl,
             'price' => $validated['price'] ?? 0,
             'stock' => $validated['stock'] ?? 0,
-            'status' => ((int)($validated['stock'] ?? 0) === 0 && ($validated['status'] ?? 'actif') !== 'inactif') ? 'rupture' : ($validated['status'] ?? 'actif'),
+            'status' => $status,
         ]);
 
         if (!empty($validated['tags'])) {
@@ -265,7 +275,9 @@ class ProductController extends Controller
 
         // Allow manual status override, otherwise default to 'rupture' if stock is 0
         $newStatus = $validated['status'] ?? $productModel->status;
-        if ((int)$productModel->stock === 0 && $newStatus !== 'inactif') {
+        if ($isSpecific) {
+            $productModel->status = ($newStatus === 'inactif') ? 'inactif' : 'actif';
+        } elseif ((int)$productModel->stock === 0 && $newStatus !== 'inactif') {
             $productModel->status = 'rupture';
         } else {
             $productModel->status = $newStatus;
