@@ -212,9 +212,23 @@
                 <div class="absolute -top-6 -right-6 w-32 h-32 bg-secondary/5 rounded-full blur-3xl group-hover:bg-secondary/10 transition-colors"></div>
                 
                 <div class="relative aspect-video rounded-3xl overflow-hidden shadow-[0_32px_64px_-16px_rgba(15,43,80,0.2)] border border-slate-100 bg-slate-900 group">
-                    <!-- High-Quality Interactive YouTube Player -->
+                    @php
+                        $videoUrl = optional($companyInfo)->video_url;
+                        $videoId = null;
+                        if (is_string($videoUrl) && $videoUrl !== '') {
+                            try {
+                                $u = parse_url($videoUrl);
+                                $host = $u['host'] ?? '';
+                                if (\Illuminate\Support\Str::contains($host, 'youtu')) {
+                                    if (isset($u['query'])) { parse_str($u['query'], $qs); $videoId = $qs['v'] ?? null; }
+                                    if (!$videoId && isset($u['path'])) { $p = trim($u['path'], '/'); $segments = explode('/', $p); $videoId = $segments[count($segments)-1] ?? null; }
+                                }
+                            } catch (\Throwable $e) {}
+                        }
+                        $embedSrc = $videoId ? ("https://www.youtube.com/embed/".$videoId."?autoplay=1&mute=1&playsinline=1&controls=1&rel=0&modestbranding=1&vq=hd1080&enablejsapi=1") : '';
+                    @endphp
                     <iframe id="showcasePlayer" class="absolute inset-0 w-full h-full object-cover"
-                            src="https://www.youtube.com/embed/mqygTqNJ5BI?autoplay=1&mute=1&playsinline=1&controls=1&rel=0&modestbranding=1&vq=hd1080&enablejsapi=1"
+                            src="{{ $embedSrc }}"
                             title="SARL Ouset Equipement ALCOIL"
                             frameborder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -291,7 +305,9 @@
 (function(){
     var iframeId='showcasePlayer';
     function initPlayer(){
-        if(!window.YT||!YT.Player)return;
+        var el=document.getElementById(iframeId);
+        if(!el||!el.getAttribute('src')) return;
+        if(!window.YT||!YT.Player) return;
         new YT.Player(iframeId,{events:{onReady:function(e){try{e.target.setPlaybackQuality('hd1080');e.target.playVideo();setTimeout(function(){e.target.setPlaybackQuality('hd1080');},1500);}catch(_){}}}});
     }
     if(window.YT&&YT.Player){initPlayer();}else{
