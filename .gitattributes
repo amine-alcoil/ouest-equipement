@@ -9,3 +9,4 @@ CHANGELOG.md export-ignore
 .styleci.yml export-ignore
 *.mp4 filter=lfs diff=lfs merge=lfs -text
 public/images/videos/Ouest-Equipement_2026.mp4 filter=lfs diff=lfs merge=lfs -text
+public/videos/*.mp4 filter=lfs diff=lfs merge=lfs -text
