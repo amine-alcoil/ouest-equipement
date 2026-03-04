@@ -214,7 +214,7 @@
                 <div class="relative aspect-video rounded-3xl overflow-hidden shadow-[0_32px_64px_-16px_rgba(15,43,80,0.2)] border border-slate-100 bg-slate-900 group">
                     <!-- High-Quality Interactive YouTube Player -->
                     <iframe class="absolute inset-0 w-full h-full object-cover"
-                            src="https://www.youtube.com/embed/mqygTqNJ5BI?autoplay=1&mute=0&controls=1&rel=0&modestbranding=1&vq=hd1080&enablejsapi=1"
+                            src="https://www.youtube.com/embed/mqygTqNJ5BI?autoplay=1&mute=1&playsinline=1&controls=1&rel=0&modestbranding=1&vq=hd1080&enablejsapi=1"
                             title="SARL Ouset Equipement ALCOIL"
                             frameborder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
