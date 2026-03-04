@@ -31,6 +31,7 @@ class SettingsController extends Controller
             'email' => 'nullable|email|max:255',
             'phone' => 'nullable|string|max:50',
             'address' => 'nullable|string|max:500',
+            'video_url' => 'nullable|url|max:500',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
         ]);
 
@@ -44,14 +45,12 @@ class SettingsController extends Controller
         $companyInfo->email = $validated['email'] ?? null;
         $companyInfo->phone = $validated['phone'] ?? null;
         $companyInfo->address = $validated['address'] ?? null;
+        $companyInfo->video_url = $validated['video_url'] ?? null;
 
         if ($request->hasFile('logo')) {
-            // Delete old logo if exists
             if ($companyInfo->logo_path && Storage::disk('public')->exists($companyInfo->logo_path)) {
                 Storage::disk('public')->delete($companyInfo->logo_path);
             }
-
-            // Store new logo
             $logoPath = $request->file('logo')->store('company', 'public');
             $companyInfo->logo_path = $logoPath;
         }

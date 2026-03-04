@@ -44,7 +44,9 @@ Route::get('/', function () {
         ->get(['logo', 'siteweb'])
         ->toArray();
 
-    return view('home', compact('products', 'partners'));
+    $companyInfo = \App\Models\CompanyInfo::first();
+
+    return view('home', compact('products', 'partners', 'companyInfo'));
 });
 
 Route::get('/a-propos', function () {

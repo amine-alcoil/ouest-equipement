@@ -15,5 +15,6 @@ class CompanyInfo extends Model
         'email',
         'phone',
         'address',
+        'video_url',
     ];
 }

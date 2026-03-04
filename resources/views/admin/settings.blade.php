@@ -101,6 +101,19 @@
                             {{ $companyInfo ? 'disabled' : '' }}
                         >{{ $companyInfo->address ?? '' }}</textarea>
                     </div>
+
+                    <div class="md:col-span-2">
+                        <label class="block text-sm text-white/70 mb-1">Lien vidéo (YouTube)</label>
+                        <input 
+                            id="companyVideoUrl"
+                            name="video_url"
+                            type="url"
+                            value="{{ $companyInfo->video_url ?? '' }}"
+                            class="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white {{ $companyInfo ? 'disabled:opacity-50 disabled:cursor-not-allowed' : '' }}"
+                            placeholder="https://www.youtube.com/watch?v=..."
+                            {{ $companyInfo ? 'disabled' : '' }}
+                        >
+                    </div>
                 </div>
                 
                 <div class="mt-4 flex gap-3" id="formActions">
@@ -257,7 +270,7 @@
 @section('scripts')
 <script>
 function toggleEditMode() {
-    const inputs = ['companyName', 'companyEmail', 'companyPhone', 'companyLogo', 'companyAddress'];
+    const inputs = ['companyName', 'companyEmail', 'companyPhone', 'companyLogo', 'companyAddress', 'companyVideoUrl'];
     const editBtn = document.getElementById('editBtn');
     const saveBtn = document.getElementById('saveBtn');
     const cancelBtn = document.getElementById('cancelBtn');
