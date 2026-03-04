@@ -213,7 +213,7 @@
                 
                 <div class="relative aspect-video rounded-3xl overflow-hidden shadow-[0_32px_64px_-16px_rgba(15,43,80,0.2)] border border-slate-100 bg-slate-900 group">
                     <!-- High-Quality Interactive YouTube Player -->
-                    <iframe class="absolute inset-0 w-full h-full object-cover"
+                    <iframe id="showcasePlayer" class="absolute inset-0 w-full h-full object-cover"
                             src="https://www.youtube.com/embed/mqygTqNJ5BI?autoplay=1&mute=1&playsinline=1&controls=1&rel=0&modestbranding=1&vq=hd1080&enablejsapi=1"
                             title="SARL Ouset Equipement ALCOIL"
                             frameborder="0"
@@ -286,6 +286,22 @@
         // it requires the full YouTube IFrame API. 
         // For now, this simple approach is the most stable for Railway.
     });
+</script>
+<script>
+(function(){
+    var iframeId='showcasePlayer';
+    function initPlayer(){
+        if(!window.YT||!YT.Player)return;
+        new YT.Player(iframeId,{events:{onReady:function(e){try{e.target.setPlaybackQuality('hd1080');e.target.playVideo();setTimeout(function(){e.target.setPlaybackQuality('hd1080');},1500);}catch(_){}}}});
+    }
+    if(window.YT&&YT.Player){initPlayer();}else{
+        var tag=document.createElement('script');
+        tag.src='https://www.youtube.com/iframe_api';
+        var firstScript=document.getElementsByTagName('script')[0];
+        firstScript.parentNode.insertBefore(tag,firstScript);
+        window.onYouTubeIframeAPIReady=function(){initPlayer();};
+    }
+})();
 </script>
 
 <!-- SERVICES (Modern Grid Like Reference) -->
