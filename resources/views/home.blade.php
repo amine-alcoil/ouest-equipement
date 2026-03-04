@@ -214,7 +214,7 @@
                 <div class="relative aspect-video rounded-3xl overflow-hidden shadow-[0_32px_64px_-16px_rgba(15,43,80,0.2)] border border-slate-100 bg-slate-900 group">
                     <!-- High-Quality Interactive YouTube Player -->
                     <iframe class="absolute inset-0 w-full h-full object-cover"
-                            src=""
+                            src="https://www.youtube.com/embed/VIDEO_ID?autoplay=1&mute=1&controls=0&rel=0&showInfo=0&modestbranding=1&enablejsapi=1"
                             title="ALCOIL Video Presentation"
                             frameborder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
