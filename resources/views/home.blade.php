@@ -212,21 +212,17 @@
                 <div class="absolute -top-6 -right-6 w-32 h-32 bg-secondary/5 rounded-full blur-3xl group-hover:bg-secondary/10 transition-colors"></div>
                 
                 <div class="relative aspect-video rounded-3xl overflow-hidden shadow-[0_32px_64px_-16px_rgba(15,43,80,0.2)] border border-slate-100 bg-slate-900 group">
-                    <!-- Video Element with Multiple Sources -->
-                    <video id="mainVideo" class="absolute inset-0 w-full h-full object-cover" 
-                           autoplay muted loop playsinline preload="auto">
-                        <!-- High Reliability Cloud Source First for Railway -->
-                        <source src="https://drive.google.com/uc?export=download&id=1euUNBk0VFSPz3-_Cy_gKiXn-u9lY0FaD" type="video/mp4">
-                        
-                        <!-- Local Fallbacks -->
-                        <source src="{{ asset('videos/Ouest-Equipement_2026_C.mp4') }}" type="video/mp4">
-                        <source src="{{ asset('videos/Ouest-Equipement 2026_C.mp4') }}" type="video/mp4">
-                        
-                        Your browser does not support the video tag.
-                    </video>
+                    <!-- High-Quality Interactive YouTube Player -->
+                    <iframe class="absolute inset-0 w-full h-full object-cover"
+                            src=""
+                            title="ALCOIL Video Presentation"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen>
+                    </iframe>
 
                     <!-- Loading & Blurry Cover Overlay -->
-                    <div id="videoLoader" class="absolute inset-0 z-10 flex items-center justify-center transition-opacity duration-1000">
+                    <div id="videoLoader" class="absolute inset-0 z-10 flex items-center justify-center transition-opacity duration-1000 pointer-events-none">
                         <!-- Blurry Background -->
                         <div class="absolute inset-0 bg-cover bg-center blur-md scale-110 opacity-60" style="background-image: url('@webp('images/BG_usine.jpg')')"></div>
                         <div class="absolute inset-0 bg-primary/40 backdrop-blur-sm"></div>
@@ -238,14 +234,14 @@
                         </div>
 
                         <!-- Error Fallback (Hidden by default) -->
-                        <div id="videoError" class="hidden relative flex flex-col items-center text-center px-6 max-w-sm animate-in fade-in zoom-in duration-500">
-                            <div class="w-16 h-16 rounded-full bg-red-500/20 flex items-center justify-center mb-6 border border-red-500/30">
-                                <svg class="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div id="videoError" class="hidden relative flex flex-col items-center text-center px-4 sm:px-6 max-w-[280px] sm:max-w-sm animate-in fade-in zoom-in duration-500">
+                            <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-red-500/20 flex items-center justify-center mb-4 sm:mb-6 border border-red-500/30">
+                                <svg class="w-6 h-6 sm:w-8 sm:h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
                                 </svg>
                             </div>
-                            <h3 class="text-xl font-bold text-white mb-2">Vidéo non disponible</h3>
-                            <p class="text-white/60 text-sm mb-6">Le contenu vidéo est actuellement inaccessible. Veuillez vérifier votre connexion ou réessayer ultérieurement.</p>
+                            <h3 class="text-lg sm:text-xl font-bold text-white mb-1 sm:mb-2">Vidéo non disponible</h3>
+                            <p class="text-white/60 text-[10px] sm:text-sm mb-4 sm:mb-6 leading-tight sm:leading-normal">Le contenu vidéo est actuellement inaccessible. Veuillez vérifier votre connexion ou réessayer ultérieurement.</p>
                             
                         </div>
                     </div>
@@ -260,62 +256,35 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const video = document.getElementById('mainVideo');
         const loader = document.getElementById('videoLoader');
-        const loaderContent = document.getElementById('loaderContent');
         const errorContent = document.getElementById('videoError');
+        const loaderContent = document.getElementById('loaderContent');
+        const iframe = document.querySelector('#video-showcase iframe');
         
-        if (video && loader) {
-            // Safety timeout: if video hasn't played after 3 seconds, show "Vidéo non disponible"
-            const loadTimeout = setTimeout(() => {
-                if (!loader.classList.contains('hidden') && video.paused) {
-                    if (loaderContent) loaderContent.classList.add('hidden');
-                    if (errorContent) errorContent.classList.remove('hidden');
-                }
-            }, 3000);
-
-            // Hide loader when video starts playing
-            video.addEventListener('playing', () => {
-                clearTimeout(loadTimeout);
-                loader.classList.add('opacity-0');
-                setTimeout(() => loader.classList.add('hidden'), 1000);
-            });
-
-            // Handle loading error immediately
-            const handleError = () => {
-                clearTimeout(loadTimeout);
-                if (loaderContent) loaderContent.classList.add('hidden');
-                if (errorContent) errorContent.classList.remove('hidden');
-                loader.classList.remove('opacity-0', 'hidden');
-            };
-
-            video.addEventListener('error', handleError);
-            
-            // Check all sources for errors
-            const sources = video.querySelectorAll('source');
-            let failedSources = 0;
-            sources.forEach(src => {
-                src.addEventListener('error', () => {
-                    failedSources++;
-                    if (failedSources === sources.length) {
-                        handleError();
-                    }
-                });
-            });
-
-            // Fallback for cases where video fails to fire events
-            const playPromise = video.play();
-            if (playPromise !== undefined) {
-                playPromise.catch(error => {
-                    console.log("Autoplay was prevented or source failed.");
-                    // Only show error if it's a real loading issue, not just autoplay policy
-                    if (video.networkState === 3 || video.readyState === 0) {
-                        if (loaderContent) loaderContent.classList.add('hidden');
-                        if (errorContent) errorContent.classList.remove('hidden');
-                    }
-                });
+        // Check if SRC is empty or not set
+        if (!iframe || !iframe.getAttribute('src') || iframe.getAttribute('src') === '') {
+            if (loaderContent) loaderContent.classList.add('hidden');
+            if (errorContent) errorContent.classList.remove('hidden');
+            if (loader) {
+                loader.classList.remove('opacity-0');
+                loader.classList.remove('hidden');
             }
+            return;
         }
+
+        // Simple and reliable loader for YouTube if SRC exists
+        setTimeout(() => {
+            if (loader) {
+                loader.classList.add('opacity-0');
+                setTimeout(() => {
+                    loader.classList.add('hidden');
+                }, 1000);
+            }
+        }, 3000);
+
+        // Optional: If you want to handle specific YouTube errors, 
+        // it requires the full YouTube IFrame API. 
+        // For now, this simple approach is the most stable for Railway.
     });
 </script>
 
