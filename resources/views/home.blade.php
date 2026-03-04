@@ -215,10 +215,13 @@
                     <!-- Video Element with Multiple Sources -->
                     <video id="mainVideo" class="absolute inset-0 w-full h-full object-cover" 
                            autoplay muted loop playsinline preload="auto">
-                        <!-- Railway Optimized Sources -->
+                        <!-- High Reliability Cloud Source First for Railway -->
+                        <source src="https://drive.google.com/uc?export=download&id=1euUNBk0VFSPz3-_Cy_gKiXn-u9lY0FaD" type="video/mp4">
+                        
+                        <!-- Local Fallbacks -->
                         <source src="{{ asset('videos/Ouest-Equipement_2026_C.mp4') }}" type="video/mp4">
                         <source src="{{ asset('videos/Ouest-Equipement 2026_C.mp4') }}" type="video/mp4">
-                        <source src="https://drive.google.com/uc?export=download&id=1euUNBk0VFSPz3-_Cy_gKiXn-u9lY0FaD" type="video/mp4">
+                        
                         Your browser does not support the video tag.
                     </video>
 
