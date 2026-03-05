@@ -146,6 +146,7 @@
                 </button>
                 @endif
             </div>
+           
             <form id="userForm" method="POST" action="{{ route('admin.settings.update-user-info') }}">
                 @csrf
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -174,6 +175,21 @@
                 </div>
             </form>
         </div>
+        <div class="rounded-xl bg-[#122241] border border-white/10 p-6">
+            <h2 class="text-xl font-semibold text-white mb-4">Affichage du site</h2>
+            <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                    <span class="text-white/80">Afficher la section « Notre équipe » (page À propos)</span>
+                    <label class="inline-flex items-center gap-2 cursor-pointer select-none">
+                        <input id="showTeamToggle" type="checkbox" class="peer sr-only">
+                        <span class="w-12 h-7 rounded-full bg-white/20 relative transition-colors peer-checked:bg-secondary">
+                            <span class="absolute top-0.5 left-0.5 w-6 h-6 bg-white rounded-full shadow transition-transform peer-checked:translate-x-5"></span>
+                        </span>
+                    </label>
+                </div>
+                <p id="showTeamStatus" class="text-xs text-white/60"></p>
+            </div>
+        </div>
          <div class="rounded-xl bg-[#122241] border border-white/10 p-6">
             <h2 class="text-xl font-semibold text-white mb-4">Sécurité</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -194,7 +210,7 @@
                 <button id="saveSecurity" class="px-4 py-2 rounded-lg bg-white/10 border border-white/10 text-white hover:bg-white/15">Mettre à jour</button>
             </div>
         </div>
-
+<!-- 
         <div class="rounded-xl bg-[#122241] border border-white/10 p-6">
             <h2 class="text-xl font-semibold text-white mb-4">Notifications</h2>
             <div class="space-y-3">
@@ -215,6 +231,8 @@
                 <button id="saveNotif" class="px-4 py-2 rounded-lg bg-white/10 border border-white/10 text-white hover:bg-white/15">Enregistrer</button>
             </div>
         </div>
+-->
+        
        
 
         @if(($currentUser->role ?? 'user') === 'admin')
@@ -375,6 +393,23 @@ function toggleEditUser(){
     document.getElementById('notifContact').checked = c;
     document.getElementById('notifOrder').checked = o;
     document.getElementById('notifStock').checked = s;
+
+    var teamKey = 'apropos_show_team';
+    var teamToggle = document.getElementById('showTeamToggle');
+    var statusEl = document.getElementById('showTeamStatus');
+    var teamVal = localStorage.getItem(teamKey);
+    var teamEnabled = (teamVal === null) ? true : (teamVal === 'true');
+    function renderStatus(){ if(statusEl){ statusEl.textContent = teamEnabled ? 'Section visible' : 'Section masquée'; } }
+    if(teamToggle){
+        teamToggle.checked = teamEnabled;
+        teamToggle.addEventListener('change', function(){
+            teamEnabled = !!teamToggle.checked;
+            localStorage.setItem(teamKey, teamEnabled ? 'true' : 'false');
+            renderStatus();
+            showAlert('success', "Préférence d'affichage mise à jour");
+        });
+    }
+    renderStatus();
 
     var companyForm = document.getElementById('companyForm');
     if(companyForm){

@@ -69,110 +69,98 @@
 
 
 <!-- STATS SECTION -->
-<section id="stats" class="bg-primary text-white py-20 mt-12">
+<section id="stats" class="text-white py-20 mt-12 bg-gradient-to-br from-primary to-primary/80">
   <div class="max-w-7xl mx-auto px-6">
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
       <!-- Stat 1 -->
-      <div class="stat-item flex items-center gap-6">
-        <div class="relative w-40 h-40">
-          <svg class="w-40 h-40" viewBox="0 0 120 120">
-            <!-- Track -->
-            <circle cx="60" cy="60" r="54" stroke="rgba(255,255,255,0.25)" stroke-width="5" fill="none"></circle>
-            <!-- Progress -->
-            <circle class="progress-circle text-secondary" cx="60" cy="60" r="54" stroke="currentColor" stroke-width="5" fill="none" stroke-linecap="round" style="stroke-dasharray: 339.292; stroke-dashoffset: 339.292; transition: stroke-dashoffset 1.5s ease;"></circle>
+      <div class="stat-item group flex items-center gap-6 p-5 rounded-2xl bg-white/5 backdrop-blur-sm ring-1 ring-white/10 hover:bg-white/7 transition-colors" data-progress="90" data-count="25" aria-label="Années d'expérience">
+        <div class="relative shrink-0 w-32 h-32 sm:w-36 sm:h-36 lg:w-40 lg:h-40">
+          <svg class="w-full h-full" viewBox="0 0 120 120" aria-hidden="true">
+            <circle cx="60" cy="60" r="54" stroke="rgba(255,255,255,0.15)" stroke-width="6" fill="none"></circle>
+            <circle class="progress-circle text-secondary" cx="60" cy="60" r="54" stroke="currentColor" stroke-width="6" fill="none" stroke-linecap="round" style="stroke-dasharray: 339.292; stroke-dashoffset: 339.292; transition: stroke-dashoffset 900ms cubic-bezier(.22,.61,.36,1); will-change: stroke-dashoffset;"></circle>
           </svg>
           <div class="absolute inset-0 flex items-center justify-center">
-            <span class="count text-4xl font-bold">+0</span>
+            <span class="count text-3xl sm:text-4xl font-bold tracking-tight">+0</span>
           </div>
         </div>
-        <div>
-          <p class="text-sm uppercase font-semibold mb-1">Années d'expérience</p>
-        </div>
-        <span class="sr-only" data-progress="90" data-count="25"></span>
+        <p class="text-sm uppercase font-semibold tracking-wide">Années d'expérience</p>
       </div>
 
       <!-- Stat 2 -->
-      <div class="stat-item flex items-center gap-6">
-        <div class="relative w-40 h-40">
-          <svg class="w-40 h-40" viewBox="0 0 120 120">
-            <circle cx="60" cy="60" r="54" stroke="rgba(255,255,255,0.25)" stroke-width="5" fill="none"></circle>
-            <circle class="progress-circle text-secondary" cx="60" cy="60" r="54" stroke="currentColor" stroke-width="5" fill="none" stroke-linecap="round" style="stroke-dasharray: 339.292; stroke-dashoffset: 339.292; transition: stroke-dashoffset 1.5s ease;"></circle>
+      <div class="stat-item group flex items-center gap-6 p-5 rounded-2xl bg-white/5 backdrop-blur-sm ring-1 ring-white/10 hover:bg-white/7 transition-colors" data-progress="95" data-count="500" aria-label="Produits variés">
+        <div class="relative shrink-0 w-32 h-32 sm:w-36 sm:h-36 lg:w-40 lg:h-40">
+          <svg class="w-full h-full" viewBox="0 0 120 120" aria-hidden="true">
+            <circle cx="60" cy="60" r="54" stroke="rgba(255,255,255,0.15)" stroke-width="6" fill="none"></circle>
+            <circle class="progress-circle text-secondary" cx="60" cy="60" r="54" stroke="currentColor" stroke-width="6" fill="none" stroke-linecap="round" style="stroke-dasharray: 339.292; stroke-dashoffset: 339.292; transition: stroke-dashoffset 900ms cubic-bezier(.22,.61,.36,1); will-change: stroke-dashoffset;"></circle>
           </svg>
           <div class="absolute inset-0 flex items-center justify-center">
-            <span class="count text-4xl font-bold">+0</span>
+            <span class="count text-3xl sm:text-4xl font-bold tracking-tight">+0</span>
           </div>
         </div>
-        <div>
-          <p class="text-sm uppercase font-semibold mb-1">Produits variés</p>
-          
-        </div>
-        <span class="sr-only" data-progress="95" data-count="500"></span>
+        <p class="text-sm uppercase font-semibold tracking-wide">Produits variés</p>
       </div>
 
       <!-- Stat 3 -->
-      <div class="stat-item flex items-center gap-6">
-        <div class="relative w-40 h-40">
-          <svg class="w-40 h-40" viewBox="0 0 120 120">
-            <circle cx="60" cy="60" r="54" stroke="rgba(255,255,255,0.25)" stroke-width="5" fill="none"></circle>
-            <circle class="progress-circle text-secondary" cx="60" cy="60" r="54" stroke="currentColor" stroke-width="5" fill="none" stroke-linecap="round" style="stroke-dasharray: 339.292; stroke-dashoffset: 339.292; transition: stroke-dashoffset 1.5s ease;"></circle>
+      <div class="stat-item group flex items-center gap-6 p-5 rounded-2xl bg-white/5 backdrop-blur-sm ring-1 ring-white/10 hover:bg-white/7 transition-colors" data-progress="100" data-count="1000" aria-label="Clients satisfaits">
+        <div class="relative shrink-0 w-32 h-32 sm:w-36 sm:h-36 lg:w-40 lg:h-40">
+          <svg class="w-full h-full" viewBox="0 0 120 120" aria-hidden="true">
+            <circle cx="60" cy="60" r="54" stroke="rgba(255,255,255,0.15)" stroke-width="6" fill="none"></circle>
+            <circle class="progress-circle text-secondary" cx="60" cy="60" r="54" stroke="currentColor" stroke-width="6" fill="none" stroke-linecap="round" style="stroke-dasharray: 339.292; stroke-dashoffset: 339.292; transition: stroke-dashoffset 900ms cubic-bezier(.22,.61,.36,1); will-change: stroke-dashoffset;"></circle>
           </svg>
           <div class="absolute inset-0 flex items-center justify-center">
-            <span class="count text-4xl font-bold">+0</span>
+            <span class="count text-3xl sm:text-4xl font-bold tracking-tight">+0</span>
           </div>
         </div>
-        <div>
-          <p class="text-sm uppercase font-semibold mb-1">Clients satisfaits</p>
-          
-        </div>
-        <span class="sr-only" data-progress="100" data-count="1000"></span>
+        <p class="text-sm uppercase font-semibold tracking-wide">Clients satisfaits</p>
       </div>
     </div>
   </div>
 </section>
 
 <script>
-    (function() {
-        const ITEMS = document.querySelectorAll('.stat-item');
-        const CIRCUMFERENCE = 2 * Math.PI * 54;
+(function(){
+  const ITEMS = document.querySelectorAll('#stats .stat-item');
+  const CIRC = 2 * Math.PI * 54;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const START_DELAY = 500;
 
-        function setProgress(el, percent) {
-            const circle = el.querySelector('.progress-circle');
-            if (!circle) return;
-            const offset = CIRCUMFERENCE - (percent / 100) * CIRCUMFERENCE;
-            circle.style.strokeDashoffset = offset;
-        }
+  function setProgress(el, percent){
+    const circle = el.querySelector('.progress-circle');
+    if(!circle) return;
+    const offset = CIRC - (percent/100) * CIRC;
+    circle.style.strokeDashoffset = offset;
+  }
 
-        const io = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const wrapper = entry.target;
-                    const meta = wrapper.querySelector('span.sr-only');
-                    const targetPercent = parseInt(meta.getAttribute('data-progress'), 10) || 100;
-                    const targetCount = parseInt(meta.getAttribute('data-count'), 10) || 0;
-                    const countEl = wrapper.querySelector('.count');
+  function animateCount(el, target){
+    if(reduceMotion){ el.textContent = '+' + target.toLocaleString('fr-FR'); return; }
+    const duration = 1000;
+    const start = performance.now();
+    function step(now){
+      const t = Math.min((now - start) / duration, 1);
+      const ease = 1 - Math.pow(1 - t, 3);
+      const val = Math.round(ease * target);
+      el.textContent = '+' + val.toLocaleString('fr-FR');
+      if(t < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
 
-                    setProgress(wrapper, targetPercent);
-                    
-                    // Optimized counter
-                    let start = 0;
-                    const duration = 1500;
-                    const startTime = performance.now();
-                    
-                    function update(now) {
-                        const elapsed = now - startTime;
-                        const progress = Math.min(elapsed / duration, 1);
-                        const ease = 1 - Math.pow(1 - progress, 3); // Cubic ease out
-                        countEl.textContent = '+' + Math.floor(ease * targetCount);
-                        if (progress < 1) requestAnimationFrame(update);
-                    }
-                    requestAnimationFrame(update);
-                    io.unobserve(wrapper); // Animate once for performance
-                }
-            });
-        }, { threshold: 0.2 });
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(({isIntersecting, target})=>{
+      if(!isIntersecting) return;
+      const percent = parseInt(target.dataset.progress || '100', 10);
+      const count = parseInt(target.dataset.count || '0', 10);
+      setProgress(target, percent);
+      const countEl = target.querySelector('.count');
+      animateCount(countEl, count);
+      io.unobserve(target);
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -10% 0px' });
 
-        ITEMS.forEach(item => io.observe(item));
-    })();
+  window.addEventListener('load', () => {
+    setTimeout(() => { ITEMS.forEach(i => io.observe(i)); }, START_DELAY);
+  });
+})();
 </script>
 
 <!-- VIDEO SECTION -->
