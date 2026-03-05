@@ -21,13 +21,29 @@ class AdminDashboardController extends Controller
 
         // 1. Visiteurs Anonymes (SANS doublons d'IP et SANS admins)
         // On groupe par IP pour n'avoir qu'une ligne par visiteur réel
-        $activeVisitors = UserSession::whereNull('user_id')
+        $rawVisitors = UserSession::whereNull('user_id')
             ->where('last_activity', '>=', $activeThreshold)
             ->whereNotNull('ip_address')
-            ->select('ip_address', DB::raw('MAX(last_activity) as last_activity'), DB::raw('MAX(user_agent) as user_agent'))
-            ->groupBy('ip_address')
+            ->select('ip_address', 'user_agent', 'last_activity')
             ->orderBy('last_activity', 'desc')
             ->get();
+
+        $normalizeIp = function($ip) {
+            $raw = trim((string) $ip);
+            if ($raw === '') return '';
+            $parts = array_values(array_filter(array_map('trim', explode(',', $raw))));
+            foreach ($parts as $p) {
+                if (!preg_match('/^(10\.|192\.168\.|172\.(1[6-9]|2[0-9]|3[0-1])\.|127\.|::1|fe80:|fc00:|fd00:)/i', $p)) {
+                    return $p;
+                }
+            }
+            return $parts[0] ?? $raw;
+        };
+
+        $activeVisitors = $rawVisitors
+            ->map(function($s) use ($normalizeIp) { $s->ip_address = $normalizeIp($s->ip_address); return $s; })
+            ->unique('ip_address')
+            ->values();
             
         $activeSessionsCount = $activeVisitors->count();
 
