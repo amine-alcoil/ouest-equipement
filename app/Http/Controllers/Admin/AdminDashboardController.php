@@ -23,8 +23,9 @@ class AdminDashboardController extends Controller
         // On groupe par IP pour n'avoir qu'une ligne par visiteur réel
         $activeVisitors = UserSession::whereNull('user_id')
             ->where('last_activity', '>=', $activeThreshold)
-            ->select('ip_address', 'user_agent', DB::raw('MAX(last_activity) as last_activity'))
-            ->groupBy('ip_address', 'user_agent')
+            ->whereNotNull('ip_address')
+            ->select('ip_address', DB::raw('MAX(last_activity) as last_activity'), DB::raw('MAX(user_agent) as user_agent'))
+            ->groupBy('ip_address')
             ->orderBy('last_activity', 'desc')
             ->get();
             
@@ -34,8 +35,8 @@ class AdminDashboardController extends Controller
         $activeAdmins = UserSession::whereNotNull('user_id')
             ->where('last_activity', '>=', $activeThreshold)
             ->with('user')
-            ->select('user_id', 'ip_address', DB::raw('MAX(last_activity) as last_activity'))
-            ->groupBy('user_id', 'ip_address')
+            ->select('user_id', DB::raw('MAX(ip_address) as ip_address'), DB::raw('MAX(last_activity) as last_activity'))
+            ->groupBy('user_id')
             ->orderBy('last_activity', 'desc')
             ->get();
 
@@ -58,7 +59,11 @@ class AdminDashboardController extends Controller
         // For now, let's count users who were active today.
         $loginsToday = \App\Models\User::whereDate('last_activity', \Carbon\Carbon::today())->count();
 
-        $totalViews = UserSession::distinct('ip_address')->count(); 
+        $dailyViews = UserSession::whereNotNull('ip_address')
+            ->select(DB::raw('DATE(FROM_UNIXTIME(last_activity)) as d'), DB::raw('COUNT(DISTINCT ip_address) as c'))
+            ->groupBy('d')
+            ->pluck('c');
+        $totalViews = $dailyViews->sum();
 
         if (request()->ajax()) {
             return response()->json([

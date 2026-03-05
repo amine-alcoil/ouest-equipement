@@ -141,7 +141,7 @@
                         </div>
                         <div>
                             <div class="text-sm font-bold text-white">{{ $adminSession->user->name ?? 'Admin Inconnu' }}</div>
-                            <div class="text-[10px] text-white/40 font-mono">{{ $adminSession->ip_address }}</div>
+                            <div class="text-[10px] text-white/40 font-mono admin-ip">{{ $adminSession->ip_address }}</div>
                         </div>
                     </div>
                     <div class="text-right">
@@ -259,6 +259,19 @@
         let browserChart;
         let currentActiveCount = {{ $activeSessionsCount }};
 
+        function normalizeIp(ip){
+            try{
+                const raw = String(ip||'').trim();
+                if(!raw) return '';
+                const parts = raw.split(',').map(s=>s.trim()).filter(Boolean);
+                const isPrivate = (x)=>/^10\.|^192\.168\.|^172\.(1[6-9]|2[0-9]|3[0-1])\.|^127\.|^::1|^fe80:|^fc00:|^fd00:/i.test(x);
+                for(const p of parts){ if(!isPrivate(p)) return p; }
+                return parts[0]||raw;
+            }catch(_){ return ip; }
+        }
+
+        setTimeout(()=>{ document.querySelectorAll('.admin-ip, .visitor-ip').forEach(el=>{ el.textContent = normalizeIp(el.textContent); }); },0);
+
         const ctx = document.getElementById('browserChart').getContext('2d');
         
         // Custom plugin to draw text in the center
@@ -374,7 +387,7 @@
                                 </div>
                                 <div>
                                     <div class="text-sm font-bold text-white">${admin.name}</div>
-                                    <div class="text-[10px] text-white/40 font-mono">${admin.ip_address}</div>
+                                    <div class="text-[10px] text-white/40 font-mono">${normalizeIp(admin.ip_address)}</div>
                                 </div>
                             </div>
                             <div class="text-right">
@@ -405,7 +418,7 @@
                                 </div>
                             </td>
                             <td class="py-5 px-6">
-                                <span class="font-mono text-base text-blue-100 font-bold visitor-ip group-hover:text-white transition-colors">${visitor.ip_address}</span>
+                                <span class="font-mono text-base text-blue-100 font-bold visitor-ip group-hover:text-white transition-colors">${normalizeIp(visitor.ip_address)}</span>
                             </td>
                             <td class="py-5 px-6">
                                 <div class="flex flex-col max-w-md">
