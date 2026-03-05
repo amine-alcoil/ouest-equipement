@@ -225,7 +225,7 @@
                                 }
                             } catch (\Throwable $e) {}
                         }
-                        $embedSrc = $videoId ? ("https://www.youtube.com/embed/".$videoId."?autoplay=1&mute=1&playsinline=1&controls=1&rel=0&modestbranding=1&vq=hd1080&enablejsapi=1") : '';
+                        $embedSrc = $videoId ? ("https://www.youtube.com/embed/".$videoId."?autoplay=1&mute=1&playsinline=1&controls=1&rel=0&modestbranding=1&vq=hd1080&enablejsapi=1&loop=1&playlist=".$videoId) : '';
                     @endphp
                     <iframe id="showcasePlayer" class="absolute inset-0 w-full h-full object-cover"
                             src="{{ $embedSrc }}"
@@ -308,7 +308,7 @@
         var el=document.getElementById(iframeId);
         if(!el||!el.getAttribute('src')) return;
         if(!window.YT||!YT.Player) return;
-        new YT.Player(iframeId,{events:{onReady:function(e){try{e.target.setPlaybackQuality('hd1080');e.target.playVideo();setTimeout(function(){e.target.setPlaybackQuality('hd1080');},1500);}catch(_){}}}});
+        new YT.Player(iframeId,{events:{onReady:function(e){try{e.target.setPlaybackQuality('hd1080');e.target.playVideo();setTimeout(function(){e.target.setPlaybackQuality('hd1080');},1500);}catch(_){}} , onStateChange:function(ev){ if (ev.data === YT.PlayerState.ENDED) { try{ ev.target.playVideo(); }catch(_){ } } }}});
     }
     if(window.YT&&YT.Player){initPlayer();}else{
         var tag=document.createElement('script');
