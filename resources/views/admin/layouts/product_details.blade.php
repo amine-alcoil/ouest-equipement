@@ -98,7 +98,7 @@
                 </div>
                 
                 <div class="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md">
-                    <div id="header-stars" class="flex items-center gap-0.5 text-secondary">
+                    <div id="hero-stars" class="flex items-center gap-0.5 text-secondary">
                         @php $r = round($product['rating']); @endphp
                         @for($i=1; $i<=5; $i++)
                             <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 {{ $i <= $r ? 'fill-current' : 'text-white/20' }}" viewBox="0 0 20 20">
@@ -106,8 +106,8 @@
                             </svg>
                         @endfor
                     </div>
-                    <span id="header-rating" class="text-white font-bold text-xs sm:text-sm">{{ number_format($product['rating'],1) }}</span>
-                    <span id="header-count" class="text-white/40 text-[10px] font-medium ml-1">({{ $product['ratingCount'] }} avis)</span>
+                    <span id="hero-rating-num" class="text-white font-bold text-xs sm:text-sm">{{ number_format($product['rating'],1) }}</span>
+                    <span id="hero-rating-count" class="text-white/40 text-[10px] font-medium ml-1">({{ $product['ratingCount'] }} avis)</span>
                 </div>
             </div>
         </div>
@@ -255,12 +255,12 @@
                                             <svg class="w-5 h-5 {{ $i <= $r ? 'fill-current' : 'text-gray-200' }}" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
                                         @endfor
                                     </div>
-                                    <div id="avg-rating" class="text-xl font-black text-primary">{{ number_format($product['rating'], 1) }}<span class="text-gray-300 font-bold text-sm">/5</span></div>
+                                    <div id="avg-rating-num" class="text-xl font-black text-primary">{{ number_format($product['rating'], 1) }}<span class="text-gray-300 font-bold text-sm">/5</span></div>
                                 </div>
                             </div>
                             <div class="text-right">
                                 <div class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Total</div>
-                                <div id="avg-count" class="text-sm font-black text-primary">{{ $product['ratingCount'] }} avis</div>
+                                <div id="total-reviews-count" class="text-sm font-black text-primary">{{ $product['ratingCount'] }} avis</div>
                             </div>
                         </div>
 
@@ -394,8 +394,8 @@
                 .then(function(r){ return r.json(); })
                 .then(function(data){
                     voted = true;
-                    var r = Math.round(Number(data && data.rating) || 0);
-                    var formatted = (Number(data && data.rating) || 0).toFixed(1);
+                    var ratingVal = Number(data && data.rating || 0);
+                    var ratingCount = Number(data && data.count || 0);
                     if (data && data.ok) {
                         msg.textContent = 'MERCI POUR VOTRE VOTE !';
                         msg.classList.add('text-secondary');
@@ -404,31 +404,25 @@
                         msg.classList.add('text-amber-500');
                     }
                     if (avgStarsEl) {
+                        var r = Math.round(ratingVal);
                         avgStarsEl.innerHTML = Array.from({length:5}, function(_,i){
                             var active = (i+1) <= r;
                             return '<svg class="w-5 h-5 ' + (active ? 'fill-current' : 'text-gray-200') + '" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>';
                         }).join('');
                     }
-                    var avgRatingText = document.getElementById('avg-rating');
-                    if (avgRatingText) {
-                        avgRatingText.innerHTML = formatted + '<span class="text-gray-300 font-bold text-sm">/5</span>';
-                    }
-                    var avgCountText = document.getElementById('avg-count');
-                    if (avgCountText && data && typeof data.count !== 'undefined') {
-                        avgCountText.textContent = String(data.count) + ' avis';
-                    }
-                    var headerStarsEl = document.getElementById('header-stars');
-                    if (headerStarsEl) {
-                        headerStarsEl.innerHTML = Array.from({length:5}, function(_,i){
-                            var active = (i+1) <= r;
+                    var avgNum = document.getElementById('avg-rating-num'); if (avgNum) avgNum.textContent = ratingVal.toFixed(1);
+                    var totalEl = document.getElementById('total-reviews-count'); if (totalEl) totalEl.textContent = String(ratingCount) + ' avis';
+                    var heroStars = document.getElementById('hero-stars');
+                    if (heroStars) {
+                        var rHero = Math.round(ratingVal);
+                        heroStars.innerHTML = Array.from({length:5}, function(_,i){
+                            var active = (i+1) <= rHero;
                             return '<svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 ' + (active ? 'fill-current' : 'text-white/20') + '" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>';
                         }).join('');
                     }
-                    var headerRatingEl = document.getElementById('header-rating');
-                    if (headerRatingEl) { headerRatingEl.textContent = formatted; }
-                    var headerCountEl = document.getElementById('header-count');
-                    if (headerCountEl && data && typeof data.count !== 'undefined') { headerCountEl.textContent = '(' + String(data.count) + ' avis)'; }
-                })],
+                    var heroNum = document.getElementById('hero-rating-num'); if (heroNum) heroNum.textContent = ratingVal.toFixed(1);
+                    var heroCount = document.getElementById('hero-rating-count'); if (heroCount) heroCount.textContent = '(' + String(ratingCount) + ' avis)';
+                })
                 .catch(function(){
                     msg.textContent = 'ERREUR LORS DU VOTE';
                     msg.classList.add('text-red-500');
