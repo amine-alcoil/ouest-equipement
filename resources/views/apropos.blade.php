@@ -155,15 +155,15 @@
                    
                     ['name'=>'BOUCHAKOUR ALI AMAR Nasreddine','role'=>'Gérant','img'=>'nacer.jpg'],
                     ['name'=>'BOUCHAKOUR ALI AMAR Miloud','role'=>'CO-Gérant','img'=>'miloud.jpg'],
-                    ['name'=>'ELMAHI Fadia','role'=>'Responsable des Ressources Humaines et Moyens Généraux','img'=>'fadia.jpg'],
+                    ['name'=>'ELMAHI Fadia','role'=>'Responsable des Ressources Humaines et Moyens Généraux','img'=>'fadia.jpg','sex'=>'female'],
                     ['name'=>'NACER Mohammed El Amine','role'=>'IT & Marketing Manager','img'=>'amine.jpg'],
                      ['name'=>'GHALMI Youcef','role'=>'Responsable de Contrôle Qualité','img'=>'youcef.jpg'],
                     ['name'=>'ADNANE Mohammed Reda','role'=>'Responsable Maintenance','img'=>'reda.jpg'],
-                    ['name'=>'SAHRAOUI Mouna','role'=>'Responsable Conception et Développement','img'=>'mouna.jpg'],
+                    ['name'=>'SAHRAOUI Mouna','role'=>'Responsable Conception et Développement','img'=>'mouna.jpg','sex'=>'female'],
                     ['name'=>'BENKHELIFA Alaa Eddine','role'=>'Ingénieur de Méthode','img'=>'alaa.jpg'],
                     ['name'=>'BOUCHAKOUR ALI AMAR Ramzi Achraf','role'=>'Responsable Commercial','img'=>'ramzi.jpg'],
                     ['name'=>'BEMMOUSSAT Abdelilah','role'=>'Responsable de Production','img'=>'abdou.jpg'],
-                    ['name'=>'BENDIDA DOUKARA Soumaya','role'=>'Responsable d\'approvisionnement','img'=>'soumaya.jpg'],
+                    ['name'=>'BENDIDA DOUKARA Soumaya','role'=>'Responsable d\'approvisionnement','img'=>'soumaya.jpg','sex'=>'female'],
                     ['name'=>'LAMARI Abdelhakim','role'=>'Responsable Point de Vente','img'=>'hakim.jpg'],
                     ['name'=>'TAIBI Sid Ahmed','role'=>'Chef de Projet','img'=>'sid_ahmed.jpg'],
                     ['name'=>'CHAKIB Khelil','role'=>'Chef des Projets','img'=>'chakib.jpg'],
@@ -178,7 +178,7 @@
                                 @foreach($slide as $idx => $member)
                                 <article class="team-card group relative overflow-hidden rounded-2xl ring-1 ring-slate-200 bg-white shadow-lg hover:shadow-xl transition-all duration-400 will-change-transform motion-safe:hover:-translate-y-1 opacity-0 translate-y-2" data-index="{{ ($sIdx*8) + $idx + 1 }}">
                                     <div class="aspect-[4/5] relative">
-                                        <img src="{{ asset('images/teams/'.($member['img'] ?? '')) }}" alt="{{ $member['name'] }}" class="w-full h-full object-cover object-top transition-transform duration-400 group-hover:scale-[1.04]" loading="lazy" decoding="async">
+                                        <img src="{{ (($member['sex'] ?? 'male') === 'female') ? asset('images/F_empty2.png') : asset('images/teams/'.($member['img'] ?? '')) }}" alt="{{ $member['name'] }}" class="w-full h-full object-cover object-top transition-transform duration-400 group-hover:scale-[1.04]" loading="lazy" decoding="async">
                                         <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-slate-900/20 to-transparent pointer-events-none"></div>
                                     </div>
                                     <div class="absolute inset-x-0 bottom-0 p-4 pointer-events-none">
