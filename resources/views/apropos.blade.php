@@ -217,8 +217,21 @@
         function applyVisibility(flag){
             const visible = flag !== 'false';
             SECTION.classList.toggle('hidden', !visible);
+            if(!visible) stopAuto();
         }
-        applyVisibility(localStorage.getItem(KEY) ?? 'true');
+        function readPref(){
+            let v = null;
+            try { v = localStorage.getItem(KEY); } catch(e) {}
+            if(v === null){
+                const m = document.cookie.split('; ').find(s => s.startsWith(KEY+'='));
+                if(m) v = m.split('=')[1];
+            }
+            return v ?? 'true';
+        }
+        applyVisibility(readPref());
+        window.addEventListener('storage', (e)=>{
+            if(e.key === KEY){ applyVisibility(e.newValue ?? 'true'); }
+        });
 
         const carousel = document.getElementById('teamCarousel');
         const viewport = carousel.querySelector('.overflow-x-auto');

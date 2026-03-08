@@ -177,13 +177,13 @@
         </div>
         <div class="rounded-xl bg-[#122241] border border-white/10 p-6">
             <h2 class="text-xl font-semibold text-white mb-4">Affichage du site</h2>
-            <div class="space-y-3">
+            <div class="space-y-2">
                 <div class="flex items-center justify-between">
                     <span class="text-white/80">Afficher la section « Notre équipe » (page À propos)</span>
                     <label class="inline-flex items-center gap-2 cursor-pointer select-none">
-                        <input id="showTeamToggle" type="checkbox" class="peer sr-only">
-                        <span class="w-12 h-7 rounded-full bg-white/20 relative transition-colors peer-checked:bg-secondary">
-                            <span class="absolute top-0.5 left-0.5 w-6 h-6 bg-white rounded-full shadow transition-transform peer-checked:translate-x-5"></span>
+                        <input id="showTeamToggle" type="checkbox" class="peer sr-only" role="switch" aria-checked="false" aria-label="Afficher la section Notre équipe">
+                        <span class="w-12 h-7 rounded-full relative transition-all ring-1 shadow-sm bg-slate-500/30 ring-white/20 peer-checked:bg-emerald-500 peer-checked:ring-emerald-500 peer-focus-visible:ring-2 peer-focus-visible:ring-white/60 peer-checked:[&>span]:translate-x-5">
+                            <span class="absolute top-0.5 left-0.5 w-6 h-6 bg-white rounded-full shadow transition-transform duration-300 ease-out"></span>
                         </span>
                     </label>
                 </div>
@@ -341,35 +341,38 @@ function toggleEditUser(){
 }
 
 (function(){
-    document.getElementById('saveNotif').addEventListener('click', async function(){ 
-        var c = document.getElementById('notifContact').checked ? 1 : 0; 
-        var o = document.getElementById('notifOrder').checked ? 1 : 0; 
-        var s = document.getElementById('notifStock').checked ? 1 : 0; 
-        try {
-            const res = await fetch("{{ route('admin.settings.update-notifications') }}", {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                credentials: 'same-origin',
-                body: JSON.stringify({ contact: c, order: o, stock: s })
-            });
-            const data = await res.json();
-            if (data && data.ok) {
-                localStorage.setItem('settings:notifContact', String(c));
-                localStorage.setItem('settings:notifOrder', String(o));
-                localStorage.setItem('settings:notifStock', String(s));
-                showAlert('success', 'Paramètres enregistrés');
-            } else {
-                showAlert('error', 'Échec de l\'enregistrement');
+    const saveNotifBtn = document.getElementById('saveNotif');
+    if(saveNotifBtn){
+        saveNotifBtn.addEventListener('click', async function(){ 
+            var c = document.getElementById('notifContact').checked ? 1 : 0; 
+            var o = document.getElementById('notifOrder').checked ? 1 : 0; 
+            var s = document.getElementById('notifStock').checked ? 1 : 0; 
+            try {
+                const res = await fetch("{{ route('admin.settings.update-notifications') }}", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    credentials: 'same-origin',
+                    body: JSON.stringify({ contact: c, order: o, stock: s })
+                });
+                const data = await res.json();
+                if (data && data.ok) {
+                    localStorage.setItem('settings:notifContact', String(c));
+                    localStorage.setItem('settings:notifOrder', String(o));
+                    localStorage.setItem('settings:notifStock', String(s));
+                    showAlert('success', 'Paramètres enregistrés');
+                } else {
+                    showAlert('error', 'Échec de l\'enregistrement');
+                }
+            } catch (e) {
+                showAlert('error', 'Erreur réseau');
             }
-        } catch (e) {
-            showAlert('error', 'Erreur réseau');
-        }
-    });
+        });
+    }
 
     document.getElementById('saveSecurity').addEventListener('click',function(){ 
         var n=document.getElementById('pwdNew').value||''; 
@@ -381,30 +384,41 @@ function toggleEditUser(){
         showAlert('success', 'Mot de passe mis à jour'); 
     });
 
-    var serverNotif = @json($notif ?? ['contact'=>false,'order'=>false,'stock'=>false]);
-    var notifContact = localStorage.getItem('settings:notifContact');
-    var notifOrder = localStorage.getItem('settings:notifOrder');
-    var notifStock = localStorage.getItem('settings:notifStock');
-
-    var c = (notifContact !== null) ? (notifContact === '1') : !!serverNotif.contact;
-    var o = (notifOrder !== null) ? (notifOrder === '1') : !!serverNotif.order;
-    var s = (notifStock !== null) ? (notifStock === '1') : !!serverNotif.stock;
-
-    document.getElementById('notifContact').checked = c;
-    document.getElementById('notifOrder').checked = o;
-    document.getElementById('notifStock').checked = s;
+    (function(){
+        var notifContactEl = document.getElementById('notifContact');
+        var notifOrderEl = document.getElementById('notifOrder');
+        var notifStockEl = document.getElementById('notifStock');
+        if(!notifContactEl || !notifOrderEl || !notifStockEl) return;
+        var serverNotif = @json($notif ?? ['contact'=>false,'order'=>false,'stock'=>false]);
+        var notifContact = localStorage.getItem('settings:notifContact');
+        var notifOrder = localStorage.getItem('settings:notifOrder');
+        var notifStock = localStorage.getItem('settings:notifStock');
+        var c = (notifContact !== null) ? (notifContact === '1') : !!serverNotif.contact;
+        var o = (notifOrder !== null) ? (notifOrder === '1') : !!serverNotif.order;
+        var s = (notifStock !== null) ? (notifStock === '1') : !!serverNotif.stock;
+        notifContactEl.checked = c;
+        notifOrderEl.checked = o;
+        notifStockEl.checked = s;
+    })();
 
     var teamKey = 'apropos_show_team';
     var teamToggle = document.getElementById('showTeamToggle');
     var statusEl = document.getElementById('showTeamStatus');
-    var teamVal = localStorage.getItem(teamKey);
+    var teamVal = null;
+    try { teamVal = localStorage.getItem(teamKey); } catch(e) { teamVal = null; }
     var teamEnabled = (teamVal === null) ? true : (teamVal === 'true');
     function renderStatus(){ if(statusEl){ statusEl.textContent = teamEnabled ? 'Section visible' : 'Section masquée'; } }
+    function renderAria(){ if(teamToggle){ teamToggle.setAttribute('aria-checked', teamEnabled ? 'true' : 'false'); teamToggle.checked = teamEnabled; } }
+    function persistTeam(val){
+        try { localStorage.setItem(teamKey, val ? 'true' : 'false'); } catch(e) {}
+        try { document.cookie = teamKey + '=' + (val ? 'true' : 'false') + '; path=/; max-age=31536000'; } catch(e) {}
+    }
     if(teamToggle){
-        teamToggle.checked = teamEnabled;
+        renderAria();
         teamToggle.addEventListener('change', function(){
             teamEnabled = !!teamToggle.checked;
-            localStorage.setItem(teamKey, teamEnabled ? 'true' : 'false');
+            persistTeam(teamEnabled);
+            renderAria();
             renderStatus();
             showAlert('success', "Préférence d'affichage mise à jour");
         });
