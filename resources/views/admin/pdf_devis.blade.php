@@ -228,9 +228,24 @@
       </div>
     @endif
 
-    <div style="margin-top: 50px; text-align: right; padding-right: 40px;">
-      <div style="font-size: 12px; color: #64748b; margin-bottom: 40px;">Cachet et Signature</div>
-      <div style="width: 200px; border-bottom: 1px solid #e2e8f0; display: inline-block;"></div>
+    <div style="margin-top: 40px; padding: 0 40px;">
+      <div style="font-size: 12px; color: #64748b; font-weight:700; text-transform: uppercase; margin-bottom: 10px;">Cachet et Signature</div>
+      <table style="width:100%; border-collapse: separate; border-spacing: 0;">
+        <tr>
+          <td style="width:50%; padding:12px; border:1px solid #e2e8f0; border-radius:8px;">
+            <div style="height:80px;"></div>
+            <div style="font-size:10px; color:#94a3b8; text-align:center; margin-top:6px;">Cachet de l'entreprise</div>
+          </td>
+          <td style="width:50%; padding:12px; vertical-align:top;">
+            <div style="font-size:11px; color:#334155;">
+              Signé par: <span style="color:#1e3a8a; font-weight:700;">{{ $exportedBy }}</span><br>
+              Le {{ optional($exportedAt)->format('d/m/Y H:i') }}
+            </div>
+            <div style="margin-top:16px; border-bottom:1px solid #e2e8f0; width:220px;"></div>
+            <div style="font-size:10px; color:#94a3b8; margin-top:6px;">Signature manuscrite</div>
+          </td>
+        </tr>
+      </table>
     </div>
   </div>
 

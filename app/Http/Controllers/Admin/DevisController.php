@@ -665,7 +665,9 @@ class DevisController extends Controller
             }
         }
 
-        $data = ['devis' => $devis, 'logo' => $logoSrc, 'company' => $company];
+        $exporter = auth('admin')->user();
+        $exportedBy = $exporter ? ($exporter->name ?? ($exporter->email ?? 'Admin')) : (session('admin_user')['name'] ?? 'Admin');
+        $data = ['devis' => $devis, 'logo' => $logoSrc, 'company' => $company, 'exportedBy' => $exportedBy, 'exportedAt' => now()];
         $view = view()->exists('admin.devis-pdf') ? 'admin.devis-pdf' : 'admin.pdf_devis';
 
         $pdf = Pdf::loadView($view, $data)
